@@ -1,0 +1,143 @@
+ID,type,name,enter_datetime,exit_datetime,distance,time,speed,order_distance,order_time,barge_speed,order_arrival_time,tugboat_id,order_id,water_type
+Start,Start,Start,30:00.0,1/12/2025 6:30,0,0,0,,,,,tbs1,o1,Sea
+Barge,Barge,Barge Location,30:00.0,1/12/2025 7:30,0,0,12,3.278423357,0.331872213,9.878571429,00:00.0,tbs1,o1,Sea
+o1,Start Order,carrier1,00:00.0,1/12/2025 16:45,3.278423357,,9.878571429,,,,,tbs1,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,1/13/2025 0:15,62.67749061,,8.164285714,,,,,tbs1,o1,Sea
+Start,Start,Start,45:00.0,1/11/2025 17:45,0,0,0,,,,,tbs2,o1,Sea
+Barge,Barge,Barge Location,00:00.0,1/12/2025 7:30,72.65642859,6.054702383,12,3.278423357,0.354947411,9.236363636,00:00.0,tbs2,o1,Sea
+o1,Start Order,carrier1,00:00.0,1/12/2025 21:15,3.278423357,,9.236363636,,,,,tbs2,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,1/13/2025 13:45,62.67749061,,7.236363636,,,,,tbs2,o1,Sea
+Start,Start,Start,45:00.0,1/11/2025 17:45,0,0,0,,,,,tbs4,o1,Sea
+Barge,Barge,Barge Location,00:57.9,1/12/2025 7:30,67.65642859,6.150584418,11,3.278423357,0.387215357,8.466666667,00:00.0,tbs4,o1,Sea
+o1,Start Order,carrier1,00:00.0,1/13/2025 4:30,3.278423357,,8.466666667,,,,,tbs4,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,1/13/2025 18:45,62.67749061,,6.633333333,,,,,tbs4,o1,Sea
+Start,Start,Start,00:00.0,1/12/2025 6:00,0,0,0,,,,,tbs5,o1,Sea
+Barge,Barge,Barge Location,00:00.0,1/12/2025 7:30,0,0,11,3.278423357,0.387215357,8.466666667,00:00.0,tbs5,o1,Sea
+o1,Start Order,carrier1,00:00.0,1/13/2025 9:45,3.278423357,,8.466666667,,,,,tbs5,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,1/13/2025 18:45,62.67749061,,6.8,,,,,tbs5,o1,Sea
+Start,Start,Start,15:00.0,1/12/2025 23:15,0,0,0,,,,,tbr1,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/13/2025 1:15,72.65642859,7.265642859,10,,,,,tbr1,o1,River
+s10,Customer Station,Wat Kai Tia Pier,56:48.7,1/16/2025 13:15,83,,6.059782609,,,,,tbr1,o1,River
+Start,Start,Start,45:00.0,1/13/2025 4:45,0,0,0,,,,,tbr2,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,1/13/2025 6:45,152.6564286,15.26564286,10,,,,,tbr2,o1,River
+s10,Customer Station,Wat Kai Tia Pier,18:03.7,1/17/2025 9:30,83,,6.125,,,,,tbr2,o1,River
+Start,Start,Start,45:00.0,1/13/2025 12:45,0,0,0,,,,,tbr3,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,1/13/2025 14:45,72.65642859,7.648045115,9.5,,,,,tbr3,o1,River
+s10,Customer Station,Wat Kai Tia Pier,10:03.9,1/18/2025 4:30,83,,5.756793478,,,,,tbr3,o1,River
+Start,Start,Start,45:00.0,1/13/2025 17:45,0,0,0,,,,,tbr4,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,1/13/2025 19:45,72.65642859,7.568377978,9.6,,,,,tbr4,o1,River
+s10,Customer Station,Wat Kai Tia Pier,38:20.0,1/18/2025 23:30,83,,5.976,,,,,tbr4,o1,River
+Start,Start,Start,45:00.0,1/13/2025 17:45,0,0,0,,,,,tbr5,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,1/13/2025 19:45,72.65642859,7.490353463,9.7,,,,,tbr5,o1,River
+s10,Customer Station,Wat Kai Tia Pier,37:18.0,1/19/2025 17:15,83,,5.983423913,,,,,tbr5,o1,River
+Start,Start,Start,15:00.0,1/13/2025 0:15,0,0,0,,,,,tbs1,o2,Sea
+Barge,Barge,Barge Location,15:00.0,1/14/2025 7:30,83,6.916666667,12,3.278423357,0.356885425,9.186206897,00:00.0,tbs1,o2,Sea
+o2,Start Order,carrier2,00:00.0,1/14/2025 16:30,3.278423357,,9.186206897,,,,,tbs1,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,1/18/2025 16:15,62.67749061,,7.013793103,,,,,tbs1,o2,Sea
+Start,Start,Start,45:00.0,1/13/2025 6:45,0,0,0,,,,,tbs2,o2,Sea
+Barge,Barge,Barge Location,45:00.0,1/13/2025 22:00,83,6.916666667,12,158.112239,17.11845107,9.236363636,07:06.4,tbs2,o2,Sea
+o2,Start Order,carrier2,07:06.4,1/15/2025 0:00,158.112239,,9.236363636,,,,,tbs2,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,1/18/2025 15:15,62.67749061,,7.236363636,,,,,tbs2,o2,Sea
+Start,Start,Start,45:00.0,1/13/2025 10:45,0,0,0,,,,,tbs4,o2,Sea
+Barge,Barge,Barge Location,30:00.0,1/14/2025 3:30,83,7.545454545,11,158.112239,18.67467389,8.466666667,18:12.5,tbs4,o2,Sea
+o2,Start Order,carrier2,18:12.5,1/15/2025 8:00,158.112239,,8.466666667,,,,,tbs4,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,1/18/2025 23:30,62.67749061,,6.633333333,,,,,tbs4,o2,Sea
+Start,Start,Start,45:00.0,1/13/2025 10:45,0,0,0,,,,,tbs5,o2,Sea
+Barge,Barge,Barge Location,30:00.0,1/14/2025 3:30,83,7.545454545,11,158.112239,18.67467389,8.466666667,18:12.5,tbs5,o2,Sea
+o2,Start Order,carrier2,18:12.5,1/15/2025 13:00,158.112239,,8.466666667,,,,,tbs5,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,1/19/2025 17:15,62.67749061,,6.8,,,,,tbs5,o2,Sea
+Start,Start,Start,15:00.0,1/16/2025 12:15,0,0,0,,,,,tbr1,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/16/2025 14:15,0,0,10,,,,,tbr1,o2,River
+s11,Customer Station,Sam Khok Pier,56:48.7,1/17/2025 14:00,83,,6.059782609,,,,,tbr1,o2,River
+Start,Start,Start,30:00.0,1/17/2025 8:30,0,0,0,,,,,tbr2,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,1/17/2025 10:30,0,0,10,,,,,tbr2,o2,River
+s11,Customer Station,Sam Khok Pier,03:03.7,1/18/2025 11:15,83,,6.125,,,,,tbr2,o2,River
+Start,Start,Start,30:00.0,1/18/2025 3:30,0,0,0,,,,,tbr3,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,1/18/2025 5:30,0,0,9.5,,,,,tbr3,o2,River
+s11,Customer Station,Sam Khok Pier,55:03.9,1/19/2025 7:15,83,,5.756793478,,,,,tbr3,o2,River
+Start,Start,Start,30:00.0,1/18/2025 22:30,0,0,0,,,,,tbr4,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,1/19/2025 0:30,0,0,9.6,,,,,tbr4,o2,River
+s11,Customer Station,Sam Khok Pier,23:20.0,1/20/2025 3:15,83,,5.976,,,,,tbr4,o2,River
+Start,Start,Start,15:00.0,1/19/2025 16:15,0,0,0,,,,,tbr5,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/19/2025 18:15,0,0,9.7,,,,,tbr5,o2,River
+s11,Customer Station,Sam Khok Pier,07:18.0,1/20/2025 22:00,83,,5.983423913,,,,,tbr5,o2,River
+Start,Start,Start,15:00.0,1/18/2025 15:15,0,0,0,,,,,tbr6,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/18/2025 17:15,83,8.469387755,9.8,,,,,tbr6,o2,River
+s11,Customer Station,Sam Khok Pier,51:19.6,1/21/2025 18:00,83,,6.1005,,,,,tbr6,o2,River
+Start,Start,Start,30:00.0,1/17/2025 22:30,0,0,0,,,,,tbr7,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/19/2025 8:00,72.65642859,7.339033191,9.9,,,,,tbr7,o2,River
+s11,Customer Station,Sam Khok Pier,30:07.1,1/22/2025 14:00,87,,5.999184783,,,,,tbr7,o2,River
+Start,Start,Start,15:00.0,1/15/2025 16:15,0,0,0,,,,,tbr8,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/15/2025 18:15,83,8.3,10,,,,,tbr8,o2,River
+s11,Customer Station,Sam Khok Pier,35:00.0,1/23/2025 10:00,83,,6.225,,,,,tbr8,o2,River
+Start,Start,Start,15:00.0,1/15/2025 16:15,0,0,0,,,,,tbr9,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/15/2025 18:15,43,4.526315789,9.5,,,,,tbr9,o2,River
+s11,Customer Station,Sam Khok Pier,55:51.9,1/24/2025 7:15,83,,5.653532609,,,,,tbr9,o2,River
+Start,Start,Start,00:00.0,1/15/2025 21:00,0,0,0,,,,,tbr10,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/15/2025 23:00,33,3.4375,9.6,,,,,tbr10,o2,River
+s11,Customer Station,Sam Khok Pier,53:20.0,1/25/2025 3:15,83,,5.976,,,,,tbr10,o2,River
+Start,Start,Start,30:00.0,1/15/2025 21:30,0,0,0,,,,,tbr11,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/15/2025 22:30,23,2.371134021,9.7,,,,,tbr11,o2,River
+s11,Customer Station,Sam Khok Pier,14:45.4,1/25/2025 8:15,83,,8.516369048,,,,,tbr11,o2,River
+Start,Start,Start,45:00.0,1/18/2025 8:45,0,0,0,,,,,tbs1,o3,Sea
+Barge,Barge,Barge Location,00:00.0,1/19/2025 0:45,87,7.25,12,162.112239,17.64735334,9.186206897,28:50.5,tbs1,o3,Sea
+o3,Start Order,carrier3,28:50.5,1/20/2025 1:45,162.112239,,9.186206897,,,,,tbs1,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,1/25/2025 8:15,62.67749061,,7.013793103,,,,,tbs1,o3,Sea
+Start,Start,Start,45:00.0,1/18/2025 7:45,0,0,0,,,,,tbs2,o3,Sea
+Barge,Barge,Barge Location,00:00.0,1/18/2025 23:45,87,7.25,12,162.112239,17.55152194,9.236363636,23:05.5,tbs2,o3,Sea
+o3,Start Order,carrier3,23:05.5,1/20/2025 7:45,162.112239,,9.236363636,,,,,tbs2,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,1/23/2025 10:00,62.67749061,,7.236363636,,,,,tbs2,o3,Sea
+Start,Start,Start,00:00.0,1/18/2025 8:00,0,0,0,,,,,tbs3,o3,Sea
+Barge,Barge,Barge Location,00:00.0,1/18/2025 9:00,0,0,11,5.240876641,0.578759795,9.055357143,34:43.5,tbs3,o3,Sea
+o3,Start Order,carrier3,34:43.5,1/20/2025 10:15,5.240876641,,9.055357143,,,,,tbs3,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,1/20/2025 18:45,64.46761922,,7.385714286,,,,,tbs3,o3,Sea
+Start,Start,Start,15:00.0,1/18/2025 15:15,0,0,0,,,,,tbs4,o3,Sea
+Barge,Barge,Barge Location,15:27.3,1/19/2025 8:30,87,7.909090909,11,162.112239,19.14711484,8.466666667,53:22.3,tbs4,o3,Sea
+o3,Start Order,carrier3,53:22.3,1/20/2025 14:45,162.112239,,8.466666667,,,,,tbs4,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,1/24/2025 7:15,62.67749061,,6.633333333,,,,,tbs4,o3,Sea
+Start,Start,Start,00:00.0,1/19/2025 9:00,0,0,0,,,,,tbs5,o3,Sea
+Barge,Barge,Barge Location,00:27.3,1/20/2025 2:15,87,7.909090909,11,162.112239,19.14711484,8.466666667,38:22.3,tbs5,o3,Sea
+o3,Start Order,carrier3,38:22.3,1/21/2025 5:00,162.112239,,8.466666667,,,,,tbs5,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,1/25/2025 8:15,62.67749061,,6.8,,,,,tbs5,o3,Sea
+Start,Start,Start,30:00.0,1/20/2025 9:30,0,0,0,,,,,tbr1,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,1/20/2025 11:30,0,0,10,,,,,tbr1,o3,River
+s12,Customer Station,Wat Chang Yai,11:48.7,1/22/2025 14:00,83,,6.059782609,,,,,tbr1,o3,River
+Start,Start,Start,15:00.0,1/20/2025 15:15,0,0,0,,,,,tbr2,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/20/2025 17:15,0,0,10,,,,,tbr2,o3,River
+s12,Customer Station,Wat Chang Yai,48:03.7,1/23/2025 11:15,83,,6.125,,,,,tbr2,o3,River
+Start,Start,Start,00:00.0,1/20/2025 23:00,0,0,0,,,,,tbr3,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/21/2025 1:00,0,0,9.5,,,,,tbr3,o3,River
+s12,Customer Station,Wat Chang Yai,25:03.9,1/24/2025 7:15,83,,5.756793478,,,,,tbr3,o3,River
+Start,Start,Start,00:00.0,1/21/2025 13:00,0,0,0,,,,,tbr4,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/21/2025 15:00,0,0,9.6,,,,,tbr4,o3,River
+s12,Customer Station,Wat Chang Yai,53:20.0,1/25/2025 3:15,83,,5.976,,,,,tbr4,o3,River
+Start,Start,Start,00:00.0,1/21/2025 13:00,0,0,0,,,,,tbr5,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/21/2025 15:00,0,0,9.7,,,,,tbr5,o3,River
+s12,Customer Station,Wat Chang Yai,52:18.0,1/25/2025 22:00,83,,5.983423913,,,,,tbr5,o3,River
+Start,Start,Start,00:00.0,1/21/2025 17:00,0,0,0,,,,,tbr6,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/21/2025 19:00,0,0,9.8,,,,,tbr6,o3,River
+s12,Customer Station,Wat Chang Yai,36:19.6,1/26/2025 18:00,83,,6.1005,,,,,tbr6,o3,River
+Start,Start,Start,00:00.0,1/22/2025 13:00,0,0,0,,,,,tbr7,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/22/2025 15:00,0,0,9.9,,,,,tbr7,o3,River
+s12,Customer Station,Wat Chang Yai,30:07.1,1/27/2025 14:00,87,,5.999184783,,,,,tbr7,o3,River
+Start,Start,Start,00:00.0,1/23/2025 9:00,0,0,0,,,,,tbr8,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,1/23/2025 11:00,0,0,10,,,,,tbr8,o3,River
+s12,Customer Station,Wat Chang Yai,20:00.0,1/28/2025 10:00,83,,6.225,,,,,tbr8,o3,River
+Start,Start,Start,15:00.0,1/24/2025 6:15,0,0,0,,,,,tbr9,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/24/2025 8:15,0,0,9.5,,,,,tbr9,o3,River
+s12,Customer Station,Wat Chang Yai,55:51.9,1/29/2025 7:15,83,,5.653532609,,,,,tbr9,o3,River
+Start,Start,Start,15:00.0,1/25/2025 2:15,0,0,0,,,,,tbr10,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/25/2025 4:15,0,0,9.6,,,,,tbr10,o3,River
+s12,Customer Station,Wat Chang Yai,08:20.0,1/30/2025 3:15,83,,5.976,,,,,tbr10,o3,River
+Start,Start,Start,15:00.0,1/25/2025 7:15,0,0,0,,,,,tbr11,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/25/2025 9:15,0,0,9.7,,,,,tbr11,o3,River
+s12,Customer Station,Wat Chang Yai,07:18.0,1/30/2025 22:00,83,,5.983423913,,,,,tbr11,o3,River
+Start,Start,Start,15:00.0,1/20/2025 15:15,0,0,0,,,,,tbr12,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/20/2025 17:15,17,1.734693878,9.8,,,,,tbr12,o3,River
+s12,Customer Station,Wat Chang Yai,51:19.6,1/31/2025 18:00,83,,6.1005,,,,,tbr12,o3,River
+Start,Start,Start,15:00.0,1/20/2025 15:15,0,0,0,,,,,tbr13,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,1/20/2025 17:15,7,0.707070707,9.9,,,,,tbr13,o3,River
+s12,Customer Station,Wat Chang Yai,05:06.8,2/1/2025 14:00,83,,5.999184783,,,,,tbr13,o3,River
+Start,Start,Start,45:00.0,1/20/2025 17:45,0,0,0,,,,,tbr14,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,1/20/2025 19:45,162.6564286,16.26564286,10,,,,,tbr14,o3,River
+s12,Customer Station,Wat Chang Yai,04:35.5,2/2/2025 11:15,100,,6.125,,,,,tbr14,o3,River

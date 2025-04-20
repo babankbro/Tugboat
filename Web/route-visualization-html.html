@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Route Network Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        /* Tailwind-like utility classes */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .space-x-4 > * + * { margin-left: 1rem; }
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .p-2 { padding: 0.5rem; }
+        .pl-5 { padding-left: 1.25rem; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-sm { font-size: 0.875rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-white { background-color: white; }
+        .bg-gray-200 { background-color: #e5e7eb; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .text-white { color: white; }
+        .border { border: 1px solid #e5e7eb; }
+        .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+        .overflow-x-auto { overflow-x: auto; }
+        .flex-wrap { flex-wrap: wrap; }
+        .w-4 { width: 1rem; }
+        .h-4 { height: 1rem; }
+        .cursor-pointer { cursor: pointer; }
+        .list-disc { list-style-type: disc; }
+        .m-1 { margin: 0.25rem; }
+        .relative { position: relative; }
+        .rounded-full { border-radius: 9999px; }
+        
+        /* Additional specific styles */
+        #app-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        button {
+            border: none;
+            cursor: pointer;
+        }
+        
+        button:focus {
+            outline: none;
+        }
+        
+        .route-item {
+            transition: background-color 0.2s ease;
+        }
+        
+        .route-item:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container"></div>
+
+    <script type="text/babel">
+        const RouteNetworkVisualization = () => {
+            const [viewType, setViewType] = React.useState('all');
+            const [highlightedSection, setHighlightedSection] = React.useState(null);
+            
+            // Station data
+            const stations = [
+                {id: 's0', name: '1-Bangkok Bar', type: 'RIVER', km: 0, isCustomer: false},
+                {id: 's1', name: '2-Phra Chunlachomklao Fort', type: 'RIVER', km: 11, isCustomer: false},
+                {id: 's2', name: '3-Bang Hua Suea Pier', type: 'RIVER', km: 20, isCustomer: false, isHandoff: true},
+                {id: 's3', name: '4-Bangkok Port', type: 'RIVER', km: 33, isCustomer: false},
+                {id: 'c1', name: '1-Koh Si Chang', type: 'SEA', km: -52, isCustomer: false, isSeaPort: true},
+                {id: 's4', name: '5-Royal Thai Navy HQ', type: 'RIVER', km: 59, isCustomer: false},
+                {id: 's5', name: 'Wat Choeng Len', type: 'RIVER', km: 81, isCustomer: false},
+                {id: 's6', name: 'Tai Kred', type: 'RIVER', km: 82, isCustomer: false},
+                {id: 's7', name: 'Rama IV Bridge', type: 'RIVER', km: 83, isCustomer: false},
+                {id: 's8', name: 'Rangsit Bridge (Nonthaburi)', type: 'RIVER', km: 90, isCustomer: false},
+                {id: 's9', name: 'Pathum Thani Bridge', type: 'RIVER', km: 100, isCustomer: false},
+                {id: 's10', name: 'Wat Kai Tia Pier', type: 'RIVER', km: 103, isCustomer: true, customerName: 'customer1'},
+                {id: 's11', name: 'Sam Khok Pier', type: 'RIVER', km: 107, isCustomer: true, customerName: 'customer2'},
+                {id: 's12', name: 'Wat Chang Yai', type: 'RIVER', km: 120, isCustomer: true, customerName: 'customer3'},
+                {id: 's13', name: 'Bang Pa-In (District)', type: 'RIVER', km: 133, isCustomer: true, customerName: 'customer4'},
+                {id: 's14', name: 'Wat Thong Bo', type: 'RIVER', km: 143, isCustomer: true, customerName: 'customer5'},
+                {id: 's15', name: 'Wat Prot Sat', type: 'RIVER', km: 145, isCustomer: true, customerName: 'customer6'},
+                {id: 's16', name: 'Wat Song Kusol Pier', type: 'RIVER', km: 148, isCustomer: true, customerName: 'customer7'},
+                {id: 's17', name: 'Sam Yaek Wat Phanan Choeng', type: 'RIVER', km: 150, isCustomer: true, customerName: 'customer8'},
+                {id: 's18', name: 'Pridi Bridge', type: 'RIVER', km: 151, isCustomer: false},
+                {id: 's19', name: 'Chao Phrom Market', type: 'RIVER', km: 154, isCustomer: false},
+                {id: 's20', name: 'Wat Pa Kho', type: 'RIVER', km: 155, isCustomer: true, customerName: 'customer9'},
+                {id: 's21', name: 'Wat Mai Sommarin', type: 'RIVER', km: 157, isCustomer: true, customerName: 'customer10'},
+                {id: 's22', name: 'Bo Phrong Bridge Pier', type: 'RIVER', km: 158, isCustomer: true, customerName: 'customer11'},
+                {id: 's23', name: 'Wat Bandai Pier', type: 'RIVER', km: 167, isCustomer: true, customerName: 'customer12'},
+                {id: 's24', name: 'Wat Sam Makan', type: 'RIVER', km: 173, isCustomer: true, customerName: 'customer13'}
+            ];
+            
+            // Sea route sections - sea tugboats
+            const seaSections = [
+                { 
+                    id: 'sea-tbs1', 
+                    name: 'TBS1 Route', 
+                    stations: ['c1', 's2'],
+                    color: '#2196F3'
+                },
+                { 
+                    id: 'sea-tbs2', 
+                    name: 'TBS2 Route', 
+                    stations: ['c1', 's2'],
+                    color: '#4CAF50'
+                }
+            ];
+            
+            // River route sections - river tugboats (all ending at s10 - Wat Kai Tia Pier)
+            const riverSections = [
+                { 
+                    id: 'river-tbr1', 
+                    name: 'TBR1 Route', 
+                    stations: ['s2', 's10'],
+                    color: '#F44336'
+                },
+                { 
+                    id: 'river-tbr2', 
+                    name: 'TBR2 Route', 
+                    stations: ['s2', 's10'],
+                    color: '#FF9800'
+                },
+                { 
+                    id: 'river-tbr3', 
+                    name: 'TBR3 Route', 
+                    stations: ['s2', 's10'],
+                    color: '#9C27B0'
+                },
+                { 
+                    id: 'river-tbr4', 
+                    name: 'TBR4 Route', 
+                    stations: ['s2', 's10'],
+                    color: '#795548'
+                },
+                { 
+                    id: 'river-tbr5', 
+                    name: 'TBR5 Route', 
+                    stations: ['s2', 's10'],
+                    color: '#607D8B'
+                }
+            ];
+
+            // Sort stations by km for the linear display
+            const sortedStations = [...stations].sort((a, b) => a.km - b.km);
+
+            // Calculate position based on kilometer marker
+            const calculateX = (km) => {
+                // Scale to fit the view
+                const minKm = Math.min(...stations.map(s => s.km));  // Should be -52 (c1)
+                const maxKm = Math.max(...stations.map(s => s.km));  // Should be 173 (s24)
+                const range = maxKm - minKm;
+                
+                // Keep some padding
+                const padding = 40;
+                const width = 1200 - (2 * padding);
+                
+                return padding + ((km - minKm) / range) * width;
+            };
+            
+            // Get active sections based on view type
+            const activeSections = viewType === 'sea' ? seaSections : viewType === 'river' ? riverSections : [...seaSections, ...riverSections];
+            
+            // Function to check if a station is in a highlighted section
+            const isInHighlightedSection = (stationId) => {
+                if (!highlightedSection) return false;
+                
+                const allSections = [...seaSections, ...riverSections];
+                const section = allSections.find(s => s.id === highlightedSection);
+                return section && section.stations.includes(stationId);
+            };
+            
+            // Draw the connections between stations
+            const renderConnections = () => {
+                // Draw the main route line - straight horizontal line
+                const mainY = 180; // Y position for the main horizontal line
+                
+                // Define route offsets for clearer visualization
+                const routeOffsets = {
+                    'sea-tbs1': -30,
+                    'sea-tbs2': -20,
+                    'river-tbr1': 20,
+                    'river-tbr2': 30,
+                    'river-tbr3': 40,
+                    'river-tbr4': 50,
+                    'river-tbr5': 60
+                };
+                
+                // Highlight s10 node as the final destination for all river tugboats
+                const highlightDestination = true;
+                
+                // Render the main path and section paths
+                return (
+                <g>
+                    {/* Main route path - straight horizontal line */}
+                    <path 
+                        d={`M ${calculateX(sortedStations[0].km)} ${mainY} L ${calculateX(sortedStations[sortedStations.length - 1].km)} ${mainY}`} 
+                        stroke="#dddddd" 
+                        strokeWidth="8" 
+                        fill="none" 
+                    />
+                    
+                    {/* Specific section paths */}
+                    {activeSections.map(section => {
+                        const sectionStations = section.stations.map(id => 
+                            stations.find(s => s.id === id)
+                        ).filter(Boolean).sort((a, b) => a.km - b.km);
+                        
+                        if (sectionStations.length < 2) return null;
+                        
+                        // Create curved path with offset for better visualization
+                        const offset = routeOffsets[section.id] || 0;
+                        
+                        let sectionPath = "";
+                        
+                        // First point
+                        sectionPath = `M ${calculateX(sectionStations[0].km)} ${mainY}`;
+                        
+                        // Middle points with curves
+                        for (let i = 1; i < sectionStations.length; i++) {
+                            const startX = calculateX(sectionStations[i-1].km);
+                            const endX = calculateX(sectionStations[i].km);
+                            const midX = (startX + endX) / 2;
+                            
+                            // Only add the curve if this isn't the last segment
+                            if (i === 1) {
+                                sectionPath += ` C ${startX + 20} ${mainY}, ${midX - 20} ${mainY + offset}, ${midX} ${mainY + offset}`;
+                            }
+                            
+                            if (i === sectionStations.length - 1) {
+                                sectionPath += ` C ${midX + 20} ${mainY + offset}, ${endX - 20} ${mainY}, ${endX} ${mainY}`;
+                            } else {
+                                sectionPath += ` L ${endX} ${mainY + offset}`;
+                            }
+                        }
+                        
+                        return (
+                            <path 
+                                key={section.id}
+                                d={sectionPath} 
+                                stroke={section.color} 
+                                strokeWidth={highlightedSection === section.id ? "6" : "4"} 
+                                strokeOpacity={highlightedSection && highlightedSection !== section.id ? 0.3 : 1}
+                                fill="none"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                onClick={() => setHighlightedSection(highlightedSection === section.id ? null : section.id)}
+                                style={{ cursor: 'pointer' }}
+                            />
+                        );
+                    })}
+                </g>
+                );
+            };
+            
+            return (
+                <div className="flex flex-col items-center p-6 bg-gray-50 rounded-lg">
+                    <h1 className="text-2xl font-bold mb-4">Logistics Route Network</h1>
+                    
+                    <div className="mb-4 flex space-x-4">
+                        <button 
+                            className={`px-4 py-2 rounded ${viewType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setViewType('all')}
+                        >
+                            All Routes
+                        </button>
+                        <button 
+                            className={`px-4 py-2 rounded ${viewType === 'sea' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setViewType('sea')}
+                        >
+                            Sea Routes
+                        </button>
+                        <button 
+                            className={`px-4 py-2 rounded ${viewType === 'river' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setViewType('river')}
+                        >
+                            River Routes
+                        </button>
+                    </div>
+                    
+                    {/* Route Legend */}
+                    <div className="flex flex-wrap mb-4 justify-center">
+                        {activeSections.map(section => (
+                            <div 
+                                key={section.id} 
+                                className={`flex items-center m-1 p-2 rounded cursor-pointer route-item ${highlightedSection === section.id ? 'bg-gray-200' : ''}`}
+                                onClick={() => setHighlightedSection(highlightedSection === section.id ? null : section.id)}
+                            >
+                                <div 
+                                    className="w-4 h-4 mr-2 rounded-full" 
+                                    style={{ backgroundColor: section.color, opacity: highlightedSection && highlightedSection !== section.id ? 0.3 : 1 }}
+                                ></div>
+                                <span className="text-sm">{section.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="relative overflow-x-auto border rounded-lg">
+                        <svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+                            {/* Kilometer markers */}
+                            <g>
+                                {stations.filter((s, i) => i % 2 === 0).map(station => (
+                                    <g key={`km-${station.id}`}>
+                                        <line 
+                                            x1={calculateX(station.km)} 
+                                            y1="250" 
+                                            x2={calculateX(station.km)} 
+                                            y2="265" 
+                                            stroke="#999" 
+                                            strokeWidth="1" 
+                                        />
+                                        <text 
+                                            x={calculateX(station.km)} 
+                                            y="280" 
+                                            textAnchor="middle" 
+                                            fontSize="12" 
+                                            fill="#666"
+                                        >
+                                            {station.km} km
+                                        </text>
+                                    </g>
+                                ))}
+                            </g>
+                            
+                            {/* Route connections */}
+                            {renderConnections()}
+                            
+                            {/* Stations */}
+                            {stations.map(station => {
+                                // Determine node size and appearance
+                                let nodeSize = station.isHandoff ? 12 : 
+                                            station.isSeaPort ? 14 : 
+                                            station.isCustomer ? 10 : 8;
+                                            
+                                // Make s10 larger as it's the final destination for all river tugboats
+                                if (station.id === 's10') {
+                                    nodeSize = 14;
+                                }
+                                
+                                let nodeColor = station.isHandoff ? '#FF5722' : 
+                                                station.type === 'SEA' ? '#03A9F4' : 
+                                                station.isCustomer ? '#4CAF50' : '#9E9E9E';
+                                                
+                                // Highlight s10 with a special color as it's the final destination for all river tugboats
+                                if (station.id === 's10') {
+                                    nodeColor = '#FFC107'; // Gold color to highlight final destination
+                                }
+                                
+                                const isHighlighted = isInHighlightedSection(station.id);
+                                const opacity = highlightedSection && !isHighlighted ? 0.3 : 1;
+                                
+                                // All stations aligned on the same horizontal line
+                                const stationY = 180; // Same Y position for all stations
+                                
+                                return (
+                                    <g 
+                                        key={station.id} 
+                                        transform={`translate(${calculateX(station.km)}, ${stationY})`}
+                                        opacity={opacity}
+                                    >
+                                        {/* Station node */}
+                                        <circle 
+                                            r={nodeSize} 
+                                            fill={nodeColor} 
+                                            stroke={isHighlighted ? "#000" : "#fff"} 
+                                            strokeWidth={isHighlighted ? 3 : 1} 
+                                        />
+                                        
+                                        {/* Station label - alternate above/below for better readability */}
+                                        <text 
+                                            y={station.id.charCodeAt(1) % 2 === 0 ? -25 : 35} 
+                                            textAnchor="middle"
+                                            fontSize="10"
+                                            fontWeight={isHighlighted ? "bold" : "normal"}
+                                            fill="#333"
+                                            style={{ 
+                                                transform: `rotate(-35deg)`, 
+                                                transformOrigin: 'center',
+                                                textShadow: '0 0 3px white'
+                                            }}
+                                        >
+                                            {station.name.length > 12 ? station.name.substring(0, 12) + '...' : station.name}
+                                        </text>
+                                        
+                                        {/* ID label */}
+                                        <text 
+                                            y={-nodeSize - 2} 
+                                            textAnchor="middle" 
+                                            fontSize="9" 
+                                            fontWeight="bold"
+                                            fill={nodeColor}
+                                            style={{ textShadow: '0 0 2px white' }}
+                                        >
+                                            {station.id}
+                                        </text>
+                                        
+                                        {/* Customer label if applicable */}
+                                        {station.isCustomer && (
+                                            <text 
+                                                y={nodeSize + 20} 
+                                                textAnchor="middle" 
+                                                fontSize="8" 
+                                                fill="#666"
+                                                style={{ textShadow: '0 0 2px white' }}
+                                            >
+                                                {station.customerName}
+                                            </text>
+                                        )}
+                                    </g>
+                                );
+                            })}
+                            
+                            {/* Legend */}
+                            <g transform="translate(1000, 30)">
+                                <rect x="0" y="0" width="160" height="140" fill="white" fillOpacity="0.8" rx="5" />
+                                <text x="80" y="20" textAnchor="middle" fontWeight="bold" fontSize="12">Station Types</text>
+                                
+                                <circle cx="20" cy="40" r="6" fill="#03A9F4" />
+                                <text x="30" y="44" fontSize="10">Sea Port</text>
+                                
+                                <circle cx="20" cy="60" r="6" fill="#FF5722" />
+                                <text x="30" y="64" fontSize="10">Handoff Point</text>
+                                
+                                <circle cx="20" cy="80" r="6" fill="#FFC107" />
+                                <text x="30" y="84" fontSize="10">Final Destination (s10)</text>
+                                
+                                <circle cx="20" cy="100" r="6" fill="#4CAF50" />
+                                <text x="30" y="104" fontSize="10">Customer Station</text>
+                                
+                                <circle cx="20" cy="120" r="6" fill="#9E9E9E" />
+                                <text x="30" y="124" fontSize="10">Regular Station</text>
+                            </g>
+                            
+                            {/* Route type indicators */}
+                            <g transform="translate(800, 30)">
+                                <rect x="0" y="0" width="160" height="80" fill="white" fillOpacity="0.8" rx="5" />
+                                <text x="80" y="20" textAnchor="middle" fontWeight="bold" fontSize="12">Route Types</text>
+                                
+                                <line x1="10" y1="40" x2="50" y2="40" stroke="#2196F3" strokeWidth="4" />
+                                <text x="60" y="44" fontSize="10">Sea Routes</text>
+                                
+                                <line x1="10" y1="60" x2="50" y2="60" stroke="#F44336" strokeWidth="4" />
+                                <text x="60" y="64" fontSize="10">River Routes</text>
+                            </g>
+                        </svg>
+                    </div>
+                    
+                    <div className="mt-6 px-4 py-3 bg-white rounded shadow">
+                        <h2 className="text-lg font-semibold mb-2">Route Information</h2>
+                        <div className="text-sm space-y-1">
+                            <p><span className="font-medium">Total Stations:</span> {stations.length} ({stations.filter(s => s.type === 'SEA').length} sea, {stations.filter(s => s.type === 'RIVER').length} river)</p>
+                            <p><span className="font-medium">Customer Locations:</span> {stations.filter(s => s.isCustomer).length}</p>
+                            <p><span className="font-medium">Final Destination:</span> Wat Kai Tia Pier (s10) at km 103</p>
+                            <p><span className="font-medium">Route Distance:</span> {Math.max(...stations.map(s => s.km)) - Math.min(...stations.map(s => s.km))} km</p>
+                            <p><span className="font-medium">Key Handoff Point:</span> 3-Bang Hua Suea Pier (s2) at km 20</p>
+                            <p><span className="font-medium">Sea Port:</span> Koh Si Chang (c1) at km -52</p>
+                        </div>
+                        
+                        <div className="mt-3">
+                            <h3 className="font-medium">Tugboat Routes:</h3>
+                            <ul className="list-disc pl-5 text-sm">
+                                <li>Sea Tugboats (TBS1, TBS2): Transport from Koh Si Chang (c1) to Bang Hua Suea Pier (s2)</li>
+                                <li>River Tugboats (TBR1-TBR5): Transport from Bang Hua Suea Pier (s2) to Wat Kai Tia Pier (s10)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Mount the App
+        ReactDOM.render(<RouteNetworkVisualization />, document.getElementById('app-container'));
+    </script>
+</body>
+</html>
