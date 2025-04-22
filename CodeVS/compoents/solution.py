@@ -89,7 +89,7 @@ class Solution:
         # Filter available barges that are free during order time window and ready
         available_barges = [
             b for b in barges.values() 
-            if (self.get_ready_barge(b)is None or self.get_ready_barge(b) < order_start) 
+            if (self.get_ready_barge(b)is None or self.get_ready_barge(b) < order_end - timedelta(days=3) ) 
         ]
         
         # sum the capacity of available barges
