@@ -139,9 +139,18 @@ def test_transport_order(data):
     
     solution = Solution(data)
     
-    solution.generate_schedule()
+    tugboat_df, barge_df = solution.generate_schedule()
     
     
+    solution.save_schedule_to_csv(tugboat_df, barge_df)
+    filtered_df = tugboat_df[((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr1')) & 
+                             ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))]
+    print(filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'tugboat_id'
+                      # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+       #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
+       #'tugboat_id', 'order_id', 'water_type'
+       ]])
+    print(filtered_df.columns)
 
     #print("customer_river_time_lates", customer_river_time_lates, list_lates)
 

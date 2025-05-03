@@ -29,7 +29,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         #print(tugboat_schedule)
         
         tugboat_result = lookup_tugboat_results[tugboat_schedule['tugboat_id']]
-        #print(tugboat_result)
+        print('Appointment Tugboat Result: XXXXXXXXXXXXXXXX', tugboat_result)
         last_point = tugboat_result['data_points'][-1]
         arrival_datetime = last_point['order_arrival_time'] 
         order_location ={

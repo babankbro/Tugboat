@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barge Usage Table - KKU x S.Pmarine</title>
+  <style>
+    :root {
+      --primary-color: #005792;
+      --secondary-color: #00a8e8;
+      --accent-color: #0077b6;
+      --light-color: #f5f5f5;
+      --dark-color: #333;
+      --text-color: #444;
+      --table-header-bg: #005792;
+      --table-odd-row: #e6f7ff;
+      --table-even-row: #ffffff;
+      --table-hover: #c7e6ff;
+      --order-1-color: #e6f0ff;
+      --order-2-color: #e6fff0;
+      --order-3-color: #fff0e6;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      color: var(--text-color);
+      background-color: var(--light-color);
+      line-height: 1.6;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .logo span.highlight {
+      color: #ffcc00;
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin-left: 2rem;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    nav ul li a:hover {
+      color: #ffcc00;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 20px;
+    }
+    
+    .table-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .table-subtitle {
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .barges-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+    
+    .barges-table th {
+      background-color: var(--table-header-bg);
+      color: white;
+      padding: 12px 15px;
+      text-align: center;
+      font-weight: bold;
+      border: 1px solid #ddd;
+    }
+    
+    .barges-table td {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    
+    .barges-table tr:nth-child(even) {
+      background-color: var(--table-even-row);
+    }
+    
+    .barges-table tr:nth-child(odd) {
+      background-color: var(--table-odd-row);
+    }
+    
+    .barges-table tr:hover {
+      background-color: var(--table-hover);
+    }
+    
+    .order-header {
+      background-color: var(--accent-color);
+      color: rgb(20, 1, 1);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .order1-row {
+      background-color: var(--order-1-color) !important;
+    }
+    
+    .order2-row {
+      background-color: var(--order-2-color) !important;
+    }
+    
+    .order3-row {
+      background-color: var(--order-3-color) !important;
+    }
+    
+    .total-row {
+      background-color: #f2f2f2 !important;
+      font-weight: bold;
+    }
+    
+    .sea-tug-cell {
+      background-color: rgba(0, 119, 182, 0.1);
+    }
+    
+    .river-tug-cell {
+      background-color: rgba(0, 150, 136, 0.1);
+    }
+    
+    .barge-cell {
+      background-color: rgba(255, 152, 0, 0.1);
+    }
+    
+    .weight-cell {
+      font-weight: 500;
+    }
+    
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .filter-label {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    select {
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background-color: white;
+    }
+    
+    .summary-section {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .summary-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 0.5rem;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .summary-card {
+      background-color: #f9f9f9;
+      padding: 1rem;
+      border-radius: 6px;
+      border-left: 4px solid var(--accent-color);
+    }
+    
+    .summary-card h4 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 1200px) {
+      .barges-table {
+        font-size: 0.9rem;
+      }
+      
+      .barges-table th,
+      .barges-table td {
+        padding: 8px 10px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      nav ul li {
+        margin: 0.5rem;
+      }
+      
+      .filters {
+        flex-direction: column;
+      }
+    }
+    
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .footer-column {
+      flex: 1;
+      min-width: 250px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-column h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid #555;
+      margin-top: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span>KKU</span>
+        <span> x </span>
+        <span class="highlight">S.Pmarine</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Vessel Data</a></li>
+          <li><a href="#">Usage Tables</a></li>
+          <li><a href="#">Reports</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="table-title">Table BB5: Weight Transfer Data Between Tugboats and Barges</h1>
+    
+    <div class="filters">
+      <div class="filter-group">
+        <span class="filter-label">Order Code:</span>
+        <select id="orderFilter">
+          <option value="all">All</option>
+          <option value="o1">o1</option>
+          <option value="o2">o2</option>
+          <option value="o3">o3</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">Sea Tugboat:</span>
+        <select id="seaTugFilter">
+          <option value="all">All</option>
+          <option value="tbs1">tbs1</option>
+          <option value="tbs2">tbs2</option>
+          <option value="tbs3">tbs3</option>
+          <option value="tbs4">tbs4</option>
+          <option value="tbs5">tbs5</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">River Tugboat:</span>
+        <select id="riverTugFilter">
+          <option value="all">All</option>
+          <option value="tbr1">tbr1</option>
+          <option value="tbr2">tbr2</option>
+          <option value="tbr3">tbr3</option>
+          <option value="tbr4">tbr4</option>
+          <option value="tbr5">tbr5</option>
+          <option value="tbr6">tbr6</option>
+          <option value="tbr8">tbr8</option>
+          <option value="tbr9">tbr9</option>
+          <option value="tbr10">tbr10</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">Barge:</span>
+        <select id="bargeFilter">
+          <option value="all">All</option>
+          <!-- Multiple barge options would go here -->
+          <option value="b1">b1</option>
+          <option value="b2">b2</option>
+          <!-- Additional options -->
+        </select>
+      </div>
+    </div>
+    
+    <div class="summary-section">
+      <h2 class="summary-title">Transportation Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>Total Weight</h4>
+          <div class="summary-value">122,000 tons</div>
+        </div>
+        <div class="summary-card">
+          <h4>Total Orders</h4>
+          <div class="summary-value">3 orders</div>
+        </div>
+        <div class="summary-card">
+          <h4>Number of Barges Used</h4>
+          <div class="summary-value">35 vessels</div>
+        </div>
+        <div class="summary-card">
+          <h4>Number of Sea Tugboats</h4>
+          <div class="summary-value">5 vessels</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="barges-table" id="bargesTable">
+        <thead>
+          <tr>
+            <th rowspan="2">Order Code</th>
+            <th colspan="2">Sea Tugboat</th>
+            <th colspan="2">Barge</th>
+            <th colspan="2">River Tugboat</th>
+          </tr>
+          <tr>
+            <th>Sea Tugboat Name</th>
+            <th>Total Weight (tons)</th>
+            <th>Barge Used</th>
+            <th>Total Weight (tons)</th>
+            <th>River Tugboat Name</th>
+            <th>Total Weight (tons)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Order o1 -->
+          <tr class="order-header">
+            <td rowspan="13">o1</td>
+            <td rowspan="3" class="sea-tug-cell">tbs1</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+            <td class="barge-cell">b1</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="3" class="river-tug-cell">tbr1</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b2</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b3</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order1-row">
+            <td rowspan="3" class="sea-tug-cell">tbs2</td>
+            <td rowspan="3" class="weight-cell">11,000</td>
+            <td class="barge-cell">b4</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="3" class="river-tug-cell">tbr2</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b5</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b6</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order1-row">
+            <td rowspan="4" class="sea-tug-cell">tbs4</td>
+            <td rowspan="4" class="weight-cell">11,000</td>
+            <td class="barge-cell">b7</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="3" class="river-tug-cell">tbr3</td>
+            <td rowspan="3" class="weight-cell">7,000</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b21</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b22</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b23</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="2" class="river-tug-cell">tbr4</td>
+            <td rowspan="2" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order1-row">
+            <td rowspan="2" class="sea-tug-cell">tbs5</td>
+            <td rowspan="2" class="weight-cell">2,000</td>
+            <td class="barge-cell">b24</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order1-row">
+            <td class="barge-cell">b25</td>
+            <td class="weight-cell">2,000</td>
+            <td class="river-tug-cell">tbr3</td>
+            <td class="weight-cell">-</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Total Transportation Weight</td>
+            <td colspan="4" class="weight-cell">32,000</td>
+          </tr>
+          
+          <!-- Order o2 -->
+          <tr class="order-header">
+            <td rowspan="16">o2</td>
+            <td rowspan="3" class="sea-tug-cell">tbs1</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+            <td class="barge-cell">b26</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="3" class="river-tug-cell">tbr1</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b27</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b28</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td rowspan="3" class="sea-tug-cell">tbs2</td>
+            <td rowspan="3" class="weight-cell">11,000</td>
+            <td class="barge-cell">b29</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="3" class="river-tug-cell">tbr5</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b30</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b41</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td rowspan="3" class="sea-tug-cell">tbs4</td>
+            <td rowspan="3" class="weight-cell">11,000</td>
+            <td class="barge-cell">b42</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="2" class="river-tug-cell">tbr8</td>
+            <td rowspan="2" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b43</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b44</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="3" class="river-tug-cell">tbr9</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td rowspan="3" class="sea-tug-cell">tbs5</td>
+            <td rowspan="3" class="weight-cell">9,500</td>
+            <td class="barge-cell">b45</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b46</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="barge-cell">b47</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="3" class="river-tug-cell">tbr10</td>
+            <td rowspan="3" class="weight-cell">7,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="sea-tug-cell"></td>
+            <td class="weight-cell"></td>
+            <td class="barge-cell">b48</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="sea-tug-cell"></td>
+            <td class="weight-cell"></td>
+            <td class="barge-cell">b49</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order2-row">
+            <td class="sea-tug-cell"></td>
+            <td class="weight-cell"></td>
+            <td class="barge-cell">b50</td>
+            <td class="weight-cell">1,500</td>
+            <td class="river-tug-cell"></td>
+            <td class="weight-cell"></td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Total Transportation Weight</td>
+            <td colspan="4" class="weight-cell">40,000</td>
+          </tr>
+          
+          <!-- Order o3 -->
+          <tr class="order-header">
+            <td rowspan="21">o3</td>
+            <td rowspan="3" class="sea-tug-cell">tbs1</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+            <td class="barge-cell">b10</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="3" class="river-tug-cell">tbr1</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b8</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b9</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td rowspan="3" class="sea-tug-cell">tbs2</td>
+            <td rowspan="3" class="weight-cell">11,000</td>
+            <td class="barge-cell">b17</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="3" class="river-tug-cell">tbr2</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b18</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b19</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td rowspan="3" class="sea-tug-cell">tbs3</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+            <td class="barge-cell">b20</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="3" class="river-tug-cell">tbr3</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b37</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b38</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td rowspan="3" class="sea-tug-cell">tbs4</td>
+            <td rowspan="3" class="weight-cell">11,000</td>
+            <td class="barge-cell">b39</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="3" class="river-tug-cell">tbr4</td>
+            <td rowspan="3" class="weight-cell">8,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b40</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b57</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td rowspan="5" class="sea-tug-cell">tbs5</td>
+            <td rowspan="5" class="weight-cell">11,500</td>
+            <td class="barge-cell">b58</td>
+            <td class="weight-cell">3,000</td>
+            <td rowspan="3" class="river-tug-cell">tbr5</td>
+            <td rowspan="3" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b59</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b60</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b11</td>
+            <td class="weight-cell">2,500</td>
+            <td rowspan="4" class="river-tug-cell">tbr6</td>
+            <td rowspan="4" class="weight-cell">8,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="barge-cell">b12</td>
+            <td class="weight-cell">3,000</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="sea-tug-cell"></td>
+            <td class="weight-cell"></td>
+            <td class="barge-cell">b13</td>
+            <td class="weight-cell">2,500</td>
+          </tr>
+          <tr class="order3-row">
+            <td class="sea-tug-cell"></td>
+            <td class="weight-cell"></td>
+            <td class="barge-cell">b14</td>
+            <td class="weight-cell">500</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2">Total Transportation Weight</td>
+            <td colspan="4" class="weight-cell">50,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>KKU x S.Pmarine</h3>
+        <p>A collaborative partnership for marine logistics and transportation management.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Vessel Data</a></li>
+          <li><a href="#">Usage Tables</a></li>
+          <li><a href="#">Reports</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul class="footer-links">
+          <li><a href="#">Transportation Guidelines</a></li>
+          <li><a href="#">Vessel Specifications</a></li>
+          <li><a href="#">Weight Regulations</a></li>
+          <li><a href="#">Logistics Planning</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2025 KKU x S.Pmarine. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Simple filtering functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const orderFilter = document.getElementById('orderFilter');
+      const seaTugFilter = document.getElementById('seaTugFilter');
+      const riverTugFilter = document.getElementById('riverTugFilter');
+      const bargeFilter = document.getElementById('bargeFilter');
+      
+      // Add event listeners for filters
+      orderFilter.addEventListener('change', applyFilters);
+      seaTugFilter.addEventListener('change', applyFilters);
+      riverTugFilter.addEventListener('change', applyFilters);
+      bargeFilter.addEventListener('change', applyFilters);
+      
