@@ -152,7 +152,7 @@ def test_transport_order(data):
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     
-    print(temp_df.head(20))
+    print(temp_df.head(25))
     print(filtered_df.columns)
 
     #print("customer_river_time_lates", customer_river_time_lates, list_lates)
