@@ -189,6 +189,8 @@ class Tugboat:
             current_lng = barge_info['location'][1]
             
             current_km = barge_river_km
+            #if len(travel_steps) > 0:
+                #print("Travel Steps TTTTTTTTTTTTTTTTTTTTT:", travel_steps)
             barge_collect_info = {
                 "barge_id": barge.barge_id,
                 "travel_time": travel_time,
