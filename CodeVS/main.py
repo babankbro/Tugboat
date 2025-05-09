@@ -143,16 +143,19 @@ def test_transport_order(data):
     
     
     solution.save_schedule_to_csv(tugboat_df, barge_df)
-    filtered_df = tugboat_df[((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbs1')) 
+    filtered_df = tugboat_df[
+                            ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbs1')) 
                             # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                            #& (tugboat_df['distance'] > 60)
+                            #(tugboat_df['distance'] > 60)
                             ]
-    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'tugboat_id'
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'tugboat_id','distance'
                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     
-    print(temp_df.head(20))
+    print(temp_df.head(10))
     print(filtered_df.columns)
 
     #print("customer_river_time_lates", customer_river_time_lates, list_lates)

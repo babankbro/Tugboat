@@ -24,11 +24,14 @@ class Barge:
         
     def get_load(self, is_only_load=False):
         if is_only_load:
-            return self.load
-        return self.load + self.weight_barge
+            return self._load
+        return self._load + self.weight_barge
+    
+    def set_load(self, load):
+        self._load = load
 
     def __str__(self):
-        return (f"Barge ID: {self.barge_id}, Name: {self.name}, LOAD: {self.load}, Capacity: {self.capacity}, "
+        return (f"Barge ID: {self.barge_id}, Name: {self.name}, LOAD: {self._load}, Capacity: {self.capacity}, "
                 f"Location: ({self.lat}, {self.lng}), Setup Time: {self.setup_time} mins, "
                 f"Ready Time: {self.ready_time}, Status: {self.status}")
         

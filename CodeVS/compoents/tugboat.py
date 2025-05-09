@@ -247,38 +247,66 @@ class Tugboat:
                 "start_object": carrier,
                 'travel_distance': distance,
                 'steps': travel_steps}
-        
-        
-    def calculate_travel_to_appointment(self, appointment_info):
+    
+    
+    def calculate_travel_start_to_end_river_location(self, start_info, end_info, 
+                                                     start_status=WaterBody.RIVER, end_status= WaterBody.RIVER):
         data = Travel_Helper.data
-        # 1. get order_stations
-        end_station =  data['stations'][appointment_info['appointment_station']] 
-        start_status = WaterBody.SEA
-        end_status = WaterBody.RIVER
-        carrier = self.assigned_barges[0].current_order.start_object
-        
+        start_km = 0
+        if start_info['station'] is None:
+            start_location = start_info['location']
+        else:
+            start_station =  start_info['station']
+            start_location = (start_station.lat, start_station.lng)
+            start_km = start_station.km
+        end_station =  end_info['station']
         nbarge = len(self.assigned_barges)
         total_weight_barges = self.get_total_load()
         base_weight_barges = self.get_total_weight_barge()
         speed_tug = self.calculate_speed(total_weight_barges, nbarge, base_weight_barges)
-        
+
         
         travel_infos = {
-                'start_location': (carrier.lat, carrier.lng),
+                'start_location': start_location,
                 'end_location': (end_station.lat, end_station.lng),
                 'speed': speed_tug,
-                'start_km': None,
+                'start_km': start_km,
                 'end_km': end_station.km
             }
+
         distance, travel_time, travel_steps = Travel_Helper.process_travel_steps(start_status, end_status, travel_infos)
         #print("Speed Tugboat", speed_tug, base_weight_barges)
         travel_time = distance / speed_tug
         return {"travel_time":travel_time, 
-                "last_location": (end_station.lat, end_station.lng),
+                "end_location": (end_station.lat, end_station.lng),
                 "speed": speed_tug,  
-                "start_object": carrier,
+                "start_location": start_location,
                 'travel_distance': distance,
                 'steps': travel_steps}
+    
+        
+    def calculate_travel_to_appointment(self, appointment_info):
+        data = Travel_Helper.data
+        # 1. get order_stations
+        end_station  =  data['stations'][appointment_info['appointment_station']] 
+        carrier = self.assigned_barges[0].current_order.start_object
+        
+        
+        print(end_station)
+        
+        start_info = {'station':None, 'location': (carrier.lat, carrier.lng)}
+        end_info = {'station':data['stations'][appointment_info['appointment_station']], 'location': (end_station.lat, end_station.lng)}
+        result = self.calculate_travel_start_to_end_river_location(start_info, end_info, 
+                                                                   WaterBody.SEA, end_status = WaterBody.RIVER)
+        return {"travel_time":result['travel_time'], 
+                "last_location": result['end_location'],
+                "speed": result['speed'],  
+                "start_object": carrier,
+                "start_location": result['start_location'],
+                'travel_distance': result['travel_distance'],
+                'steps': result['steps']}
+        
+        
         
     def calculate_river_to_customer(self, input_travel_info):
         order = self.assigned_barges[0].current_order
@@ -351,10 +379,10 @@ class Tugboat:
         pass
 
     def assign_barge(self, barge):
-        if len(self.assigned_barges) <= self.max_barge and self.get_total_load() + barge.get_load() <= self.max_capacity:
+        if len(self.assigned_barges) < self.max_barge and self.get_total_load() + barge.get_load() <= self.max_capacity:
             self.assigned_barges.append(barge)
             barge.status = 'assigned'
-            self.current_load += barge.load
+            self.current_load += barge.get_load(is_only_load=True)
             return True
         return False
 
