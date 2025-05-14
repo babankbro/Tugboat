@@ -74,7 +74,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         
         
     #print("----------------- Travel to Appointment -----------------")
-    data = Travel_Helper.data
+    data = TravelHelper._instance.data
     for tugboat_id, appoint_info in appointment_infos.items():
         tugboat = appoint_info["sea_tugboat"]
         tugboat_id = tugboat.tugboat_id
@@ -84,6 +84,9 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         appointment_station = data['stations'][appoint_info['appointment_station']]
         
         travel_info = tugboat.calculate_travel_to_appointment(appoint_info)
+       
+            #for step in travel_info['steps']:
+                #print(step)
         #print(travel_info)
        #print()
         
@@ -107,13 +110,17 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
 def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results):
     late_times = {}
     for tugboat_id, tugboat_result in lookup_river_tugboat_results.items():
-        tugboat = Travel_Helper.data['tugboats'][tugboat_id]
+        tugboat = TravelHelper._instance.data['tugboats'][tugboat_id]
         tugboat_result = lookup_river_tugboat_results[tugboat_id]
         
         
-        previous_location = tugboat_result['data_points'][-1]
+        #previous_location = tugboat_result['data_points'][-1]
+        #print(tugboat_result['data_points'])
+        previous_location = [point for point in tugboat_result['data_points'] if point['type_point'] == "main_point"][-1]
+        
+        
+        
         appointment_station_id = previous_location['ID']
-        appointment_station = Travel_Helper.data['stations'][appointment_station_id]
         input_travel_info = {
             'order':order,
             'appointment_station_id':appointment_station_id,
@@ -121,7 +128,7 @@ def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results)
         travel_info =tugboat.calculate_river_to_customer(input_travel_info)
         arrival_datetime = previous_location['exit_datetime'] + timedelta(minutes=travel_info['travel_time']*60)
         #print(travel_info)
-        customer_station = Travel_Helper.data['stations'][order.des_object.station_id]
+        customer_station = TravelHelper._instance.data['stations'][order.des_object.station_id]
         customer_location = {
             "ID": order.des_object.station_id,
             'name': customer_station.name,
@@ -155,7 +162,11 @@ def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tug
         arrival_customer_time = (customer_location['enter_datetime'])
         #if arrival_customer_time < order.due_datetime:
             
-          
+        # print("Update River Tugboat", tugboat_id)
+        # for point in tugboat_result['data_points']:
+        #     print(point)
+        
+        
         if customer_location['type'] != "Customer Station":
             raise Exception("Customer Station not found")
         
@@ -182,6 +193,9 @@ def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tug
         #print("Set Customer End Time:", end_date_last) if tugboat_id == 'tbr1' else None
         customer_location['exit_datetime'] = end_date_last
         
+
+
+
         
 def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, lookup_river_tugboat_results):
     data = solution.data
@@ -209,11 +223,15 @@ def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, look
         max_datetime = lookup_river_tugboat_results[pair_tugboat[0]]['data_points'][1]['enter_datetime']
         for pair_tugboat_id in pair_tugboat:
             pair_tugboat_result = lookup_river_tugboat_results[pair_tugboat_id]
-            date_time = pair_tugboat_result['data_points'][1]['enter_datetime']
+            date_time = pair_tugboat_result['data_points'][1]['exit_datetime']
             #print(date_time)
             if date_time > max_datetime:
                 max_datetime = date_time
-        
+        # if order.order_id == 'o1':
+        #      print("Tugboat XXX", tugboat_id, tugboat_result['data_points'][-1]['type'],
+        #            tugboat_result['data_points'][-1]['exit_datetime'], max_datetime)
+        #if tugboat_id == "tsb1" or tugboat_id == "tsr1":
+       
         tugboat_result['data_points'][-1]['exit_datetime']  = max_datetime
         #print(tugboat_result['data_points'][-1]['exit_datetime'] )
         

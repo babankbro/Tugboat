@@ -144,19 +144,37 @@ def test_transport_order(data):
     
     solution.save_schedule_to_csv(tugboat_df, barge_df)
     filtered_df = tugboat_df[
-                            ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbs1')) 
-                            # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                            ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
+                            &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                            & (tugboat_df['order_trip'] == 1)
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
                             ]
-    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'tugboat_id','distance'
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 
+                           'exit_datetime', 'tugboat_id','distance', 'order_trip'
                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     
-    print(temp_df.head(10))
-    print(filtered_df.columns)
+    print(temp_df.head(20))
+
+    
+    filtered_df = tugboat_df[
+                            ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
+                            &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                            & (tugboat_df['order_trip'] == 1)
+                            #& (tugboat_df['distance'] > 60)
+                            #(tugboat_df['distance'] > 60)
+    ]
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 
+                           'exit_datetime', 'tugboat_id','distance', 'order_trip'
+                      # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+       #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
+       #'tugboat_id', 'order_id', 'water_type'
+       ]]
+    print(temp_df)
+    
 
     #print("customer_river_time_lates", customer_river_time_lates, list_lates)
 
@@ -176,7 +194,8 @@ def main():
     # Initialize data structures
     
     data = initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df)
-    Travel_Helper._set_data(data)
+    TravelHelper()
+    TravelHelper._set_data(TravelHelper._instance,  data)
     
     # Print all objects (optional)
     #print_all_objects(data)

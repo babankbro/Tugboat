@@ -10,13 +10,15 @@ from CodeVS.utility.helpers import haversine
 
 class TravelHelper:
     _instance = None
-
+    
     def __new__(cls, *args, **kwargs):
+        print("TravelHelper new")
         if cls._instance is None:
             cls._instance = super(TravelHelper, cls).__new__(cls)
         return cls._instance
 
     def __init__(self, data=None):
+        print("TravelHelper initialized")
         if not hasattr(self, 'initialized'):  # Ensure __init__ is only called once
             self.data = data
             self.initialized = True
@@ -48,6 +50,7 @@ class TravelHelper:
         #print("########### Start", lat, lng)
         closest_station = None
         min_distance = float('inf')
+        #print(self.data)
         for stationid, station in self.data['sea_stations'].items():
             # distance = haversine(lat, lng, station.lat, station.lng)
             d = haversine(lat, lng, station.lat, station.lng) 
@@ -148,7 +151,7 @@ class TravelHelper:
             steps.append(first_point)
         
             total_distance = distance
-        elif type_end_location == WaterBody.SEA and type_start_location == WaterBody.RIVER:
+        elif type_start_location == WaterBody.RIVER  and type_end_location == WaterBody.SEA:
             #print('--------------------------------------------------- SEA - RIVER - EXPORT')
             
             start_station = self.get_next_river_station(TransportType.EXPORT, info_start_ends['start_km'])
@@ -228,7 +231,7 @@ class TravelHelper:
             
             
             
-        elif type_end_location == WaterBody.RIVER and type_start_location == WaterBody.SEA:
+        elif type_start_location == WaterBody.SEA and type_end_location == WaterBody.RIVER:
             end_station = self.get_next_river_station(TransportType.IMPORT, info_start_ends['end_km'])
             bar_station = self.data['lookup_station_km'][0]
             closest_station, min_distance = self.get_closest_sea_station(info_start_ends['start_location'])
@@ -293,5 +296,3 @@ class TravelHelper:
         return total_distance, total_time, steps
     
 
-
-Travel_Helper = TravelHelper()

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายงานทักษะ ตำแหน่งงาน และ PLO วิศวกรรมคอมพิวเตอร์</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React และ ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Recharts สำหรับแสดงกราฟ -->
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    <!-- PapaParse สำหรับอ่านไฟล์ CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Babel สำหรับแปลง JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root" class="min-h-screen bg-gray-50"></div>
+
+    <script type="text/babel">
+        // ข้อมูล PLO ตามที่ได้รับจากหลักสูตร
+        const ploSkillsRelation = [
+            {
+                plo: "PLO1: องค์ความรู้พื้นฐาน",
+                description: "อธิบายองค์ความรู้พื้นฐานเกี่ยวกับซอฟต์แวร์ อิเล็กทรอนิกส์อัจฉริยะ เครือข่ายคอมพิวเตอร์ และปัญญาประดิษฐ์ รวมถึงความรู้ที่เกี่ยวข้องกับคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมศาสตร์ได้อย่างถูกต้อง",
+                type: "Specific",
+                skills: ["Python", "SQL", "Network", "VMware", "Routing", "VPN", "Firewall", "Critical Thinking", "Problem Solving", "Data Visualization (Power BI, Tableau)", "Big Data", "TensorFlow", "PyTorch", "Keras"]
+            },
+            {
+                plo: "PLO2: การแก้ปัญหาทางวิศวกรรมคอมพิวเตอร์",
+                description: "แก้ปัญหาทางวิศวกรรมคอมพิวเตอร์ที่เกี่ยวข้องกับซอฟต์แวร์ อิเล็กทรอนิกส์อัจฉริยะ เครือข่ายคอมพิวเตอร์ และปัญญาประดิษฐ์ โดยใช้หลักการทางวิศวกรรม วิทยาศาสตร์ และคณิตศาสตร์ได้อย่างมีประสิทธิภาพ",
+                type: "Specific",
+                skills: ["Python", "Java", "SQL", "Git", "Debugging", "Problem Solving", "Critical Thinking", "DevOps", "Docker", "Terraform", "Network", "FPGA", "Embedded Systems", "TensorFlow", "API"]
+            },
+            {
+                plo: "PLO3: การออกแบบและพัฒนาระบบ",
+                description: "ออกแบบและพัฒนาระบบฮาร์ดแวร์ ซอฟต์แวร์ อิเล็กทรอนิกส์อัจฉริยะ เครือข่ายคอมพิวเตอร์ และปัญญาประดิษฐ์ ตามมาตรฐานและข้อกำหนดทางวิศวกรรม",
+                type: "Specific",
+                skills: ["Python", "Java", "SQL", "System Design", "DevOps", "Database Design", "Software Architecture", "Git", "Cloud Computing", "Security", "FPGA", "Embedded Systems", "C/C++"]
+            },
+            {
+                plo: "PLO4: การใช้เครื่องมือและเทคโนโลยี",
+                description: "ใช้เครื่องมือและเทคโนโลยีที่ทันสมัยในการพัฒนาระบบทางด้านวิศวกรรมคอมพิวเตอร์อย่างมีประสิทธิภาพ",
+                type: "Specific",
+                skills: ["Python", "Git", "CI/CD (Jenkins, GitLab CI)", "Docker", "Kubernetes", "DevOps Tools", "Windows Server", "Active Directory", "SQL", "Debugging", "Terraform", "Ansible", "Testing", "Selenium", "JIRA"]
+            },
+            {
+                plo: "PLO5: การสื่อสาร",
+                description: "สื่อสารข้อมูลทางวิศวกรรมคอมพิวเตอร์ทั้งภาษาไทยและภาษาอังกฤษได้อย่างมีประสิทธิภาพ",
+                type: "Generic", 
+                skills: ["Communication", "English Language", "Office Suite", "Presentation", "Documentation", "Teamwork", "Agile Methodology", "Data Visualization (Power BI, Tableau)"]
+            },
+            {
+                plo: "PLO6: จรรยาบรรณและการทำงานเป็นทีม",
+                description: "ปฏิบัติตามจรรยาบรรณวิชาชีพ ทำงานเป็นทีม และจัดการโครงการได้อย่างมีประสิทธิภาพ",
+                type: "Generic",
+                skills: ["Teamwork", "Project Management", "Agile Methodology", "Leadership", "Adaptability", "Communication", "DevOps", "Debugging", "JIRA", "Software Architecture", "UX/UI Design"]
+            },
+            {
+                plo: "PLO7: การเรียนรู้ตลอดชีวิตและนวัตกรรม",
+                description: "เรียนรู้ตลอดชีวิตและสามารถปรับตัวต่อความก้าวหน้าทางเทคโนโลยี เพื่อนำเสนอแนวคิดและนวัตกรรมใหม่ในวิศวกรรมคอมพิวเตอร์",
+                type: "Generic and Specific",
+                skills: ["Adaptability", "Cloud Computing", "DevOps", "Agile Methodology", "Big Data (Hadoop, Spark)", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "AI Ethics", "Keras"]
+            },
+            {
+                plo: "PLO8: การปฏิบัติงานสหกิจศึกษา",
+                description: "ปฏิบัติงานสหกิจศึกษาและการศึกษาเชิงบูรณาการกับการทำงานในสถานประกอบการในงานที่เกี่ยวข้องทางด้านพัฒนาระบบฮาร์ดแวร์ ซอฟต์แวร์ อิเล็กทรอนิกส์อัจฉริยะ เครือข่ายคอมพิวเตอร์ และปัญญาประดิษฐ์ ได้ตามมาตรฐานและจรรยาบรรณ",
+                type: "Generic and Specific",
+                skills: ["Teamwork", "Communication", "Problem Solving", "Adaptability", "UX/UI Design", "Project Management", "Software Testing (Selenium, JUnit)", "SDLC", "Office Suite"]
+            }
+        ];
+
+        // ความเชื่อมโยงระหว่าง PLO และตำแหน่งงาน (จากข้อมูล CSV)
+        const ploJobMapping = {
+            "PLO1": ["วิศวกรระบบรุ่นเยาว์ (Junior Systems Engineer)", "นักวิเคราะห์ข้อมูลรุ่นเยาว์ (Junior Data Analyst)", "ผู้ช่วยนักวิจัย - วิศวกรรมคอมพิวเตอร์", "วิศวกรเครือข่าย (Network Engineer)", "วิศวกร AI (AI Engineer)"],
+            "PLO2": ["นักพัฒนาซอฟต์แวร์รุ่นเยาว์ (Junior Software Developer)", "นักพัฒนาซอฟต์แวร์ (Software Developer)", "วิศวกรระบบรุ่นเยาว์ (Junior Systems Engineer)", "วิศวกรระบบ (System Engineer)", "วิศวกร DevOps (DevOps Engineer)", "นักวิเคราะห์ข้อมูลรุ่นเยาว์ (Junior Data Analyst)", "นักวิเคราะห์ข้อมูล (Data Analyst)", "วิศวกรฮาร์ดแวร์ (Hardware Engineer)", "ผู้ช่วยนักวิจัย - วิศวกรรมคอมพิวเตอร์", "วิศวกรเครือข่าย (Network Engineer)", "วิศวกร AI (AI Engineer)", "วิศวกรทดสอบ / นักทดสอบซอฟต์แวร์", "วิศวกรวิจัยและพัฒนา (R&D Engineer)"],
+            "PLO3": ["นักพัฒนาซอฟต์แวร์ (Software Developer)", "สถาปนิกซอฟต์แวร์ (Software Architect)", "วิศวกรฮาร์ดแวร์ (Hardware Engineer)", "วิศวกรวิจัยและพัฒนา (R&D Engineer)", "สถาปนิกโซลูชัน"],
+            "PLO4": ["นักพัฒนาซอฟต์แวร์รุ่นเยาว์ (Junior Software Developer)", "วิศวกรระบบรุ่นเยาว์ (Junior Systems Engineer)", "วิศวกรระบบ (System Engineer)", "วิศวกร DevOps (DevOps Engineer)", "ผู้เชี่ยวชาญด้านเทคโนโลยีไอที (IT Technology Specialist)", "วิศวกรฮาร์ดแวร์ (Hardware Engineer)", "วิศวกรเครือข่าย (Network Engineer)", "วิศวกรทดสอบ / นักทดสอบซอฟต์แวร์"],
+            "PLO5": ["นักพัฒนาซอฟต์แวร์ (Software Developer)", "หัวหน้าทีมพัฒนา (Development Team Lead)", "ผู้เชี่ยวชาญด้านเทคโนโลยีไอที (IT Technology Specialist)", "นักวิเคราะห์ข้อมูลรุ่นเยาว์ (Junior Data Analyst)", "นักวิเคราะห์ข้อมูล (Data Analyst)", "วิศวกรทดสอบ / นักทดสอบซอฟต์แวร์", "ผู้เชี่ยวชาญด้านการมองอนาคตเชิงกลยุทธ์"],
+            "PLO6": ["นักพัฒนาซอฟต์แวร์รุ่นเยาว์ (Junior Software Developer)", "สถาปนิกซอฟต์แวร์ (Software Architect)", "หัวหน้าทีมพัฒนา (Development Team Lead)", "วิศวกรระบบ (System Engineer)", "วิศวกร DevOps (DevOps Engineer)", "ผู้เชี่ยวชาญด้านเทคโนโลยีไอที (IT Technology Specialist)", "ผู้ประกอบการด้านเทคโนโลยี", "สถาปนิกโซลูชัน"],
+            "PLO7": ["สถาปนิกซอฟต์แวร์ (Software Architect)", "หัวหน้าทีมพัฒนา (Development Team Lead)", "นักวิเคราะห์ข้อมูล (Data Analyst)", "ผู้ช่วยนักวิจัย - วิศวกรรมคอมพิวเตอร์", "วิศวกร AI (AI Engineer)", "วิศวกรวิจัยและพัฒนา (R&D Engineer)", "ผู้ประกอบการด้านเทคโนโลยี", "สถาปนิกโซลูชัน", "ผู้เชี่ยวชาญด้านการมองอนาคตเชิงกลยุทธ์"],
+            "PLO8": ["ผู้ประกอบการด้านเทคโนโลยี", "ผู้เชี่ยวชาญด้านการมองอนาคตเชิงกลยุทธ์"]
+        };
+
+        // สร้าง Component หลัก
+        const App = () => {
+            const { useState, useEffect } = React;
+            
+            // สร้าง State สำหรับเก็บข้อมูล
+            const [isFileUploaded, setIsFileUploaded] = useState(false);
+            const [skillsData, setSkillsData] = useState([]);
+            
+            return (
+                <div className="p-4">
+                    {!isFileUploaded ? (
+                        <FileUpload setSkillsData={setSkillsData} setIsFileUploaded={setIsFileUploaded} />
+                    ) : (
+                        <SkillsDashboard skillsData={skillsData} />
+                    )}
+                </div>
+            );
+        };
+        
+        // Component สำหรับอัปโหลดไฟล์
+        const FileUpload = ({ setSkillsData, setIsFileUploaded }) => {
+            const [isLoading, setIsLoading] = useState(false);
+            const [error, setError] = useState(null);
+            
+            const handleFileUpload = (event) => {
+                const file = event.target.files[0];
+                
+                if (file) {
+                    setIsLoading(true);
+                    setError(null);
+                    
+                    Papa.parse(file, {
+                        header: true,
+                        skipEmptyLines: true,
+                        dynamicTyping: true,
+                        complete: (results) => {
+                            if (results.errors.length > 0) {
+                                setError("เกิดข้อผิดพลาดในการอ่านไฟล์ CSV: " + results.errors[0].message);
+                                setIsLoading(false);
+                                return;
+                            }
+                            
+                            const data = results.data;
+                            
+                            // ตรวจสอบว่าข้อมูลมีคอลัมน์ที่จำเป็นหรือไม่
+                            if (data.length > 0) {
+                                const requiredColumns = ["Skill/Knowledge", "Type", "Related Job Titles", "Approx. Job Count"];
+                                const hasRequiredColumns = requiredColumns.every(col => 
+                                    Object.keys(data[0]).includes(col)
+                                );
+                                
+                                if (!hasRequiredColumns) {
+                                    setError("ไฟล์ CSV ไม่มีคอลัมน์ที่จำเป็น โปรดตรวจสอบรูปแบบไฟล์");
+                                    setIsLoading(false);
+                                    return;
+                                }
+                                
+                                setSkillsData(data);
+                                setIsFileUploaded(true);
+                            } else {
+                                setError("ไฟล์ CSV ไม่มีข้อมูล");
+                            }
+                            
+                            setIsLoading(false);
+                        },
+                        error: (error) => {
+                            setError("เกิดข้อผิดพลาดในการอ่านไฟล์: " + error.message);
+                            setIsLoading(false);
+                        }
+                    });
+                }
+            };
+            
+            return (
+                <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+                    <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+                        <h1 className="text-2xl font-bold text-center mb-6">รายงานทักษะ ตำแหน่งงาน และ PLO</h1>
+                        
+                        <div className="mb-4 text-center">
+                            <p className="text-gray-600 mb-4">อัปโหลดไฟล์ CSV ข้อมูลทักษะเพื่อเริ่มต้นใช้งานแดชบอร์ด</p>
+                            
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 mb-4">
+                                <input
+                                    type="file"
+                                    accept=".csv"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                    id="file-upload"
+                                />
+                                <label
+                                    htmlFor="file-upload"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700 block text-center"
+                                >
+                                    เลือกไฟล์ CSV
+                                </label>
+                                
+                                <p className="text-sm text-gray-500 mt-2">
+                                    ไฟล์ CSV ควรมีคอลัมน์: Skill/Knowledge, Type, Related Job Titles, Approx. Job Count
+                                </p>
+                            </div>
+                            
+                            {isLoading && (
+                                <div className="text-center my-4">
+                                    <p className="text-blue-600">กำลังประมวลผลไฟล์...</p>
+                                </div>
+                            )}
+                            
+                            {error && (
+                                <div className="bg-red-100 text-red-700 p-3 rounded my-4">
+                                    {error}
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="text-center mt-6">
+                            <p className="text-sm text-gray-500">
+                                ไม่มีไฟล์ตัวอย่าง? <button
+                                    onClick={() => {
+                                        // ใช้ข้อมูลตัวอย่าง
+                                        const mockSkillsData = [
+                                            {"Skill/Knowledge": "Python", "Type": "Technical", "Related Job Titles": "['Data Analyst', 'AI Engineer', 'DevOps Engineer', 'Software Developer']", "Approx. Job Count": 5000},
+                                            {"Skill/Knowledge": "SQL", "Type": "Technical", "Related Job Titles": "['Data Analyst', 'IT Specialist']", "Approx. Job Count": 5000},
+                                            {"Skill/Knowledge": "Communication", "Type": "Soft", "Related Job Titles": "['All Roles']", "Approx. Job Count": 6000},
+                                            {"Skill/Knowledge": "Problem Solving", "Type": "Soft", "Related Job Titles": "['All Roles']", "Approx. Job Count": 6000},
+                                            {"Skill/Knowledge": "Teamwork", "Type": "Soft", "Related Job Titles": "['All Roles']", "Approx. Job Count": 6000},
+                                            {"Skill/Knowledge": "Critical Thinking", "Type": "Soft", "Related Job Titles": "['Data Analyst', 'AI Engineer']", "Approx. Job Count": 2000},
+                                            {"Skill/Knowledge": "Data Visualization (Power BI, Tableau)", "Type": "Technical", "Related Job Titles": "['Data Analyst', 'Business Analyst']", "Approx. Job Count": 2000},
+                                            {"Skill/Knowledge": "Data Cleaning", "Type": "Technical", "Related Job Titles": "['Data Analyst']", "Approx. Job Count": 2000},
+                                            {"Skill/Knowledge": "JavaScript", "Type": "Technical", "Related Job Titles": "['Software Developer', 'Web Developer']", "Approx. Job Count": 4500},
+                                            {"Skill/Knowledge": "Office Suite", "Type": "Technical", "Related Job Titles": "['All Roles']", "Approx. Job Count": 5500},
+                                            {"Skill/Knowledge": "Windows Server", "Type": "Technical", "Related Job Titles": "['System Administrator', 'IT Specialist']", "Approx. Job Count": 3000},
+                                            {"Skill/Knowledge": "System Design", "Type": "Technical", "Related Job Titles": "['Software Architect', 'System Engineer']", "Approx. Job Count": 2000},
+                                            {"Skill/Knowledge": "Linux", "Type": "Technical", "Related Job Titles": "['DevOps Engineer', 'System Administrator']", "Approx. Job Count": 3500},
+                                            {"Skill/Knowledge": "Database Design", "Type": "Technical", "Related Job Titles": "['Database Administrator', 'Data Architect']", "Approx. Job Count": 2500},
+                                            {"Skill/Knowledge": "Agile Methodology", "Type": "Technical", "Related Job Titles": "['Software Developer', 'Project Manager']", "Approx. Job Count": 3000},
+                                            {"Skill/Knowledge": "Software Testing (Selenium, JUnit)", "Type": "Technical", "Related Job Titles": "['QA Engineer', 'Test Engineer']", "Approx. Job Count": 2200},
+                                            {"Skill/Knowledge": "AWS", "Type": "Technical", "Related Job Titles": "['Cloud Engineer', 'DevOps Engineer', 'AI Engineer']", "Approx. Job Count": 4000},
+                                            {"Skill/Knowledge": "Project Management", "Type": "Soft", "Related Job Titles": "['Project Manager', 'Team Lead', 'Scrum Master']", "Approx. Job Count": 3000},
+                                            {"Skill/Knowledge": "SDLC", "Type": "Technical", "Related Job Titles": "['Software Developer', 'IT Manager']", "Approx. Job Count": 2800},
+                                            {"Skill/Knowledge": "Adaptability", "Type": "Soft", "Related Job Titles": "['All Roles']", "Approx. Job Count": 6000},
+                                            {"Skill/Knowledge": "English Language", "Type": "Soft", "Related Job Titles": "['All Roles']", "Approx. Job Count": 6000},
+                                            {"Skill/Knowledge": "Git", "Type": "Technical", "Related Job Titles": "['Software Developer', 'DevOps Engineer']", "Approx. Job Count": 4000},
+                                            {"Skill/Knowledge": "Docker", "Type": "Technical", "Related Job Titles": "['DevOps Engineer', 'Software Developer']", "Approx. Job Count": 3800},
+                                            {"Skill/Knowledge": "Kubernetes", "Type": "Technical", "Related Job Titles": "['DevOps Engineer', 'Cloud Engineer']", "Approx. Job Count": 3200},
+                                            {"Skill/Knowledge": "Cloud Computing", "Type": "Technical", "Related Job Titles": "['Cloud Engineer', 'Solutions Architect']", "Approx. Job Count": 3800},
+                                            {"Skill/Knowledge": "TensorFlow", "Type": "Technical", "Related Job Titles": "['AI Engineer', 'Machine Learning Engineer']", "Approx. Job Count": 2800},
+                                            {"Skill/Knowledge": "PyTorch", "Type": "Technical", "Related Job Titles": "['AI Engineer', 'Machine Learning Engineer']", "Approx. Job Count": 2600},
+                                            {"Skill/Knowledge": "Java", "Type": "Technical", "Related Job Titles": "['Software Developer', 'Backend Developer']", "Approx. Job Count": 4000},
+                                            {"Skill/Knowledge": "VPN", "Type": "Technical", "Related Job Titles": "['Network Engineer', 'Security Engineer']", "Approx. Job Count": 2000},
+                                            {"Skill/Knowledge": "Firewall", "Type": "Technical", "Related Job Titles": "['Security Engineer', 'Network Administrator']", "Approx. Job Count": 2200},
+                                            {"Skill/Knowledge": "DevOps Tools", "Type": "Technical", "Related Job Titles": "['DevOps Engineer', 'SRE']", "Approx. Job Count": 3500},
+                                            {"Skill/Knowledge": "Debugging", "Type": "Technical", "Related Job Titles": "['Software Developer', 'QA Engineer']", "Approx. Job Count": 3000},
+                                            {"Skill/Knowledge": "FPGA", "Type": "Technical", "Related Job Titles": "['Hardware Engineer', 'FPGA Designer']", "Approx. Job Count": 1500},
+                                            {"Skill/Knowledge": "Embedded Systems", "Type": "Technical", "Related Job Titles": "['Embedded Engineer', 'IoT Developer']", "Approx. Job Count": 1800},
+                                            {"Skill/Knowledge": "Security", "Type": "Technical", "Related Job Titles": "['Security Engineer', 'Security Analyst']", "Approx. Job Count": 3000},
+                                            {"Skill/Knowledge": "C/C++", "Type": "Technical", "Related Job Titles": "['Software Developer', 'Embedded Engineer']", "Approx. Job Count": 3200},
+                                            {"Skill/Knowledge": "Terraform", "Type": "Technical", "Related Job Titles": "['DevOps Engineer', 'Cloud Engineer']", "Approx. Job Count": 2800},
+                                            {"Skill/Knowledge": "Ansible", "Type": "Technical", "Related Job Titles": "['DevOps Engineer', 'System Administrator']", "Approx. Job Count": 2500},
+                                            {"Skill/Knowledge": "Keras", "Type": "Technical", "Related Job Titles": "['AI Engineer', 'Data Scientist']", "Approx. Job Count": 2300},
+                                            {"Skill/Knowledge": "AI Ethics", "Type": "Technical", "Related Job Titles": "['AI Engineer', 'Data Scientist', 'Research Scientist']", "Approx. Job Count": 1500},
+                                            {"Skill/Knowledge": "Deep Learning", "Type": "Technical", "Related Job Titles": "['AI Engineer', 'Machine Learning Engineer', 'Research Scientist']", "Approx. Job Count": 2400},
+                                            {"Skill/Knowledge": "Big Data (Hadoop, Spark)", "Type": "Technical", "Related Job Titles": "['Data Engineer', 'Big Data Specialist']", "Approx. Job Count": 2600},
+                                            {"Skill/Knowledge": "UX/UI Design", "Type": "Technical", "Related Job Titles": "['UX Designer', 'UI Developer']", "Approx. Job Count": 2200}
+                                        ];
+                                        
+                                        setSkillsData(mockSkillsData);
+                                        setIsFileUploaded(true);
+                                    }}
+                                    className="text-blue-600 underline hover:text-blue-800"
+                                >
+                                    ใช้ข้อมูลตัวอย่าง
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Component แดชบอร์ดหลัก
+        const SkillsDashboard = ({ skillsData }) => {
+            const { useState, useEffect } = React;
+            const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } = Recharts;
+            
+            const [jobSkillsData, setJobSkillsData] = useState({});
+            const [activeTab, setActiveTab] = useState('skills');
+            const [isLoading, setIsLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [filterType, setFilterType] = useState('all');
+            const [activePLO, setActivePLO] = useState(0);
+
+            const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#a4de6c', '#d0ed57'];
+            
+            useEffect(() => {
+                try {
+                    // ประมวลผลข้อมูลสำหรับตำแหน่งงานและทักษะที่เกี่ยวข้อง
+                    const jobsMap = {};
+                    skillsData.forEach(skill => {
+                        let relatedJobs = skill['Related Job Titles'];
+                        
+                        // แปลงข้อความในรูปแบบ Python list เป็น JavaScript array
+                        if (typeof relatedJobs === 'string') {
+                            try {
+                                relatedJobs = JSON.parse(relatedJobs.replace(/'/g, '"'));
+                            } catch (e) {
+                                relatedJobs = relatedJobs.replace(/[\[\]']/g, '').split(', ');
+                            }
+                        }
+                        
+                        if (Array.isArray(relatedJobs)) {
+                            relatedJobs.forEach(job => {
+                                if (!jobsMap[job]) {
+                                    jobsMap[job] = {
+                                        skills: [],
+                                        skillCount: 0
+                                    };
+                                }
+                                jobsMap[job].skills.push({
+                                    name: skill['Skill/Knowledge'],
+                                    type: skill['Type'],
+                                    count: skill['Approx. Job Count']
+                                });
+                                jobsMap[job].skillCount++;
+                            });
+                        }
+                    });
+                    
+                    setJobSkillsData(jobsMap);
+                    setIsLoading(false);
+                } catch (error) {
+                    console.error("เกิดข้อผิดพลาดในการโหลดข้อมูล:", error);
+                    setError("ไม่สามารถโหลดข้อมูลได้");
+                    setIsLoading(false);
+                }
+            }, [skillsData]);
+            
+            // เตรียมข้อมูลสำหรับแสดงผลในแต่ละส่วน
+            const prepareSkillsImportanceData = () => {
+                if (!skillsData.length) return [];
+                
+                const sortedData = [...skillsData].sort((a, b) => b['Approx. Job Count'] - a['Approx. Job Count']);
+                const topSkills = sortedData.filter(skill => {
+                    if (filterType === 'all') return true;
+                    return skill.Type === filterType;
+                }).slice(0, 10);
+                
+                return topSkills.map(skill => ({
+                    name: skill['Skill/Knowledge'],
+                    count: skill['Approx. Job Count'],
+                    type: skill.Type
+                }));
+            };
+            
+            const prepareSkillTypeData = () => {
+                if (!skillsData.length) return [];
+                
+                const typeData = {
+                    "Soft": { count: 0, totalJobs: 0 },
+                    "Technical": { count: 0, totalJobs: 0 }
+                };
+                
+                skillsData.forEach(skill => {
+                    if (typeData[skill.Type]) {
+                        typeData[skill.Type].count++;
+                        typeData[skill.Type].totalJobs += skill['Approx. Job Count'] || 0;
+                    }
+                });
+                
+                return [
+                    { name: "Soft Skills", value: typeData.Soft.count, jobs: typeData.Soft.totalJobs },
+                    { name: "Technical Skills", value: typeData.Technical.count, jobs: typeData.Technical.totalJobs }
+                ];
+            };
+            
+            const prepareJobSkillsData = () => {
+                const jobsArray = Object.keys(jobSkillsData).map(job => ({
+                    name: job,
+                    skillCount: jobSkillsData[job].skillCount
+                }))
+                .sort((a, b) => b.skillCount - a.skillCount)
+                .slice(0, 10);
+                
+                return jobsArray;
+            };
+            
+            const preparePLOSkillsData = (ploIndex) => {
+                if (ploIndex >= ploSkillsRelation.length) return [];
+                
+                const ploData = ploSkillsRelation[ploIndex];
+                return ploData.skills.map(skillName => {
+                    const skillObj = skillsData.find(s => s['Skill/Knowledge'] === skillName);
+                    return {
+                        skill: skillName,
+                        value: skillObj ? skillObj['Approx. Job Count'] || 1 : 1,
+                        type: skillObj ? skillObj.Type : "Unknown"
+                    };
+                });
+            };
+            
+            if (isLoading) {
+                return (
+                    <div className="flex items-center justify-center h-screen">
+                        <div className="text-lg font-semibold">กำลังโหลดข้อมูล...</div>
+                    </div>
+                );
+            }
+            
+            if (error) {
+                return (
+                    <div className="flex items-center justify-center h-screen">
+                        <div className="text-lg font-semibold text-red-500">{error}</div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="p-4 bg-gray-50 min-h-screen">
+                    <div className="bg-white p-6 rounded-lg shadow mb-6">
+                        <h1 className="text-2xl font-bold text-center mb-4">รายงานทักษะ ตำแหน่งงาน และ PLO วิศวกรรมคอมพิวเตอร์</h1>
+                        
+                        {/* Tabs */}
+                        <div className="flex border-b mb-6">
+                            <button 
+                                className={`py-2 px-4 font-medium ${activeTab === 'skills' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+                                onClick={() => setActiveTab('skills')}
+                            >
+                                ทักษะและความสำคัญ
+                            </button>
+                            <button 
+                                className={`py-2 px-4 font-medium ${activeTab === 'jobs' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+                                onClick={() => setActiveTab('jobs')}
+                            >
+                                ทักษะและตำแหน่งงาน
+                            </button>
+                            <button 
+                                className={`py-2 px-4 font-medium ${activeTab === 'plo' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+                                onClick={() => setActiveTab('plo')}
+                            >
+                                ทักษะและ PLO
+                            </button>
+                        </div>
+                        
+                        {/* Skills and Importance Tab */}
+                        {activeTab === 'skills' && (
+                            <div>
+                                <div className="mb-6">
+                                    <h2 className="text-xl font-semibold mb-4">ประเภทของทักษะ</h2>
+                                    <div className="flex flex-col md:flex-row gap-4">
+                                        <div className="md:w-1/2">
+                                            <ResponsiveContainer width="100%" height={300}>
+                                                <PieChart>
+                                                    <Pie
+                                                        data={prepareSkillTypeData()}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        labelLine={true}
+                                                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                                        outerRadius={80}
+                                                        fill="#8884d8"
+                                                        dataKey="value"
+                                                    >
+                                                        {prepareSkillTypeData().map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip formatter={(value, name, props) => [`${value} ทักษะ`, props.payload.name]} />
+                                                    <Legend />
+                                                </PieChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        <div className="md:w-1/2">
+                                            <div className="bg-gray-100 p-4 rounded h-full">
+                                                <h3 className="font-semibold mb-2">ข้อมูลสรุป</h3>
+                                                <ul className="space-y-2">
+                                                    <li>จำนวนทักษะทั้งหมด: <span className="font-medium">{skillsData.length}</span></li>
+                                                    <li>Soft Skills: <span className="font-medium">{prepareSkillTypeData()[0].value}</span> ทักษะ - เกี่ยวข้องกับตำแหน่งงานประมาณ <span className="font-medium">{prepareSkillTypeData()[0].jobs.toLocaleString()}</span> ตำแหน่ง</li>
+                                                    <li>Technical Skills: <span className="font-medium">{prepareSkillTypeData()[1].value}</span> ทักษะ - เกี่ยวข้องกับตำแหน่งงานประมาณ <span className="font-medium">{prepareSkillTypeData()[1].jobs.toLocaleString()}</span> ตำแหน่ง</li>
+                                                    <li>ตำแหน่งงานที่พบ: <span className="font-medium">{Object.keys(jobSkillsData).length}</span> ตำแหน่ง</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h2 className="text-xl font-semibold">10 ทักษะสำคัญที่สุด (ตามจำนวนตำแหน่งงาน)</h2>
+                                        <div className="flex space-x-2">
+                                            <button 
+                                                className={`px-3 py-1 rounded text-sm ${filterType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                                                onClick={() => setFilterType('all')}
+                                            >
+                                                ทั้งหมด
+                                            </button>
+                                            <button 
+                                                className={`px-3 py-1 rounded text-sm ${filterType === 'Soft' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                                                onClick={() => setFilterType('Soft')}
+                                            >
+                                                Soft Skills
+                                            </button>
+                                            <button 
+                                                className={`px-3 py-1 rounded text-sm ${filterType === 'Technical' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                                                onClick={() => setFilterType('Technical')}
+                                            >
+                                                Technical Skills
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <ResponsiveContainer width="100%" height={400}>
+                                        <BarChart
+                                            data={prepareSkillsImportanceData()}
+                                            layout="vertical"
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 150,
+                                                bottom: 5,
+                                            }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis type="number" />
+                                            <YAxis type="category" dataKey="name" width={150} />
+                                            <Tooltip formatter={(value) => [`${value.toLocaleString()} ตำแหน่ง`, 'จำนวนตำแหน่งงานโดยประมาณ']} />
+                                            <Legend />
+                                            <Bar dataKey="count" name="จำนวนตำแหน่งงานโดยประมาณ" fill="#8884d8" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* Jobs and Skills Tab */}
+                        {activeTab === 'jobs' && (
+                            <div>
+                                <div className="mb-6">
+                                    <h2 className="text-xl font-semibold mb-4">10 ตำแหน่งงานที่ต้องการทักษะมากที่สุด</h2>
+                                    <ResponsiveContainer width="100%" height={400}>
+                                        <BarChart
+                                            data={prepareJobSkillsData()}
+                                            margin={{
+                                                top: 5,
+                                                right: 30,
+                                                left: 20,
+                                                bottom: 5,
+                                            }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
+                                            <Tooltip formatter={(value) => [`${value} ทักษะ`, 'จำนวนทักษะที่เกี่ยวข้อง']} />
+                                            <Legend />
+                                            <Bar dataKey="skillCount" name="จำนวนทักษะที่เกี่ยวข้อง" fill="#82ca9d" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4">รายละเอียดทักษะตามตำแหน่งงาน</h2>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {Object.keys(jobSkillsData)
+                                            .filter(job => job !== "All Roles")
+                                            .slice(0, 6)
+                                            .map((job, index) => (
+                                                <div key={index} className="bg-white p-4 rounded-lg shadow border">
+                                                    <h3 className="font-semibold text-lg mb-2">{job}</h3>
+                                                    <p className="text-sm text-gray-600 mb-3">จำนวนทักษะที่เกี่ยวข้อง: {jobSkillsData[job].skillCount}</p>
+                                                    
+                                                    <div className="space-y-2">
+                                                        <h4 className="font-medium text-sm">ทักษะหลัก:</h4>
+                                                        <ul className="pl-5 list-disc text-sm space-y-1">
+                                                            {jobSkillsData[job].skills
+                                                                .sort((a, b) => b.count - a.count)
+                                                                .slice(0, 5)
+                                                                .map((skill, skillIndex) => (
+                                                                    <li key={skillIndex} className="text-gray-700">
+                                                                        {skill.name}
+                                                                        <span className={`ml-1 px-1 py-0.5 text-xs rounded ${skill.type === 'Soft' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                                                                            {skill.type}
+                                                                        </span>
+                                                                    </li>
+                                                                ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* PLO and Skills Tab */}
+                        {activeTab === 'plo' && (
+                            <div>
+                                <div className="mb-6">
+                                    <h2 className="text-xl font-semibold mb-4">ความเชื่อมโยงระหว่าง PLO และทักษะ</h2>
+                                    <div className="mb-4 flex flex-wrap gap-2">
+                                        {ploSkillsRelation.map((plo, index) => (
+                                            <button
+                                                key={index}
+                                                className={`px-3 py-1 rounded text-sm ${activePLO === index ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+                                                onClick={() => setActivePLO(index)}
+                                            >
+                                                {plo.plo.split(':')[0]}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    
+                                    <div className="bg-gray-100 p-4 rounded-lg mb-6">
+                                        <h3 className="font-semibold">{ploSkillsRelation[activePLO].plo}</h3>
+                                        <p className="text-sm mt-2 mb-1">{ploSkillsRelation[activePLO].description}</p>
+                                        <div className="text-xs mt-1 bg-blue-100 p-1 inline-block rounded">ประเภท: {ploSkillsRelation[activePLO].type}</div>
+                                        <p className="text-sm mt-2"><span className="font-medium">ทักษะที่เกี่ยวข้อง:</span> {ploSkillsRelation[activePLO].skills.join(', ')}</p>
+                                    </div>
+                                    
+                                    <div className="flex flex-col md:flex-row gap-6">
+                                        <div className="md:w-1/2">
+                                            <ResponsiveContainer width="100%" height={300}>
+                                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={preparePLOSkillsData(activePLO)}>
+                                                    <PolarGrid />
+                                                    <PolarAngleAxis dataKey="skill" />
+                                                    <PolarRadiusAxis />
+                                                    <Radar name="ความสำคัญ (จำนวนตำแหน่งงาน)" dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                                                    <Tooltip formatter={(value) => [`${value.toLocaleString()} ตำแหน่ง`, 'จำนวนตำแหน่งงานโดยประมาณ']} />
+                                                    <Legend />
+                                                </RadarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        <div className="md:w-1/2">
+                                            <h3 className="font-semibold mb-3">ตำแหน่งงานที่เกี่ยวข้องกับ {ploSkillsRelation[activePLO].plo.split(':')[0]}</h3>
+                                            <div className="bg-white p-4 rounded-lg shadow border h-64 overflow-y-auto">
+                                                <ul className="space-y-2">
+                                                    {/* แสดงตำแหน่งงานทั้งจากการจับคู่โดยตรง (ploJobMapping) และจากการวิเคราะห์ทักษะร่วม */}
+                                                    {[
+                                                        // ตำแหน่งงานจากการจับคู่โดยตรง
+                                                        ...(ploJobMapping[ploSkillsRelation[activePLO].plo.split(':')[0]] || []).map(job => ({
+                                                            job,
+                                                            isDirectMatch: true
+                                                        })),
+                                                        // ตำแหน่งงานจากการวิเคราะห์ทักษะร่วม
+                                                        ...Object.keys(jobSkillsData)
+                                                            .filter(job => {
+                                                                const jobSkills = jobSkillsData[job].skills.map(s => s.name);
+                                                                const isDirect = ploJobMapping[ploSkillsRelation[activePLO].plo.split(':')[0]]?.includes(job);
+                                                                return !isDirect && ploSkillsRelation[activePLO].skills.some(s => jobSkills.includes(s));
+                                                            })
+                                                            .map(job => ({
+                                                                job, 
+                                                                isDirectMatch: false
+                                                            }))
+                                                    ].map((item, index) => {
+                                                        const matchingSkills = jobSkillsData[item.job]?.skills
+                                                            .filter(s => ploSkillsRelation[activePLO].skills.includes(s.name))
+                                                            .map(s => s.name) || [];
+                                                        
+                                                        return (
+                                                            <li key={index} className={`pb-2 border-b ${item.isDirectMatch ? 'bg-blue-50' : ''}`}>
+                                                                <div className="font-medium flex items-center">
+                                                                    {item.job}
+                                                                    {item.isDirectMatch && (
+                                                                        <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                                                            ตำแหน่งเป้าหมาย
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="text-sm text-gray-600">
+                                                                    ทักษะที่ตรงกับ {ploSkillsRelation[activePLO].plo.split(':')[0]}: {matchingSkills.join(', ')}
+                                                                </div>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="text-center text-sm text-gray-500 mt-4">
+                        <p>* ข้อมูล PLO และตำแหน่งงานที่เกี่ยวข้องมาจากไฟล์ข้อมูลหลักสูตรและไฟล์ CSV "_____________________PLOs___________________"</p>
+                    </div>
+                </div>
+            );
+        };
+
+        // แสดงผล App
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
