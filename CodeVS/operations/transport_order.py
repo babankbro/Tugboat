@@ -46,7 +46,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         arrival_datetime = last_point['order_arrival_time'] 
         order_location ={
                 "ID": order.start_object.order_id,
-                'type': "Start Order",
+                'type': "Start Order Carrier",
                 'name': order.start_object.name,
                 'enter_datetime': arrival_datetime,
                 'exit_datetime':tugboat_schedule['end_datetime'],
@@ -175,15 +175,18 @@ def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tug
 
             loader_start = arrival_customer_time + timedelta(minutes=(loader['start_time'])*60)
             loader_start = get_next_quarter_hour(loader_start)
-            #print("Crane Info:", min_start_crane, arrival_datetime, crane_arrival, (crane['start_time'] - min_start_crane)*60) if tugboat_id == 'tbs1' and order.order_id == 'o1'   else None
+            loader_end = loader_start + timedelta(minutes=loader['time_consumed']*60)
+            loader_end = get_next_quarter_hour(loader_end)
+            print("Loader Info:", loader) if tugboat_id == 'tbr1' and order.order_id == 'o1'   else None
             crane_location = {
                 "ID": order.start_object.order_id,
                 'type': "Loader-Customer",
                 'name': loader["loader_id"] + " - " + loader['barge'].barge_id,
                 'enter_datetime':loader_start,
-                'exit_datetime':loader_start + timedelta(minutes=loader['time_consumed']*60) ,
+                'exit_datetime': loader_end,
                 'distance': 0,
-                'speed': "",
+                'speed': loader['rate'],
+                'time': loader['time_consumed'],
                 'type_point': 'loading_point'
             }
             tugboat_result['data_points'].append(crane_location) # add result data points
@@ -193,8 +196,6 @@ def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tug
         #print("Set Customer End Time:", end_date_last) if tugboat_id == 'tbr1' else None
         customer_location['exit_datetime'] = end_date_last
         
-
-
 
         
 def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, lookup_river_tugboat_results):

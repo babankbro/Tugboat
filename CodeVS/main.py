@@ -150,9 +150,10 @@ def test_transport_order(data):
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
                             ]
-    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 
-                           'exit_datetime', 'tugboat_id','distance', 'order_trip'
+    temp_df = filtered_df[['ID', 'type', 'name', #'enter_datetime', 'exit_datetime', 
+                           'tugboat_id','distance', 'time', 'speed','order_trip',
                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+                      'total_load', 'barge_ids',
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
@@ -161,14 +162,15 @@ def test_transport_order(data):
 
     
     filtered_df = tugboat_df[
-                            ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
-                            &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
-                            & (tugboat_df['order_trip'] == 1)
+                            ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbs1')) 
+                            &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
+                            #& (tugboat_df['order_trip'] == 1) 
+                            & ((tugboat_df['type'] == 'Crane-Carrier') | (tugboat_df['type'] == 'Start Order Carrier'))
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
     ]
     temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 
-                           'exit_datetime', 'tugboat_id','distance', 'order_trip'
+                           'exit_datetime', 'tugboat_id','distance', 'time', 'speed','order_trip'
                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'

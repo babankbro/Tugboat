@@ -1,7 +1,8 @@
 import pandas as pd
+from config_problem import *
 
 # Define the file path
-file_path = "Tugboat Problem V3-Demo.xlsx"
+file_path = FILE_INPUT_NAME
 
 # Load the Excel file
 xls = pd.ExcelFile(file_path)

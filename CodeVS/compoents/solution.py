@@ -1,6 +1,7 @@
 from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.transport_order import *
 import config_problem 
+from CodeVS.utility.helpers import *
 
 
 class Solution:
@@ -195,6 +196,7 @@ class Solution:
             }
             
             barge_ready_time = tugboat_ready_time + timedelta(minutes=first_barge_location['travel_time']*60)
+            barge_ready_time = get_next_quarter_hour(barge_ready_time)
             barge_location ={
                 "ID": "Barge",
                 'type': "Barge Collection",
@@ -276,6 +278,7 @@ class Solution:
             for collection_info in collection_time_info['barge_collect_infos'][:]:
                 finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['travel_time'] + collection_info['setup_time'])*60)
                 #print(collection_info)
+                finish_barge_time = get_next_quarter_hour(finish_barge_time)
                 barge_step ={
                     "ID": "Barge",
                     'type': "Barge Step Collection",
@@ -702,10 +705,26 @@ class Solution:
             for data_point in tugboat_result['data_points']:
                 tugboat_id = tugboat_result['tugboat_id']
                 data_point['order_trip'] = order_trip
+                
                 data_point['total_load'] = sum([barge.get_load() for barge in self.data['tugboats'][tugboat_id].assigned_barges])
                 data_point['barge_ids'] = [barge.barge_id for barge in self.data['tugboats'][tugboat_id].assigned_barges]
                 data_point['barge_ids'] = ','.join([str(barge_id) for barge_id in data_point['barge_ids']])
-                data_point['type_point'] = 'main_point'
+                
+                if 'type_point' in data_point:
+                    if data_point['type_point'] == 'loading_point':
+                        barge_id = data_point['name'].split(' - ')[1]
+                        search_barge = next((barge for barge in self.data['tugboats'][tugboat_id].assigned_barges if barge.barge_id == barge_id), None)
+                 
+                        data_point['barge_ids'] = barge_id
+                        data_point['total_load'] = search_barge.get_load()
+                        
+                        
+                    continue
+                else:
+                    raise Exception("DONOT Have type point")
+                
+                
+                
                 
                 
         if len(temp_tugboat_results) == 0:
@@ -722,7 +741,6 @@ class Solution:
                 if not isFound:
                     temp_tugboat_results.append(tugboat_result)
                     
-    
     def _bring_barge_travel_import(self, order, bring_down_river_barges):
         river_tugboats =  self.data['river_tugboats'] 
         print("BRING_DOWN -------------------------------")
@@ -746,7 +764,6 @@ class Solution:
             self._reset_all_tugboats()
         print("END_DOWN -------------------------------")
    
-    
     def travel_import(self, order):
         data = self.data
         orders = data['orders']
