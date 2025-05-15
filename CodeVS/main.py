@@ -165,7 +165,8 @@ def test_transport_order(data):
                             ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbs1')) 
                             &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
                             #& (tugboat_df['order_trip'] == 1) 
-                            & ((tugboat_df['type'] == 'Crane-Carrier') | (tugboat_df['type'] == 'Start Order Carrier'))
+                            & ((tugboat_df['type'] == 'Loader-Customer') | (tugboat_df['type'] == 'Crane-Carrier') | 
+                               (tugboat_df['type'] == 'Customer Station')| (tugboat_df['type'] == 'Start Order Carrier'))
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
     ]
