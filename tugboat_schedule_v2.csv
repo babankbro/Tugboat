@@ -1,48 +1,32 @@
 ID,type,name,enter_datetime,exit_datetime,distance,time,speed,type_point,order_trip,total_load,barge_ids,order_distance,order_time,barge_speed,order_arrival_time,tugboat_id,order_id,water_type
 Start,Start,Start,2025-01-12 06:30:00.000000,2025-01-12 06:30:00.000000,0.0,0.0,0.0,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
 Barge,Barge Collection,Barge Location,2025-01-12 06:30:00.000000,2025-01-12 07:30:00.000000,0.0,0.0,12.0,main_point,1,8000,"b1,b2,b3",3.2784233567617305,0.3318722125427637,9.87857142857143,2025-01-12 08:00:00,tbs1,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b1,2025-01-12 06:30:00.000000,2025-01-12 07:00:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b2,2025-01-12 07:00:00.000000,2025-01-12 07:30:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b3,2025-01-12 07:30:00.000000,2025-01-12 08:00:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,2025-01-12 06:30:00.000000,2025-01-12 06:50:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,2025-01-12 06:50:00.000000,2025-01-12 07:10:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,2025-01-12 07:10:00.000000,2025-01-12 07:30:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
 o1,Start Order Carrier,carrier1,2025-01-12 08:00:00.000000,2025-01-12 16:45:00.000000,3.2784233567617305,,9.87857142857143,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
 o1,Crane-Carrier,cr2 - b2,2025-01-12 08:00:00.000000,2025-01-12 15:08:34.285714,0.0,,420.0,loading_point,1,3000,b2,,,,,tbs1,o1,Sea
 o1,Crane-Carrier,cr1 - b1,2025-01-12 08:00:00.000000,2025-01-12 14:15:00.000000,0.0,,400.0,loading_point,1,2500,b1,,,,,tbs1,o1,Sea
 o1,Crane-Carrier,cr3 - b3,2025-01-12 10:00:00.000000,2025-01-12 16:34:44.210526,0.0,,380.0,loading_point,1,2500,b3,,,,,tbs1,o1,Sea
 s2,Appointment,3-Bang Hua Suea Pier,2025-01-13 00:15:00.000000,2025-01-13 01:15:00.000000,62.67749061125805,,8.164285714285715,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o1,Sea
-Start,Start,Start,2025-01-13 01:15:00.000000,2025-01-13 01:15:00.000000,0.0,0.0,0.0,main_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
-Barge,Barge Collection,Barge Location,2025-01-13 06:15:00.000000,2025-01-13 12:15:00.000000,59.656428592526716,4.971369049377226,12.0,main_point,2,8000,"b29,b30,b41",3.2784233567617305,0.3318722125427637,9.87857142857143,2025-01-13 12:45:00,tbs1,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b29,2025-01-13 06:15:00.000000,2025-01-13 11:45:00.000000,59.656428592526716,4.971369049377226,12.0,travel_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b30,2025-01-13 11:45:00.000000,2025-01-13 12:15:00.000000,0.0,0.0,0.0,travel_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b41,2025-01-13 12:15:00.000000,2025-01-13 12:45:00.000000,0.0,0.0,0.0,travel_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
-o1,Start Order Carrier,carrier1,2025-01-13 12:45:00.000000,2025-01-13 20:00:00.000000,3.2784233567617305,,9.87857142857143,main_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
-o1,Crane-Carrier,cr2 - b30,2025-01-13 12:45:00.000000,2025-01-13 19:53:34.285714,0.0,,420.0,loading_point,2,3000,b30,,,,,tbs1,o1,Sea
-o1,Crane-Carrier,cr1 - b29,2025-01-13 12:45:00.000000,2025-01-13 19:00:00.000000,0.0,,400.0,loading_point,2,2500,b29,,,,,tbs1,o1,Sea
-o1,Crane-Carrier,cr3 - b41,2025-01-13 12:45:00.000000,2025-01-13 19:19:44.210526,0.0,,380.0,loading_point,2,2500,b41,,,,,tbs1,o1,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-14 03:30:00.000000,2025-01-15 01:00:00.000000,62.67749061125805,,8.164285714285715,main_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
 Start,Start,Start,2025-01-11 20:15:00.000000,2025-01-11 20:15:00.000000,0.0,0.0,0.0,main_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
 Barge,Barge Collection,Barge Location,2025-01-12 01:15:00.000000,2025-01-12 07:30:00.000000,59.656428592526716,4.971369049377226,12.0,main_point,1,11000,"b4,b5,b6,b7",3.2784233567617305,0.354947410673022,9.236363636363636,2025-01-12 08:00:00,tbs2,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b4,2025-01-12 01:15:00.000000,2025-01-12 06:45:00.000000,59.656428592526716,4.971369049377226,12.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b5,2025-01-12 06:45:00.000000,2025-01-12 07:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b6,2025-01-12 07:15:00.000000,2025-01-12 07:45:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b7,2025-01-12 07:45:00.000000,2025-01-12 08:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b4,2025-01-12 01:15:00.000000,2025-01-12 06:33:16.928578,59.656428592526716,4.971369049377226,12.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b5,2025-01-12 06:33:16.928578,2025-01-12 06:53:16.928578,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b6,2025-01-12 06:53:16.928578,2025-01-12 07:13:16.928578,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b7,2025-01-12 07:13:16.928578,2025-01-12 07:33:16.928578,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
 o1,Start Order Carrier,carrier1,2025-01-12 08:00:00.000000,2025-01-12 21:15:00.000000,3.2784233567617305,,9.236363636363636,main_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
 o1,Crane-Carrier,cr5 - b4,2025-01-12 08:00:00.000000,2025-01-12 16:20:00.000000,0.0,,360.0,loading_point,1,3000,b4,,,,,tbs2,o1,Sea
 o1,Crane-Carrier,cr4 - b6,2025-01-12 08:00:00.000000,2025-01-12 18:00:00.000000,0.0,,300.0,loading_point,1,3000,b6,,,,,tbs2,o1,Sea
 o1,Crane-Carrier,cr1 - b5,2025-01-12 12:15:00.000000,2025-01-12 18:30:00.000000,0.0,,400.0,loading_point,1,2500,b5,,,,,tbs2,o1,Sea
 o1,Crane-Carrier,cr2 - b7,2025-01-12 13:08:34.285714,2025-01-12 19:05:42.857143,0.0,,420.0,loading_point,1,2500,b7,,,,,tbs2,o1,Sea
 s2,Appointment,3-Bang Hua Suea Pier,2025-01-13 05:45:00.000000,2025-01-13 14:45:00.000000,62.67749061125805,,7.236363636363636,main_point,1,11000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
-Start,Start,Start,2025-01-13 14:45:00.000000,2025-01-13 14:45:00.000000,0.0,0.0,0.0,main_point,2,3000,b42,,,,,tbs2,o1,Sea
-Barge,Barge Collection,Barge Location,2025-01-13 19:45:00.000000,2025-01-14 01:00:00.000000,59.656428592526716,4.971369049377226,12.0,main_point,2,3000,b42,3.2784233567617305,0.29012596077537434,11.3,2025-01-14 01:30:00,tbs2,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b42,2025-01-13 19:45:00.000000,2025-01-14 01:15:00.000000,59.656428592526716,4.971369049377226,12.0,travel_point,2,3000,b42,,,,,tbs2,o1,Sea
-o1,Start Order Carrier,carrier1,2025-01-14 01:30:00.000000,2025-01-14 08:45:00.000000,3.2784233567617305,,11.3,main_point,2,3000,b42,,,,,tbs2,o1,Sea
-o1,Crane-Carrier,cr2 - b42,2025-01-14 01:30:00.000000,2025-01-14 08:38:34.285714,0.0,,420.0,loading_point,2,3000,b42,,,,,tbs2,o1,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-14 14:30:00.000000,2025-01-16 02:15:00.000000,62.67749061125805,,10.7,main_point,2,3000,b42,,,,,tbs2,o1,Sea
 Start,Start,Start,2025-01-11 20:15:00.000000,2025-01-11 20:15:00.000000,0.0,0.0,0.0,main_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
 Barge,Barge Collection,Barge Location,2025-01-12 01:15:00.000000,2025-01-12 07:30:00.000000,54.656428592526716,4.968766235684246,11.0,main_point,1,11000,"b21,b22,b23,b24",3.2784233567617305,0.38721535709784216,8.466666666666667,2025-01-12 08:00:00,tbs4,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b21,2025-01-12 01:15:00.000000,2025-01-12 06:45:00.000000,54.656428592526716,4.968766235684246,11.000000000000002,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b22,2025-01-12 06:45:00.000000,2025-01-12 07:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b23,2025-01-12 07:15:00.000000,2025-01-12 07:45:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b24,2025-01-12 07:45:00.000000,2025-01-12 08:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b21,2025-01-12 01:15:00.000000,2025-01-12 06:33:07.558448,54.656428592526716,4.968766235684246,11.000000000000002,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b22,2025-01-12 06:33:07.558448,2025-01-12 06:53:07.558448,0.0,0.0,0.0,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b23,2025-01-12 06:53:07.558448,2025-01-12 07:13:07.558448,0.0,0.0,0.0,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b24,2025-01-12 07:13:07.558448,2025-01-12 07:33:07.558448,0.0,0.0,0.0,travel_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
 o1,Start Order Carrier,carrier1,2025-01-12 08:00:00.000000,2025-01-13 04:30:00.000000,3.2784233567617305,,8.466666666666667,main_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
 o1,Crane-Carrier,cr3 - b22,2025-01-12 08:00:00.000000,2025-01-12 15:53:41.052632,0.0,,380.0,loading_point,1,3000,b22,,,,,tbs4,o1,Sea
 o1,Crane-Carrier,cr5 - b24,2025-01-12 09:45:15.789474,2025-01-12 18:05:15.789474,0.0,,360.0,loading_point,1,3000,b24,,,,,tbs4,o1,Sea
@@ -51,445 +35,225 @@ o1,Crane-Carrier,cr1 - b23,2025-01-12 11:55:15.789474,2025-01-12 18:10:15.789474
 s2,Appointment,3-Bang Hua Suea Pier,2025-01-13 13:45:00.000000,2025-01-13 20:00:00.000000,62.67749061125805,,6.633333333333333,main_point,1,11000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
 Start,Start,Start,2025-01-12 06:15:00.000000,2025-01-12 06:15:00.000000,0.0,0.0,0.0,main_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
 Barge,Barge Collection,Barge Location,2025-01-12 06:15:00.000000,2025-01-12 07:30:00.000000,0.0,0.0,11.0,main_point,1,11000,"b25,b26,b27,b28",3.2784233567617305,0.38721535709784216,8.466666666666667,2025-01-12 08:00:00,tbs5,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b25,2025-01-12 06:15:00.000000,2025-01-12 06:45:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b26,2025-01-12 06:45:00.000000,2025-01-12 07:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b27,2025-01-12 07:15:00.000000,2025-01-12 07:45:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
-Barge,Barge Step Collection,Collecting Barge - b28,2025-01-12 07:45:00.000000,2025-01-12 08:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b25,2025-01-12 06:15:00.000000,2025-01-12 06:35:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b26,2025-01-12 06:35:00.000000,2025-01-12 06:55:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b27,2025-01-12 06:55:00.000000,2025-01-12 07:15:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b28,2025-01-12 07:15:00.000000,2025-01-12 07:35:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
 o1,Start Order Carrier,carrier1,2025-01-12 08:00:00.000000,2025-01-13 09:45:00.000000,3.2784233567617305,,8.466666666666667,main_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
 o1,Crane-Carrier,cr2 - b26,2025-01-12 08:00:00.000000,2025-01-12 15:08:34.285714,0.0,,420.0,loading_point,1,3000,b26,,,,,tbs5,o1,Sea
 o1,Crane-Carrier,cr3 - b28,2025-01-12 11:22:42.406015,2025-01-12 19:16:23.458647,0.0,,380.0,loading_point,1,3000,b28,,,,,tbs5,o1,Sea
 o1,Crane-Carrier,cr5 - b25,2025-01-12 13:34:17.142857,2025-01-12 20:30:57.142857,0.0,,360.0,loading_point,1,2500,b25,,,,,tbs5,o1,Sea
 o1,Crane-Carrier,cr1 - b27,2025-01-12 13:39:17.142857,2025-01-12 19:54:17.142857,0.0,,400.0,loading_point,1,2500,b27,,,,,tbs5,o1,Sea
 s2,Appointment,3-Bang Hua Suea Pier,2025-01-13 19:00:00.000000,2025-01-13 20:00:00.000000,62.67749061125805,,6.633333333333333,main_point,1,11000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
-Start,Start,River Start,2025-01-12 23:15:00.000000,2025-01-12 23:15:00.000000,0.0,0.0,0.0,main_point,1,8000,"b1,b2,b3",,,,,tbr1,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-13 00:15:00.000000,2025-01-13 01:15:00.000000,59.656428592526716,5.965642859252672,10.0,main_point,1,8000,"b1,b2,b3",,,,,tbr1,o1,River
-Barge,Barge Change Collection,Change Barge - b1,2025-01-13 00:15:00.000000,2025-01-13 00:35:00.000000,59.656428592526716,5.965642859252672,10.0,travel_point,1,8000,"b1,b2,b3",,,,,tbr1,o1,River
-Barge,Barge Change Collection,Change Barge - b2,2025-01-13 00:35:00.000000,2025-01-13 00:55:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbr1,o1,River
-Barge,Barge Change Collection,Change Barge - b3,2025-01-13 00:55:00.000000,2025-01-13 01:15:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbr1,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-13 14:56:48.699552,2025-01-14 09:58:48.699552,83.0,,6.059782608695652,main_point,1,8000,"b1,b2,b3",,,,,tbr1,o1,River
-o1,Loader-Customer,ld1 - b2,2025-01-13 14:56:48.699552,2025-01-13 22:04:48.699552,0.0,7.142857142857143,420.0,loading_point,1,3000,b2,,,,,tbr1,o1,River
-o1,Loader-Customer,ld1 - b1,2025-01-13 22:04:48.699552,2025-01-14 04:01:48.699552,0.0,5.9523809523809526,420.0,loading_point,1,2500,b1,,,,,tbr1,o1,River
-o1,Loader-Customer,ld1 - b3,2025-01-14 04:01:48.699552,2025-01-14 09:58:48.699552,0.0,5.9523809523809526,420.0,loading_point,1,2500,b3,,,,,tbr1,o1,River
-Start,Start,River Start,2025-01-14 23:00:00.000000,2025-01-14 23:00:00.000000,0.0,0.0,0.0,main_point,2,8000,"b29,b30,b41",,,,,tbr1,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-15 00:00:00.000000,2025-01-15 01:00:00.000000,142.6564285925267,14.265642859252672,10.0,main_point,2,8000,"b29,b30,b41",,,,,tbr1,o1,River
-Barge,Barge Change Collection,Change Barge - b29,2025-01-15 00:00:00.000000,2025-01-15 00:20:00.000000,142.6564285925267,14.265642859252672,9.999999999999998,travel_point,2,8000,"b29,b30,b41",,,,,tbr1,o1,River
-Barge,Barge Change Collection,Change Barge - b30,2025-01-15 00:20:00.000000,2025-01-15 00:40:00.000000,0.0,0.0,0.0,travel_point,2,8000,"b29,b30,b41",,,,,tbr1,o1,River
-Barge,Barge Change Collection,Change Barge - b41,2025-01-15 00:40:00.000000,2025-01-15 01:00:00.000000,0.0,0.0,0.0,travel_point,2,8000,"b29,b30,b41",,,,,tbr1,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-15 14:41:48.699552,2025-01-16 09:43:48.699552,83.0,,6.059782608695652,main_point,2,8000,"b29,b30,b41",,,,,tbr1,o1,River
-o1,Loader-Customer,ld1 - b30,2025-01-15 14:41:48.699552,2025-01-15 21:49:48.699552,0.0,7.142857142857143,420.0,loading_point,2,3000,b30,,,,,tbr1,o1,River
-o1,Loader-Customer,ld1 - b29,2025-01-15 21:49:48.699552,2025-01-16 03:46:48.699552,0.0,5.9523809523809526,420.0,loading_point,2,2500,b29,,,,,tbr1,o1,River
-o1,Loader-Customer,ld1 - b41,2025-01-16 03:46:48.699552,2025-01-16 09:43:48.699552,0.0,5.9523809523809526,420.0,loading_point,2,2500,b41,,,,,tbr1,o1,River
-Start,Start,River Start,2025-01-13 04:45:00.000000,2025-01-13 04:45:00.000000,0.0,0.0,0.0,main_point,1,8500,"b4,b5,b6",,,,,tbr2,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-13 05:45:00.000000,2025-01-13 06:45:00.000000,139.6564285925267,13.965642859252673,10.0,main_point,1,8500,"b4,b5,b6",,,,,tbr2,o1,River
-Barge,Barge Change Collection,Change Barge - b4,2025-01-13 05:45:00.000000,2025-01-13 06:05:00.000000,139.6564285925267,13.965642859252673,9.999999999999998,travel_point,1,8500,"b4,b5,b6",,,,,tbr2,o1,River
-Barge,Barge Change Collection,Change Barge - b5,2025-01-13 06:05:00.000000,2025-01-13 06:25:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b4,b5,b6",,,,,tbr2,o1,River
-Barge,Barge Change Collection,Change Barge - b6,2025-01-13 06:25:00.000000,2025-01-13 06:45:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b4,b5,b6",,,,,tbr2,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-13 20:18:03.673469,2025-01-15 11:35:03.673469,83.0,,6.125,main_point,1,8500,"b4,b5,b6",,,,,tbr2,o1,River
-o1,Loader-Customer,ld1 - b4,2025-01-14 15:20:03.673469,2025-01-14 22:29:03.673469,0.0,7.142857142857143,420.0,loading_point,1,3000,b4,,,,,tbr2,o1,River
-o1,Loader-Customer,ld1 - b6,2025-01-14 22:29:03.673469,2025-01-15 05:38:03.673469,0.0,7.142857142857143,420.0,loading_point,1,3000,b6,,,,,tbr2,o1,River
-o1,Loader-Customer,ld1 - b5,2025-01-15 05:38:03.673469,2025-01-15 11:35:03.673469,0.0,5.9523809523809526,420.0,loading_point,1,2500,b5,,,,,tbr2,o1,River
-Start,Start,River Start,2025-01-16 01:15:00.000000,2025-01-16 01:15:00.000000,0.0,0.0,0.0,main_point,2,3000,b42,,,,,tbr2,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-16 01:45:00.000000,2025-01-16 02:15:00.000000,142.6564285925267,14.265642859252672,10.0,main_point,2,3000,b42,,,,,tbr2,o1,River
-Barge,Barge Change Collection,Change Barge - b42,2025-01-16 01:45:00.000000,2025-01-16 02:05:00.000000,142.6564285925267,14.265642859252672,9.999999999999998,travel_point,2,3000,b42,,,,,tbr2,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-16 11:53:07.192429,2025-01-17 14:04:07.192429,83.0,,8.61413043478261,main_point,2,3000,b42,,,,,tbr2,o1,River
-o1,Loader-Customer,ld1 - b42,2025-01-17 06:55:07.192429,2025-01-17 14:04:07.192429,0.0,7.142857142857143,420.0,loading_point,2,3000,b42,,,,,tbr2,o1,River
-Start,Start,River Start,2025-01-13 12:45:00.000000,2025-01-13 12:45:00.000000,0.0,0.0,0.0,main_point,1,8000,"b7,b21,b22",,,,,tbr3,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-13 13:45:00.000000,2025-01-13 14:45:00.000000,59.656428592526716,6.279624062371234,9.5,main_point,1,8000,"b7,b21,b22",,,,,tbr3,o1,River
-Barge,Barge Change Collection,Change Barge - b7,2025-01-13 13:45:00.000000,2025-01-13 14:05:00.000000,59.656428592526716,6.279624062371234,9.5,travel_point,1,8000,"b7,b21,b22",,,,,tbr3,o1,River
-Barge,Barge Change Collection,Change Barge - b21,2025-01-13 14:05:00.000000,2025-01-13 14:25:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b7,b21,b22",,,,,tbr3,o1,River
-Barge,Barge Change Collection,Change Barge - b22,2025-01-13 14:25:00.000000,2025-01-13 14:45:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b7,b21,b22",,,,,tbr3,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-14 05:10:03.894265,2025-01-16 15:30:03.894265,83.0,,5.756793478260869,main_point,1,8000,"b7,b21,b22",,,,,tbr3,o1,River
-o1,Loader-Customer,ld1 - b22,2025-01-15 20:27:03.894265,2025-01-16 03:35:03.894265,0.0,7.142857142857143,420.0,loading_point,1,3000,b22,,,,,tbr3,o1,River
-o1,Loader-Customer,ld1 - b7,2025-01-16 03:35:03.894265,2025-01-16 09:32:03.894265,0.0,5.9523809523809526,420.0,loading_point,1,2500,b7,,,,,tbr3,o1,River
-o1,Loader-Customer,ld1 - b21,2025-01-16 09:32:03.894265,2025-01-16 15:30:03.894265,0.0,5.9523809523809526,420.0,loading_point,1,2500,b21,,,,,tbr3,o1,River
-Start,Start,River Start,2025-01-13 18:00:00.000000,2025-01-13 18:00:00.000000,0.0,0.0,0.0,main_point,1,8000,"b23,b24,b25",,,,,tbr4,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-13 19:00:00.000000,2025-01-13 20:00:00.000000,59.656428592526716,6.214211311721534,9.6,main_point,1,8000,"b23,b24,b25",,,,,tbr4,o1,River
-Barge,Barge Change Collection,Change Barge - b23,2025-01-13 19:00:00.000000,2025-01-13 19:20:00.000000,59.656428592526716,6.214211311721534,9.6,travel_point,1,8000,"b23,b24,b25",,,,,tbr4,o1,River
-Barge,Barge Change Collection,Change Barge - b24,2025-01-13 19:20:00.000000,2025-01-13 19:40:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b23,b24,b25",,,,,tbr4,o1,River
-Barge,Barge Change Collection,Change Barge - b25,2025-01-13 19:40:00.000000,2025-01-13 20:00:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b23,b24,b25",,,,,tbr4,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-14 09:53:20.000000,2025-01-17 15:15:20.000000,83.0,,5.976,main_point,1,8000,"b23,b24,b25",,,,,tbr4,o1,River
-o1,Loader-Customer,ld1 - b24,2025-01-16 20:13:20.000000,2025-01-17 03:21:20.000000,0.0,7.142857142857143,420.0,loading_point,1,3000,b24,,,,,tbr4,o1,River
-o1,Loader-Customer,ld1 - b23,2025-01-17 03:21:20.000000,2025-01-17 09:18:20.000000,0.0,5.9523809523809526,420.0,loading_point,1,2500,b23,,,,,tbr4,o1,River
-o1,Loader-Customer,ld1 - b25,2025-01-17 09:18:20.000000,2025-01-17 15:15:20.000000,0.0,5.9523809523809526,420.0,loading_point,1,2500,b25,,,,,tbr4,o1,River
-Start,Start,River Start,2025-01-13 18:00:00.000000,2025-01-13 18:00:00.000000,0.0,0.0,0.0,main_point,1,8500,"b26,b27,b28",,,,,tbr5,o1,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-13 19:00:00.000000,2025-01-13 20:00:00.000000,59.656428592526716,6.150147277580073,9.7,main_point,1,8500,"b26,b27,b28",,,,,tbr5,o1,River
-Barge,Barge Change Collection,Change Barge - b26,2025-01-13 19:00:00.000000,2025-01-13 19:20:00.000000,59.656428592526716,6.150147277580073,9.700000000000001,travel_point,1,8500,"b26,b27,b28",,,,,tbr5,o1,River
-Barge,Barge Change Collection,Change Barge - b27,2025-01-13 19:20:00.000000,2025-01-13 19:40:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b26,b27,b28",,,,,tbr5,o1,River
-Barge,Barge Change Collection,Change Barge - b28,2025-01-13 19:40:00.000000,2025-01-13 20:00:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b26,b27,b28",,,,,tbr5,o1,River
-s10,Customer Station,Wat Kai Tia Pier,2025-01-14 10:22:42.180483,2025-01-18 11:59:42.180483,83.0,,5.772554347826087,main_point,1,8500,"b26,b27,b28",,,,,tbr5,o1,River
-o1,Loader-Customer,ld1 - b26,2025-01-17 15:44:42.180483,2025-01-17 22:53:42.180483,0.0,7.142857142857143,420.0,loading_point,1,3000,b26,,,,,tbr5,o1,River
-o1,Loader-Customer,ld1 - b28,2025-01-17 22:53:42.180483,2025-01-18 06:01:42.180483,0.0,7.142857142857143,420.0,loading_point,1,3000,b28,,,,,tbr5,o1,River
-o1,Loader-Customer,ld1 - b27,2025-01-18 06:01:42.180483,2025-01-18 11:59:42.180483,0.0,5.9523809523809526,420.0,loading_point,1,2500,b27,,,,,tbr5,o1,River
-Start,Start,Start,2025-01-15 01:00:00.000000,2025-01-15 01:00:00.000000,0.0,0.0,0.0,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-Barge,Barge Collection,Barge Location,2025-01-15 08:00:00.000000,2025-01-15 16:30:00.000000,83.0,6.916666666666665,12.0,main_point,1,2500,"b1,b2,b3,b4,b5",146.79308490655745,17.26977469488911,8.5,2025-01-16 10:00:00,tbs1,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b1,2025-01-15 08:00:00.000000,2025-01-15 15:15:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b2,2025-01-15 15:15:00.000000,2025-01-15 15:45:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b3,2025-01-15 15:45:00.000000,2025-01-15 16:15:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b4,2025-01-15 16:15:00.000000,2025-01-15 16:45:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b5,2025-01-15 16:45:00.000000,2025-01-15 17:15:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-o2,Start Order Carrier,carrier2,2025-01-16 10:00:00.000000,2025-01-16 11:45:00.000000,146.79308490655745,,8.5,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-o2,Crane-Carrier,cr1 - b1,2025-01-16 10:00:00.000000,2025-01-16 11:18:56.842105,0.0,,380.0,loading_point,1,500,b1,,,,,tbs1,o2,Sea
-o2,Crane-Carrier,cr4 - b2,2025-01-16 10:00:00.000000,2025-01-16 11:18:56.842105,0.0,,380.0,loading_point,1,500,b2,,,,,tbs1,o2,Sea
-o2,Crane-Carrier,cr2 - b3,2025-01-16 10:00:00.000000,2025-01-16 11:25:42.857143,0.0,,350.0,loading_point,1,500,b3,,,,,tbs1,o2,Sea
-o2,Crane-Carrier,cr5 - b4,2025-01-16 10:00:00.000000,2025-01-16 11:25:42.857143,0.0,,350.0,loading_point,1,500,b4,,,,,tbs1,o2,Sea
-o2,Crane-Carrier,cr3 - b5,2025-01-16 10:00:00.000000,2025-01-16 11:40:00.000000,0.0,,300.0,loading_point,1,500,b5,,,,,tbs1,o2,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-16 19:45:00.000000,2025-01-18 05:45:00.000000,64.46773860591682,,8.0,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o2,Sea
-Start,Start,Start,2025-01-16 02:15:47.494482,2025-01-16 02:15:47.494482,0.0,0.0,0.0,main_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-Barge,Barge Collection,Barge Location,2025-01-16 09:00:00.000000,2025-01-17 06:15:00.000000,83.0,6.916666666666665,12.0,main_point,1,11500,"b6,b43,b44,b45,b46",5.240947496916935,0.6123443810830784,8.558823529411764,2025-01-17 07:00:00,tbs2,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b6,2025-01-16 09:00:00.000000,2025-01-16 16:15:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b43,2025-01-16 16:15:00.000000,2025-01-17 05:15:00.000000,142.6564285925267,12.624462707303248,11.3,travel_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b44,2025-01-17 05:15:00.000000,2025-01-17 05:45:00.000000,0.0,0.0,0.0,travel_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b45,2025-01-17 05:45:00.000000,2025-01-17 06:15:00.000000,0.0,0.0,0.0,travel_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b46,2025-01-17 06:15:00.000000,2025-01-17 06:45:00.000000,0.0,0.0,0.0,travel_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-o2,Start Order Carrier,carrier2,2025-01-17 07:00:00.000000,2025-01-17 15:00:00.000000,5.240947496916935,,8.558823529411764,main_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-o2,Crane-Carrier,cr1 - b44,2025-01-17 07:00:00.000000,2025-01-17 14:53:41.052632,0.0,,380.0,loading_point,1,3000,b44,,,,,tbs2,o2,Sea
-o2,Crane-Carrier,cr4 - b46,2025-01-17 07:00:00.000000,2025-01-17 14:53:41.052632,0.0,,380.0,loading_point,1,3000,b46,,,,,tbs2,o2,Sea
-o2,Crane-Carrier,cr2 - b43,2025-01-17 07:00:00.000000,2025-01-17 14:08:34.285714,0.0,,350.0,loading_point,1,2500,b43,,,,,tbs2,o2,Sea
-o2,Crane-Carrier,cr5 - b45,2025-01-17 07:00:00.000000,2025-01-17 14:08:34.285714,0.0,,350.0,loading_point,1,2500,b45,,,,,tbs2,o2,Sea
-o2,Crane-Carrier,cr3 - b6,2025-01-17 07:00:00.000000,2025-01-17 08:40:00.000000,0.0,,300.0,loading_point,1,500,b6,,,,,tbs2,o2,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 00:45:00.000000,2025-01-18 08:00:00.000000,64.46773860591682,,6.529411764705882,main_point,1,11500,"b6,b43,b44,b45,b46",,,,,tbs2,o2,Sea
-Start,Start,Start,2025-01-13 20:00:00.000000,2025-01-13 20:00:00.000000,0.0,0.0,0.0,main_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-Barge,Barge Collection,Barge Location,2025-01-14 01:30:00.000000,2025-01-14 08:15:00.000000,59.656428592526716,5.423311690229701,11.0,main_point,1,11000,"b47,b48,b49,b50",5.240947496916935,0.619009546879953,8.466666666666667,2025-01-14 09:00:00,tbs4,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b47,2025-01-14 01:30:00.000000,2025-01-14 07:30:00.000000,59.656428592526716,5.423311690229701,11.000000000000002,travel_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b48,2025-01-14 07:30:00.000000,2025-01-14 08:00:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b49,2025-01-14 08:00:00.000000,2025-01-14 08:30:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b50,2025-01-14 08:30:00.000000,2025-01-14 09:00:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-o2,Start Order Carrier,carrier2,2025-01-14 09:00:00.000000,2025-01-17 21:30:00.000000,5.240947496916935,,8.466666666666667,main_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-o2,Crane-Carrier,cr6 - b48,2025-01-14 09:00:00.000000,2025-01-14 19:00:00.000000,0.0,,300.0,loading_point,1,3000,b48,,,,,tbs4,o2,Sea
-o2,Crane-Carrier,cr3 - b50,2025-01-14 10:40:00.000000,2025-01-14 20:40:00.000000,0.0,,300.0,loading_point,1,3000,b50,,,,,tbs4,o2,Sea
-o2,Crane-Carrier,cr2 - b47,2025-01-14 16:08:34.285714,2025-01-14 23:17:08.571428,0.0,,350.0,loading_point,1,2500,b47,,,,,tbs4,o2,Sea
-o2,Crane-Carrier,cr5 - b49,2025-01-14 16:08:34.285714,2025-01-14 23:17:08.571428,0.0,,350.0,loading_point,1,2500,b49,,,,,tbs4,o2,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 07:00:00.000000,2025-01-18 08:00:00.000000,64.46773860591682,,6.633333333333333,main_point,1,11000,"b47,b48,b49,b50",,,,,tbs4,o2,Sea
-Start,Start,Start,2025-01-13 20:00:00.000000,2025-01-13 20:00:00.000000,0.0,0.0,0.0,main_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-Barge,Barge Collection,Barge Location,2025-01-13 21:45:00.000000,2025-01-14 03:30:00.000000,20.0,1.8181818181818183,11.0,main_point,1,11500,"b17,b18,b19,b20,b37",48.79308490655744,6.21917483345062,7.845588235294118,2025-01-14 09:45:00,tbs5,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b17,2025-01-13 21:45:00.000000,2025-01-14 00:00:00.000000,20.0,1.8181818181818183,10.999999999999998,travel_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b18,2025-01-14 00:00:00.000000,2025-01-14 01:00:00.000000,5.0,0.4827031375703942,10.358333333333334,travel_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b19,2025-01-14 01:00:00.000000,2025-01-14 02:00:00.000000,5.0,0.5142667551426675,9.72258064516129,travel_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b20,2025-01-14 02:00:00.000000,2025-01-14 03:00:00.000000,5.0,0.5499226671249355,9.0921875,travel_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-Barge,Barge Step Collection,Collecting Barge - b37,2025-01-14 03:00:00.000000,2025-01-14 04:00:00.000000,5.0,0.5905511811023622,8.466666666666667,travel_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-o2,Start Order Carrier,carrier2,2025-01-14 09:45:00.000000,2025-01-18 03:00:00.000000,48.79308490655744,,7.845588235294118,main_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-o2,Crane-Carrier,cr1 - b18,2025-01-14 09:45:00.000000,2025-01-14 17:38:41.052632,0.0,,380.0,loading_point,1,3000,b18,,,,,tbs5,o2,Sea
-o2,Crane-Carrier,cr4 - b20,2025-01-14 09:45:00.000000,2025-01-14 17:38:41.052632,0.0,,380.0,loading_point,1,3000,b20,,,,,tbs5,o2,Sea
-o2,Crane-Carrier,cr6 - b17,2025-01-14 11:51:18.947368,2025-01-14 20:11:18.947368,0.0,,300.0,loading_point,1,2500,b17,,,,,tbs5,o2,Sea
-o2,Crane-Carrier,cr3 - b19,2025-01-14 13:31:18.947368,2025-01-14 21:51:18.947368,0.0,,300.0,loading_point,1,2500,b19,,,,,tbs5,o2,Sea
-o2,Crane-Carrier,cr2 - b37,2025-01-14 16:08:27.518797,2025-01-14 17:34:10.375940,0.0,,350.0,loading_point,1,500,b37,,,,,tbs5,o2,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 13:45:00.000000,2025-01-18 16:00:00.000000,64.46773860591682,,5.985294117647059,main_point,1,11500,"b17,b18,b19,b20,b37",,,,,tbs5,o2,Sea
-Start,Start,River Start,2025-01-16 22:15:00.000000,2025-01-16 22:15:00.000000,0.0,0.0,0.0,main_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-16 23:45:00.000000,2025-01-17 01:15:00.000000,142.6564285925267,14.265642859252672,10.0,main_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-Barge,Barge Change Collection,Change Barge - b1,2025-01-16 23:45:00.000000,2025-01-17 00:05:00.000000,142.6564285925267,14.265642859252672,9.999999999999998,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-Barge,Barge Change Collection,Change Barge - b2,2025-01-17 00:05:00.000000,2025-01-17 00:25:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-Barge,Barge Change Collection,Change Barge - b3,2025-01-17 00:25:00.000000,2025-01-17 00:45:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-Barge,Barge Change Collection,Change Barge - b4,2025-01-17 00:45:00.000000,2025-01-17 01:05:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-s11,Customer Station,Sam Khok Pier,2025-01-17 14:18:00.000000,2025-01-17 19:18:00.000000,87.0,,6.666666666666667,main_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o2,River
-o2,Loader-Customer,ld1 - b1,2025-01-17 14:18:00.000000,2025-01-17 15:33:00.000000,0.0,1.25,400.0,loading_point,1,500,b1,,,,,tbr1,o2,River
-o2,Loader-Customer,ld1 - b2,2025-01-17 15:33:00.000000,2025-01-17 16:48:00.000000,0.0,1.25,400.0,loading_point,1,500,b2,,,,,tbr1,o2,River
-o2,Loader-Customer,ld1 - b3,2025-01-17 16:48:00.000000,2025-01-17 18:03:00.000000,0.0,1.25,400.0,loading_point,1,500,b3,,,,,tbr1,o2,River
-o2,Loader-Customer,ld1 - b4,2025-01-17 18:03:00.000000,2025-01-17 19:18:00.000000,0.0,1.25,400.0,loading_point,1,500,b4,,,,,tbr1,o2,River
-Start,Start,River Start,2025-01-18 02:45:00.000000,2025-01-18 02:45:00.000000,0.0,0.0,0.0,main_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-18 04:15:00.000000,2025-01-18 05:45:00.000000,142.6564285925267,14.265642859252672,10.0,main_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-Barge,Barge Change Collection,Change Barge - b5,2025-01-18 04:15:00.000000,2025-01-18 04:35:00.000000,142.6564285925267,14.265642859252672,9.999999999999998,travel_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-Barge,Barge Change Collection,Change Barge - b6,2025-01-18 04:35:00.000000,2025-01-18 04:55:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-Barge,Barge Change Collection,Change Barge - b43,2025-01-18 04:55:00.000000,2025-01-18 05:15:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-Barge,Barge Change Collection,Change Barge - b44,2025-01-18 05:15:00.000000,2025-01-18 05:35:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-s11,Customer Station,Sam Khok Pier,2025-01-18 20:34:58.032787,2025-01-19 17:49:58.032787,87.0,,5.865384615384616,main_point,1,6500,"b5,b6,b43,b44",,,,,tbr2,o2,River
-o2,Loader-Customer,ld1 - b44,2025-01-19 01:34:58.032787,2025-01-19 09:04:58.032787,0.0,7.5,400.0,loading_point,1,3000,b44,,,,,tbr2,o2,River
-o2,Loader-Customer,ld1 - b43,2025-01-19 09:04:58.032787,2025-01-19 15:19:58.032787,0.0,6.25,400.0,loading_point,1,2500,b43,,,,,tbr2,o2,River
-o2,Loader-Customer,ld1 - b5,2025-01-19 15:19:58.032787,2025-01-19 16:34:58.032787,0.0,1.25,400.0,loading_point,1,500,b5,,,,,tbr2,o2,River
-o2,Loader-Customer,ld1 - b6,2025-01-19 16:34:58.032787,2025-01-19 17:49:58.032787,0.0,1.25,400.0,loading_point,1,500,b6,,,,,tbr2,o2,River
-Start,Start,River Start,2025-01-18 06:00:00.000000,2025-01-18 06:00:00.000000,0.0,0.0,0.0,main_point,1,8000,"b45,b46,b47",,,,,tbr3,o2,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-18 07:00:00.000000,2025-01-18 08:00:00.000000,142.6564285925267,15.01646616763439,9.5,main_point,1,8000,"b45,b46,b47",,,,,tbr3,o2,River
-Barge,Barge Change Collection,Change Barge - b45,2025-01-18 07:00:00.000000,2025-01-18 07:20:00.000000,142.6564285925267,15.01646616763439,9.5,travel_point,1,8000,"b45,b46,b47",,,,,tbr3,o2,River
-Barge,Barge Change Collection,Change Barge - b46,2025-01-18 07:20:00.000000,2025-01-18 07:40:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b45,b46,b47",,,,,tbr3,o2,River
-Barge,Barge Change Collection,Change Barge - b47,2025-01-18 07:40:00.000000,2025-01-18 08:00:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b45,b46,b47",,,,,tbr3,o2,River
-s11,Customer Station,Sam Khok Pier,2025-01-18 23:06:45.286759,2025-01-20 16:21:45.286759,87.0,,5.756793478260869,main_point,1,8000,"b45,b46,b47",,,,,tbr3,o2,River
-o2,Loader-Customer,ld1 - b46,2025-01-19 20:21:45.286759,2025-01-20 03:51:45.286759,0.0,7.5,400.0,loading_point,1,3000,b46,,,,,tbr3,o2,River
-o2,Loader-Customer,ld1 - b45,2025-01-20 03:51:45.286759,2025-01-20 10:06:45.286759,0.0,6.25,400.0,loading_point,1,2500,b45,,,,,tbr3,o2,River
-o2,Loader-Customer,ld1 - b47,2025-01-20 10:06:45.286759,2025-01-20 16:21:45.286759,0.0,6.25,400.0,loading_point,1,2500,b47,,,,,tbr3,o2,River
-Start,Start,River Start,2025-01-18 06:00:00.000000,2025-01-18 06:00:00.000000,0.0,0.0,0.0,main_point,1,8500,"b48,b49,b50",,,,,tbr4,o2,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-18 07:00:00.000000,2025-01-18 08:00:00.000000,142.6564285925267,14.860044645054867,9.6,main_point,1,8500,"b48,b49,b50",,,,,tbr4,o2,River
-Barge,Barge Change Collection,Change Barge - b48,2025-01-18 07:00:00.000000,2025-01-18 07:20:00.000000,142.6564285925267,14.860044645054867,9.6,travel_point,1,8500,"b48,b49,b50",,,,,tbr4,o2,River
-Barge,Barge Change Collection,Change Barge - b49,2025-01-18 07:20:00.000000,2025-01-18 07:40:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b48,b49,b50",,,,,tbr4,o2,River
-Barge,Barge Change Collection,Change Barge - b50,2025-01-18 07:40:00.000000,2025-01-18 08:00:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b48,b49,b50",,,,,tbr4,o2,River
-s11,Customer Station,Sam Khok Pier,2025-01-18 22:47:45.306122,2025-01-21 13:17:45.306122,87.0,,5.88,main_point,1,8500,"b48,b49,b50",,,,,tbr4,o2,River
-o2,Loader-Customer,ld1 - b48,2025-01-20 16:02:45.306122,2025-01-20 23:32:45.306122,0.0,7.5,400.0,loading_point,1,3000,b48,,,,,tbr4,o2,River
-o2,Loader-Customer,ld1 - b50,2025-01-20 23:32:45.306122,2025-01-21 07:02:45.306122,0.0,7.5,400.0,loading_point,1,3000,b50,,,,,tbr4,o2,River
-o2,Loader-Customer,ld1 - b49,2025-01-21 07:02:45.306122,2025-01-21 13:17:45.306122,0.0,6.25,400.0,loading_point,1,2500,b49,,,,,tbr4,o2,River
-Start,Start,River Start,2025-01-18 11:30:00.000000,2025-01-18 11:30:00.000000,0.0,0.0,0.0,main_point,1,8000,"b17,b18,b19",,,,,tbr8,o2,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-18 13:45:00.000000,2025-01-18 16:00:00.000000,20.0,2.0,10.0,main_point,1,8000,"b17,b18,b19",,,,,tbr8,o2,River
-Barge,Barge Change Collection,Change Barge - b17,2025-01-18 13:45:00.000000,2025-01-18 14:05:00.000000,20.0,2.0,10.0,travel_point,1,8000,"b17,b18,b19",,,,,tbr8,o2,River
-Barge,Barge Change Collection,Change Barge - b18,2025-01-18 14:05:00.000000,2025-01-18 14:25:00.000000,5.0,0.5395894428152493,9.266304347826086,travel_point,1,8000,"b17,b18,b19",,,,,tbr8,o2,River
-Barge,Barge Change Collection,Change Barge - b19,2025-01-18 14:25:00.000000,2025-01-18 14:45:00.000000,5.0,0.5853658536585367,8.541666666666666,travel_point,1,8000,"b17,b18,b19",,,,,tbr8,o2,River
-s11,Customer Station,Sam Khok Pier,2025-01-19 05:58:33.253012,2025-01-22 16:28:33.253012,87.0,,6.225,main_point,1,8000,"b17,b18,b19",,,,,tbr8,o2,River
-o2,Loader-Customer,ld1 - b18,2025-01-21 20:28:33.253012,2025-01-22 03:58:33.253012,0.0,7.5,400.0,loading_point,1,3000,b18,,,,,tbr8,o2,River
-o2,Loader-Customer,ld1 - b17,2025-01-22 03:58:33.253012,2025-01-22 10:13:33.253012,0.0,6.25,400.0,loading_point,1,2500,b17,,,,,tbr8,o2,River
-o2,Loader-Customer,ld1 - b19,2025-01-22 10:13:33.253012,2025-01-22 16:28:33.253012,0.0,6.25,400.0,loading_point,1,2500,b19,,,,,tbr8,o2,River
-Start,Start,River Start,2025-01-18 12:30:52.953122,2025-01-18 12:30:52.953122,0.0,0.0,0.0,main_point,1,3500,"b20,b37",,,,,tbr9,o2,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-18 13:45:00.000000,2025-01-18 15:00:00.000000,60.0,6.315789473684211,9.5,main_point,1,3500,"b20,b37",,,,,tbr9,o2,River
-Barge,Barge Change Collection,Change Barge - b20,2025-01-18 13:45:00.000000,2025-01-18 14:05:00.000000,60.0,6.315789473684211,9.5,travel_point,1,3500,"b20,b37",,,,,tbr9,o2,River
-Barge,Barge Change Collection,Change Barge - b37,2025-01-18 14:05:00.000000,2025-01-18 14:25:00.000000,5.0,0.5686241326789643,8.793154761904763,travel_point,1,3500,"b20,b37",,,,,tbr9,o2,River
-s11,Customer Station,Sam Khok Pier,2025-01-19 02:51:05.015480,2025-01-22 22:06:05.015480,87.0,,7.340909090909091,main_point,1,3500,"b20,b37",,,,,tbr9,o2,River
-o2,Loader-Customer,ld1 - b20,2025-01-22 13:21:05.015480,2025-01-22 20:51:05.015480,0.0,7.5,400.0,loading_point,1,3000,b20,,,,,tbr9,o2,River
-o2,Loader-Customer,ld1 - b37,2025-01-22 20:51:05.015480,2025-01-22 22:06:05.015480,0.0,1.25,400.0,loading_point,1,500,b37,,,,,tbr9,o2,River
-Start,Start,Start,2025-01-18 05:45:00.000000,2025-01-18 05:45:00.000000,0.0,0.0,0.0,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-18 13:00:00.000000,2025-01-18 22:00:34.731254,87.0,7.249999999999998,12.0,main_point,1,2500,"b1,b2,b3,b4,b5",150.7929956492242,17.740352429320495,8.5,2025-01-19 15:45:00,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b1,2025-01-18 13:00:00.000000,2025-01-18 20:45:00.000000,87.0,7.249999999999998,12.000000000000004,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b2,2025-01-18 20:45:00.000000,2025-01-18 21:15:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b3,2025-01-18 21:15:00.000000,2025-01-18 21:45:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b4,2025-01-18 21:45:00.000000,2025-01-18 22:15:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b5,2025-01-18 22:15:00.000000,2025-01-18 22:45:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-19 15:45:00.000000,2025-01-19 17:15:00.000000,150.7929956492242,,8.5,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr5 - b1,2025-01-19 15:45:00.000000,2025-01-19 16:56:25.714286,0.0,,420.0,loading_point,1,500,b1,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr4 - b2,2025-01-19 15:45:00.000000,2025-01-19 17:00:00.000000,0.0,,400.0,loading_point,1,500,b2,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr1 - b3,2025-01-19 15:45:00.000000,2025-01-19 17:03:56.842105,0.0,,380.0,loading_point,1,500,b3,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr6 - b4,2025-01-19 15:45:00.000000,2025-01-19 17:03:56.842105,0.0,,380.0,loading_point,1,500,b4,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr2 - b5,2025-01-19 15:45:00.000000,2025-01-19 17:10:42.857143,0.0,,350.0,loading_point,1,500,b5,,,,,tbs1,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 01:15:00.000000,2025-01-20 17:15:00.000000,64.46761922303374,,8.0,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
-Start,Start,Start,2025-01-20 17:15:00.000000,2025-01-20 17:15:00.000000,0.0,0.0,0.0,main_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-21 00:00:00.000000,2025-01-21 19:45:34.731254,83.0,6.916666666666665,12.0,main_point,2,7000,"b28,b29,b30,b38,b39",48.7929956492242,5.740352429320494,8.5,2025-01-22 01:30:00,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b28,2025-01-21 00:00:00.000000,2025-01-21 07:15:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b29,2025-01-21 07:15:00.000000,2025-01-21 07:45:00.000000,0.0,0.0,0.0,travel_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b30,2025-01-21 07:45:00.000000,2025-01-21 08:15:00.000000,0.0,0.0,0.0,travel_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b38,2025-01-21 08:15:00.000000,2025-01-21 19:15:00.000000,103.0,10.426608821402747,9.87857142857143,travel_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b39,2025-01-21 19:15:00.000000,2025-01-21 20:15:00.000000,5.0,0.5442942942942943,9.186206896551724,travel_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-22 01:30:00.000000,2025-01-22 08:45:00.000000,48.7929956492242,,8.5,main_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr5 - b38,2025-01-22 01:30:00.000000,2025-01-22 08:38:34.285714,0.0,,420.0,loading_point,2,3000,b38,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr4 - b39,2025-01-22 01:30:00.000000,2025-01-22 07:45:00.000000,0.0,,400.0,loading_point,2,2500,b39,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr1 - b28,2025-01-22 01:30:00.000000,2025-01-22 02:48:56.842105,0.0,,380.0,loading_point,2,500,b28,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr6 - b29,2025-01-22 01:30:00.000000,2025-01-22 02:48:56.842105,0.0,,380.0,loading_point,2,500,b29,,,,,tbs1,o3,Sea
-o3,Crane-Carrier,cr2 - b30,2025-01-22 01:30:00.000000,2025-01-22 02:55:42.857143,0.0,,350.0,loading_point,2,500,b30,,,,,tbs1,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-22 17:45:00.000000,2025-01-23 14:45:00.000000,64.46761922303374,,7.1,main_point,2,7000,"b28,b29,b30,b38,b39",,,,,tbs1,o3,Sea
-Start,Start,Start,2025-01-18 08:00:00.000000,2025-01-18 08:00:00.000000,0.0,0.0,0.0,main_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-18 15:15:00.000000,2025-01-19 14:00:00.000000,87.0,7.249999999999998,12.0,main_point,1,9500,"b6,b7,b8,b9,b10",5.240876641161994,0.6123361024038069,8.558823529411764,2025-01-19 14:45:00,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b6,2025-01-18 15:15:00.000000,2025-01-18 23:00:00.000000,87.0,7.249999999999998,12.000000000000004,travel_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b7,2025-01-18 23:00:00.000000,2025-01-18 23:45:00.000000,4.0,0.35398230088495575,11.3,travel_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b8,2025-01-18 23:45:00.000000,2025-01-19 13:45:00.000000,142.6564285925267,13.449967415962071,10.606451612903223,travel_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b9,2025-01-19 13:45:00.000000,2025-01-19 14:15:00.000000,0.0,0.0,0.0,travel_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b10,2025-01-19 14:15:00.000000,2025-01-19 14:45:00.000000,0.0,0.0,0.0,travel_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-19 14:45:00.000000,2025-01-20 01:45:00.000000,5.240876641161994,,8.558823529411764,main_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr3 - b8,2025-01-19 14:45:00.000000,2025-01-20 00:45:00.000000,0.0,,300.0,loading_point,1,3000,b8,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr5 - b10,2025-01-19 15:56:25.714286,2025-01-19 23:05:00.000000,0.0,,420.0,loading_point,1,3000,b10,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr4 - b9,2025-01-19 16:00:00.000000,2025-01-19 22:15:00.000000,0.0,,400.0,loading_point,1,2500,b9,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr1 - b6,2025-01-19 16:03:56.842105,2025-01-19 17:22:53.684210,0.0,,380.0,loading_point,1,500,b6,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr6 - b7,2025-01-19 16:03:56.842105,2025-01-19 17:22:53.684210,0.0,,380.0,loading_point,1,500,b7,,,,,tbs2,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 11:00:00.000000,2025-01-22 06:00:00.000000,64.46761922303374,,6.88235294117647,main_point,1,9500,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
-Start,Start,Start,2025-01-22 06:00:00.000000,2025-01-22 06:00:00.000000,0.0,0.0,0.0,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-22 07:45:57.039846,2025-01-22 12:00:00.000000,20.0,1.6666666666666665,12.0,main_point,2,11000,"b40,b57,b58,b59",63.7929956492242,6.906721969896322,9.236363636363636,2025-01-22 19:00:00,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b40,2025-01-22 07:45:57.039846,2025-01-22 10:00:00.000000,20.0,1.6666666666666665,12.000000000000002,travel_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b57,2025-01-22 10:00:00.000000,2025-01-22 11:45:00.000000,15.0,1.327433628318584,11.3,travel_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b58,2025-01-22 11:45:00.000000,2025-01-22 12:15:00.000000,0.0,0.0,0.0,travel_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b59,2025-01-22 12:15:00.000000,2025-01-22 12:45:00.000000,0.0,0.0,0.0,travel_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-22 19:00:00.000000,2025-01-23 02:30:00.000000,63.7929956492242,,9.236363636363636,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr5 - b40,2025-01-22 19:00:00.000000,2025-01-23 02:08:34.285714,0.0,,420.0,loading_point,2,3000,b40,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr4 - b58,2025-01-22 19:00:00.000000,2025-01-23 02:30:00.000000,0.0,,400.0,loading_point,2,3000,b58,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr1 - b57,2025-01-22 19:00:00.000000,2025-01-23 01:34:44.210526,0.0,,380.0,loading_point,2,2500,b57,,,,,tbs2,o3,Sea
-o3,Crane-Carrier,cr6 - b59,2025-01-22 19:00:00.000000,2025-01-23 01:34:44.210526,0.0,,380.0,loading_point,2,2500,b59,,,,,tbs2,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-23 11:15:00.000000,2025-01-23 17:30:00.000000,64.46761922303374,,7.236363636363636,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs2,o3,Sea
-Start,Start,Start,2025-01-18 08:00:00.000000,2025-01-18 08:00:00.000000,0.0,0.0,0.0,main_point,1,8000,"b11,b12,b13",,,,,tbs3,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-18 12:30:00.000000,2025-01-18 18:00:00.000000,50.43107238719272,4.584642944290247,11.0,main_point,1,8000,"b11,b12,b13",54.7929956492242,6.050892834463725,9.055357142857144,2025-01-19 00:15:00,tbs3,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b11,2025-01-18 12:30:00.000000,2025-01-18 17:30:00.000000,50.43107238719272,4.584642944290247,11.0,travel_point,1,8000,"b11,b12,b13",,,,,tbs3,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b12,2025-01-18 17:30:00.000000,2025-01-18 18:00:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b11,b12,b13",,,,,tbs3,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b13,2025-01-18 18:00:00.000000,2025-01-18 18:30:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b11,b12,b13",,,,,tbs3,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-19 00:15:00.000000,2025-01-20 01:45:00.000000,54.7929956492242,,9.055357142857144,main_point,1,8000,"b11,b12,b13",,,,,tbs3,o3,Sea
-o3,Crane-Carrier,cr2 - b12,2025-01-19 00:15:00.000000,2025-01-19 08:49:17.142857,0.0,,350.0,loading_point,1,3000,b12,,,,,tbs3,o3,Sea
-o3,Crane-Carrier,cr1 - b11,2025-01-19 01:27:10.827068,2025-01-19 08:01:55.037594,0.0,,380.0,loading_point,1,2500,b11,,,,,tbs3,o3,Sea
-o3,Crane-Carrier,cr6 - b13,2025-01-19 01:27:10.827068,2025-01-19 08:01:55.037594,0.0,,380.0,loading_point,1,2500,b13,,,,,tbs3,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 10:15:00.000000,2025-01-20 17:15:00.000000,64.46761922303374,,7.483928571428572,main_point,1,8000,"b11,b12,b13",,,,,tbs3,o3,Sea
-Start,Start,Start,2025-01-20 17:15:00.000000,2025-01-20 17:15:00.000000,0.0,0.0,0.0,main_point,2,8500,"b60,b31,b32",,,,,tbs3,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-20 18:00:00.000000,2025-01-20 20:45:00.000000,9.0,0.8181818181818182,11.0,main_point,2,8500,"b60,b31,b32",54.7929956492242,6.050892834463725,9.055357142857144,2025-01-21 03:00:00,tbs3,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b31,2025-01-20 18:00:00.000000,2025-01-20 19:15:00.000000,9.0,0.8181818181818182,11.0,travel_point,2,8500,"b60,b31,b32",,,,,tbs3,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b32,2025-01-20 19:15:00.000000,2025-01-20 19:45:00.000000,0.0,0.0,0.0,travel_point,2,8500,"b60,b31,b32",,,,,tbs3,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b60,2025-01-20 19:45:00.000000,2025-01-20 21:15:00.000000,9.0,0.9281894576012223,9.696296296296296,travel_point,2,8500,"b60,b31,b32",,,,,tbs3,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-21 03:00:00.000000,2025-01-23 08:15:00.000000,54.7929956492242,,9.055357142857144,main_point,2,8500,"b60,b31,b32",,,,,tbs3,o3,Sea
-o3,Crane-Carrier,cr2 - b60,2025-01-21 03:00:00.000000,2025-01-21 11:34:17.142857,0.0,,350.0,loading_point,2,3000,b60,,,,,tbs3,o3,Sea
-o3,Crane-Carrier,cr3 - b32,2025-01-21 03:00:00.000000,2025-01-21 13:00:00.000000,0.0,,300.0,loading_point,2,3000,b32,,,,,tbs3,o3,Sea
-o3,Crane-Carrier,cr5 - b31,2025-01-21 10:08:34.285714,2025-01-21 16:05:42.857143,0.0,,420.0,loading_point,2,2500,b31,,,,,tbs3,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-23 16:45:00.000000,2025-01-24 00:00:00.000000,64.46761922303374,,7.385714285714286,main_point,2,8500,"b60,b31,b32",,,,,tbs3,o3,Sea
-Start,Start,Start,2025-01-18 08:00:00.000000,2025-01-18 08:00:00.000000,0.0,0.0,0.0,main_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-18 08:45:00.000000,2025-01-18 21:30:00.000000,9.0,0.8181818181818182,11.0,main_point,1,9500,"b14,b15,b16,b21,b22",146.7929956492242,18.710259989029513,7.845588235294118,2025-01-19 16:15:00,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b14,2025-01-18 08:45:00.000000,2025-01-18 10:00:00.000000,9.0,0.8181818181818182,11.0,travel_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b15,2025-01-18 10:00:00.000000,2025-01-18 10:30:00.000000,0.0,0.0,0.0,travel_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b16,2025-01-18 10:30:00.000000,2025-01-18 11:00:00.000000,0.0,0.0,0.0,travel_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b21,2025-01-18 11:00:00.000000,2025-01-18 21:30:00.000000,92.0,10.118577075098814,9.0921875,travel_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b22,2025-01-18 21:30:00.000000,2025-01-18 22:00:00.000000,0.0,0.0,0.0,travel_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-19 16:15:00.000000,2025-01-20 07:45:00.000000,146.7929956492242,,7.845588235294118,main_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr4 - b14,2025-01-19 16:15:00.000000,2025-01-19 23:45:00.000000,0.0,,400.0,loading_point,1,3000,b14,,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr5 - b16,2025-01-19 17:05:00.000000,2025-01-20 00:13:34.285714,0.0,,420.0,loading_point,1,3000,b16,,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr1 - b15,2025-01-19 17:57:37.894737,2025-01-20 00:32:22.105263,0.0,,380.0,loading_point,1,2500,b15,,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr6 - b21,2025-01-19 17:57:37.894737,2025-01-19 19:16:34.736842,0.0,,380.0,loading_point,1,500,b21,,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr2 - b22,2025-01-19 18:45:00.000000,2025-01-19 20:10:42.857143,0.0,,350.0,loading_point,1,500,b22,,,,,tbs4,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 17:45:00.000000,2025-01-21 01:15:00.000000,64.46761922303374,,6.3088235294117645,main_point,1,9500,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
-Start,Start,Start,2025-01-21 01:15:00.000000,2025-01-21 01:15:00.000000,0.0,0.0,0.0,main_point,2,3500,"b33,b34",,,,,tbs4,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-21 02:00:00.000000,2025-01-21 03:30:00.000000,9.0,0.8181818181818182,11.0,main_point,2,3500,"b33,b34",54.7929956492242,5.635643215414566,9.72258064516129,2025-01-21 09:15:00,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b33,2025-01-21 02:00:00.000000,2025-01-21 03:15:00.000000,9.0,0.8181818181818182,11.0,travel_point,2,3500,"b33,b34",,,,,tbs4,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b34,2025-01-21 03:15:00.000000,2025-01-21 03:45:00.000000,0.0,0.0,0.0,travel_point,2,3500,"b33,b34",,,,,tbs4,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-21 09:15:00.000000,2025-01-23 08:15:00.000000,54.7929956492242,,9.72258064516129,main_point,2,3500,"b33,b34",,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr1 - b33,2025-01-21 09:15:00.000000,2025-01-21 15:49:44.210526,0.0,,380.0,loading_point,2,2500,b33,,,,,tbs4,o3,Sea
-o3,Crane-Carrier,cr6 - b34,2025-01-21 09:15:00.000000,2025-01-21 11:52:53.684211,0.0,,380.0,loading_point,2,1000,b34,,,,,tbs4,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-23 15:15:00.000000,2025-01-24 00:00:00.000000,64.46761922303374,,9.101612903225806,main_point,2,3500,"b33,b34",,,,,tbs4,o3,Sea
-Start,Start,Start,2025-01-18 16:00:00.000000,2025-01-18 16:00:00.000000,0.0,0.0,0.0,main_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-Barge,Barge Collection,Barge Location,2025-01-18 23:30:00.000000,2025-01-19 08:45:00.000000,83.0,7.545454545454546,11.0,main_point,1,2500,"b23,b24,b25,b26,b27",146.7929956492242,18.710259989029513,7.845588235294118,2025-01-20 03:30:00,tbs5,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b23,2025-01-18 23:30:00.000000,2025-01-19 07:30:00.000000,83.0,7.545454545454546,11.0,travel_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b24,2025-01-19 07:30:00.000000,2025-01-19 08:00:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b25,2025-01-19 08:00:00.000000,2025-01-19 08:30:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b26,2025-01-19 08:30:00.000000,2025-01-19 09:00:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-Barge,Barge Step Collection,Collecting Barge - b27,2025-01-19 09:00:00.000000,2025-01-19 09:30:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-o3,Start Order Carrier,carrier3,2025-01-20 03:30:00.000000,2025-01-20 06:30:00.000000,146.7929956492242,,7.845588235294118,main_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-o3,Crane-Carrier,cr6 - b23,2025-01-20 03:30:00.000000,2025-01-20 04:48:56.842105,0.0,,380.0,loading_point,1,500,b23,,,,,tbs5,o3,Sea
-o3,Crane-Carrier,cr2 - b24,2025-01-20 03:30:00.000000,2025-01-20 04:55:42.857143,0.0,,350.0,loading_point,1,500,b24,,,,,tbs5,o3,Sea
-o3,Crane-Carrier,cr3 - b25,2025-01-20 03:30:00.000000,2025-01-20 05:10:00.000000,0.0,,300.0,loading_point,1,500,b25,,,,,tbs5,o3,Sea
-o3,Crane-Carrier,cr6 - b26,2025-01-20 04:48:56.842105,2025-01-20 06:07:53.684210,0.0,,380.0,loading_point,1,500,b26,,,,,tbs5,o3,Sea
-o3,Crane-Carrier,cr2 - b27,2025-01-20 04:55:42.857143,2025-01-20 06:21:25.714286,0.0,,350.0,loading_point,1,500,b27,,,,,tbs5,o3,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 15:00:00.000000,2025-01-22 06:00:00.000000,64.46761922303374,,7.4411764705882355,main_point,1,2500,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
-Start,Start,River Start,2025-01-19 23:45:00.000000,2025-01-19 23:45:00.000000,0.0,0.0,0.0,main_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-20 01:15:00.000000,2025-01-20 02:45:00.000000,146.6564285925267,14.665642859252673,10.0,main_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b1,2025-01-20 01:15:00.000000,2025-01-20 01:35:00.000000,146.6564285925267,14.665642859252673,9.999999999999998,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b2,2025-01-20 01:35:00.000000,2025-01-20 01:55:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b3,2025-01-20 01:55:00.000000,2025-01-20 02:15:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b4,2025-01-20 02:15:00.000000,2025-01-20 02:35:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-20 17:45:00.000000,2025-01-20 18:45:00.000000,100.0,,6.666666666666667,main_point,1,2000,"b1,b2,b3,b4",,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b1,2025-01-20 17:45:00.000000,2025-01-20 18:00:00.000000,0.0,0.25,2000.0,loading_point,1,500,b1,,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b2,2025-01-20 18:00:00.000000,2025-01-20 18:15:00.000000,0.0,0.25,2000.0,loading_point,1,500,b2,,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b3,2025-01-20 18:15:00.000000,2025-01-20 18:30:00.000000,0.0,0.25,2000.0,loading_point,1,500,b3,,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b4,2025-01-20 18:30:00.000000,2025-01-20 18:45:00.000000,0.0,0.25,2000.0,loading_point,1,500,b4,,,,,tbr1,o3,River
-Start,Start,River Start,2025-01-22 09:45:00.000000,2025-01-22 09:45:00.000000,0.0,0.0,0.0,main_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-22 17:45:00.000000,2025-01-23 01:45:00.000000,159.6564285925267,15.965642859252673,10.0,main_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b28,2025-01-22 17:45:00.000000,2025-01-22 18:05:00.000000,159.6564285925267,15.965642859252673,9.999999999999998,travel_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b29,2025-01-22 18:05:00.000000,2025-01-22 18:25:00.000000,0.0,0.0,0.0,travel_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b30,2025-01-22 18:25:00.000000,2025-01-22 18:45:00.000000,0.0,0.0,0.0,travel_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-Barge,Barge Change Collection,Change Barge - b38,2025-01-22 18:45:00.000000,2025-01-22 19:05:00.000000,50.43107238719272,6.466423218984991,7.79891304347826,travel_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-23 18:01:16.271186,2025-01-23 20:16:16.271186,100.0,,6.145833333333334,main_point,2,4500,"b28,b29,b30,b38",,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b38,2025-01-23 18:01:16.271186,2025-01-23 19:31:16.271186,0.0,1.5,2000.0,loading_point,2,3000,b38,,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b28,2025-01-23 19:31:16.271186,2025-01-23 19:46:16.271186,0.0,0.25,2000.0,loading_point,2,500,b28,,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b29,2025-01-23 19:46:16.271186,2025-01-23 20:01:16.271186,0.0,0.25,2000.0,loading_point,2,500,b29,,,,,tbr1,o3,River
-o3,Loader-Customer,ld1 - b30,2025-01-23 20:01:16.271186,2025-01-23 20:16:16.271186,0.0,0.25,2000.0,loading_point,2,500,b30,,,,,tbr1,o3,River
-Start,Start,River Start,2025-01-20 03:15:00.000000,2025-01-20 03:15:00.000000,0.0,0.0,0.0,main_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-20 10:15:00.000000,2025-01-20 17:15:00.000000,146.6564285925267,14.665642859252673,10.0,main_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b5,2025-01-20 10:15:00.000000,2025-01-20 10:35:00.000000,146.6564285925267,14.665642859252673,9.999999999999998,travel_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b11,2025-01-20 10:35:00.000000,2025-01-20 10:55:00.000000,50.43107238719272,5.442414849996165,9.266304347826086,travel_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b12,2025-01-20 10:55:00.000000,2025-01-20 11:15:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b13,2025-01-20 11:15:00.000000,2025-01-20 11:35:00.000000,0.0,0.0,0.0,travel_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-21 11:29:44.210526,2025-01-21 16:44:44.210526,100.0,,5.480769230769231,main_point,1,8500,"b5,b11,b12,b13",,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b12,2025-01-21 12:29:44.210526,2025-01-21 13:59:44.210526,0.0,1.5,2000.0,loading_point,1,3000,b12,,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b11,2025-01-21 13:59:44.210526,2025-01-21 15:14:44.210526,0.0,1.25,2000.0,loading_point,1,2500,b11,,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b13,2025-01-21 15:14:44.210526,2025-01-21 16:29:44.210526,0.0,1.25,2000.0,loading_point,1,2500,b13,,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b5,2025-01-21 16:29:44.210526,2025-01-21 16:44:44.210526,0.0,0.25,2000.0,loading_point,1,500,b5,,,,,tbr2,o3,River
-Start,Start,River Start,2025-01-23 07:45:00.000000,2025-01-23 07:45:00.000000,0.0,0.0,0.0,main_point,2,8000,"b39,b40,b57",,,,,tbr2,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-23 11:15:00.000000,2025-01-23 14:45:00.000000,120.0,12.000000000000002,10.0,main_point,2,8000,"b39,b40,b57",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b39,2025-01-23 11:15:00.000000,2025-01-23 11:35:00.000000,120.0,12.000000000000002,9.999999999999998,travel_point,2,8000,"b39,b40,b57",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b40,2025-01-23 11:35:00.000000,2025-01-23 11:55:00.000000,5.0,0.5395894428152493,9.266304347826086,travel_point,2,8000,"b39,b40,b57",,,,,tbr2,o3,River
-Barge,Barge Change Collection,Change Barge - b57,2025-01-23 11:55:00.000000,2025-01-23 12:15:00.000000,15.0,1.75609756097561,8.541666666666666,travel_point,2,8000,"b39,b40,b57",,,,,tbr2,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-24 06:48:51.325301,2025-01-24 13:03:51.325301,100.0,,6.225,main_point,2,8000,"b39,b40,b57",,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b40,2025-01-24 09:03:51.325301,2025-01-24 10:33:51.325301,0.0,1.5,2000.0,loading_point,2,3000,b40,,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b39,2025-01-24 10:33:51.325301,2025-01-24 11:48:51.325301,0.0,1.25,2000.0,loading_point,2,2500,b39,,,,,tbr2,o3,River
-o3,Loader-Customer,ld1 - b57,2025-01-24 11:48:51.325301,2025-01-24 13:03:51.325301,0.0,1.25,2000.0,loading_point,2,2500,b57,,,,,tbr2,o3,River
-Start,Start,River Start,2025-01-21 06:15:00.000000,2025-01-21 06:15:00.000000,0.0,0.0,0.0,main_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-21 07:45:00.000000,2025-01-21 09:15:00.000000,146.6564285925267,15.437518799213338,9.5,main_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b6,2025-01-21 07:45:00.000000,2025-01-21 08:05:00.000000,146.6564285925267,15.437518799213338,9.5,travel_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b7,2025-01-21 08:05:00.000000,2025-01-21 08:25:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b8,2025-01-21 08:25:00.000000,2025-01-21 08:45:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b9,2025-01-21 08:45:00.000000,2025-01-21 09:05:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-22 03:37:23.540670,2025-01-22 12:07:23.540670,100.0,,5.442708333333333,main_point,1,6500,"b6,b7,b8,b9",,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b8,2025-01-22 08:52:23.540670,2025-01-22 10:22:23.540670,0.0,1.5,2000.0,loading_point,1,3000,b8,,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b9,2025-01-22 10:22:23.540670,2025-01-22 11:37:23.540670,0.0,1.25,2000.0,loading_point,1,2500,b9,,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b6,2025-01-22 11:37:23.540670,2025-01-22 11:52:23.540670,0.0,0.25,2000.0,loading_point,1,500,b6,,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b7,2025-01-22 11:52:23.540670,2025-01-22 12:07:23.540670,0.0,0.25,2000.0,loading_point,1,500,b7,,,,,tbr3,o3,River
-Start,Start,River Start,2025-01-23 13:00:00.000000,2025-01-23 13:00:00.000000,0.0,0.0,0.0,main_point,2,8000,"b58,b59,b33",,,,,tbr3,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-23 15:15:00.000000,2025-01-23 17:30:00.000000,100.0,10.526315789473685,9.5,main_point,2,8000,"b58,b59,b33",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b58,2025-01-23 15:15:00.000000,2025-01-23 15:35:00.000000,100.0,10.526315789473685,9.5,travel_point,2,8000,"b58,b59,b33",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b59,2025-01-23 15:35:00.000000,2025-01-23 15:55:00.000000,0.0,0.0,0.0,travel_point,2,8000,"b58,b59,b33",,,,,tbr3,o3,River
-Barge,Barge Change Collection,Change Barge - b33,2025-01-23 15:55:00.000000,2025-01-23 16:15:00.000000,9.0,1.111578947368421,8.09659090909091,travel_point,2,8000,"b58,b59,b33",,,,,tbr3,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-24 10:52:14.812367,2025-01-24 21:07:14.812367,100.0,,5.756793478260869,main_point,2,8000,"b58,b59,b33",,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b58,2025-01-24 17:07:14.812367,2025-01-24 18:37:14.812367,0.0,1.5,2000.0,loading_point,2,3000,b58,,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b59,2025-01-24 18:37:14.812367,2025-01-24 19:52:14.812367,0.0,1.25,2000.0,loading_point,2,2500,b59,,,,,tbr3,o3,River
-o3,Loader-Customer,ld1 - b33,2025-01-24 19:52:14.812367,2025-01-24 21:07:14.812367,0.0,1.25,2000.0,loading_point,2,2500,b33,,,,,tbr3,o3,River
-Start,Start,River Start,2025-01-22 03:00:00.000000,2025-01-22 03:00:00.000000,0.0,0.0,0.0,main_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-22 04:30:00.000000,2025-01-22 06:00:00.000000,146.6564285925267,15.276711311721533,9.6,main_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b10,2025-01-22 04:30:00.000000,2025-01-22 04:50:00.000000,146.6564285925267,15.276711311721533,9.6,travel_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b23,2025-01-22 04:50:00.000000,2025-01-22 05:10:00.000000,0.0,0.0,0.0,travel_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b24,2025-01-22 05:10:00.000000,2025-01-22 05:30:00.000000,0.0,0.0,0.0,travel_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b25,2025-01-22 05:30:00.000000,2025-01-22 05:50:00.000000,0.0,0.0,0.0,travel_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-22 22:40:00.000000,2025-01-23 09:25:00.000000,100.0,,6.0,main_point,1,4500,"b10,b23,b24,b25",,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b10,2025-01-23 07:10:00.000000,2025-01-23 08:40:00.000000,0.0,1.5,2000.0,loading_point,1,3000,b10,,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b23,2025-01-23 08:40:00.000000,2025-01-23 08:55:00.000000,0.0,0.25,2000.0,loading_point,1,500,b23,,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b24,2025-01-23 08:55:00.000000,2025-01-23 09:10:00.000000,0.0,0.25,2000.0,loading_point,1,500,b24,,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b25,2025-01-23 09:10:00.000000,2025-01-23 09:25:00.000000,0.0,0.25,2000.0,loading_point,1,500,b25,,,,,tbr4,o3,River
-Start,Start,River Start,2025-01-23 17:30:00.000000,2025-01-23 17:30:00.000000,0.0,0.0,0.0,main_point,2,6500,"b34,b60,b31",,,,,tbr4,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-23 20:45:00.000000,2025-01-24 00:00:00.000000,109.0,11.354166666666666,9.6,main_point,2,6500,"b34,b60,b31",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b34,2025-01-23 20:45:00.000000,2025-01-23 21:05:00.000000,109.0,11.354166666666666,9.6,travel_point,2,6500,"b34,b60,b31",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b60,2025-01-23 21:05:00.000000,2025-01-23 21:25:00.000000,9.0,1.0117302052785926,8.895652173913042,travel_point,2,6500,"b34,b60,b31",,,,,tbr4,o3,River
-Barge,Barge Change Collection,Change Barge - b31,2025-01-23 21:25:00.000000,2025-01-23 21:45:00.000000,9.0,1.0975609756097562,8.2,travel_point,2,6500,"b34,b60,b31",,,,,tbr4,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-24 15:57:51.264368,2025-01-25 05:27:51.264368,100.0,,6.263999999999999,main_point,2,6500,"b34,b60,b31",,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b60,2025-01-25 02:12:51.264368,2025-01-25 03:42:51.264368,0.0,1.5,2000.0,loading_point,2,3000,b60,,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b31,2025-01-25 03:42:51.264368,2025-01-25 04:57:51.264368,0.0,1.25,2000.0,loading_point,2,2500,b31,,,,,tbr4,o3,River
-o3,Loader-Customer,ld1 - b34,2025-01-25 04:57:51.264368,2025-01-25 05:27:51.264368,0.0,0.5,2000.0,loading_point,2,1000,b34,,,,,tbr4,o3,River
-Start,Start,River Start,2025-01-20 10:15:00.000000,2025-01-20 10:15:00.000000,0.0,0.0,0.0,main_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-20 17:45:00.000000,2025-01-21 01:15:00.000000,142.6564285925267,14.70684830850791,9.7,main_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-Barge,Barge Change Collection,Change Barge - b26,2025-01-20 17:45:00.000000,2025-01-20 18:05:00.000000,142.6564285925267,14.70684830850791,9.7,travel_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-Barge,Barge Change Collection,Change Barge - b27,2025-01-20 18:05:00.000000,2025-01-20 18:25:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-Barge,Barge Change Collection,Change Barge - b14,2025-01-20 18:25:00.000000,2025-01-20 18:45:00.000000,50.43107238719272,6.100253429653554,8.267045454545453,travel_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-Barge,Barge Change Collection,Change Barge - b15,2025-01-20 18:45:00.000000,2025-01-20 19:05:00.000000,0.0,0.0,0.0,travel_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-21 19:14:39.756326,2025-01-22 09:14:39.756326,100.0,,5.557291666666666,main_point,1,6500,"b26,b27,b14,b15",,,,,tbr5,o3,River
-o3,Loader-Customer,ld1 - b14,2025-01-22 05:59:39.756326,2025-01-22 07:29:39.756326,0.0,1.5,2000.0,loading_point,1,3000,b14,,,,,tbr5,o3,River
-o3,Loader-Customer,ld1 - b15,2025-01-22 07:29:39.756326,2025-01-22 08:44:39.756326,0.0,1.25,2000.0,loading_point,1,2500,b15,,,,,tbr5,o3,River
-o3,Loader-Customer,ld1 - b26,2025-01-22 08:44:39.756326,2025-01-22 08:59:39.756326,0.0,0.25,2000.0,loading_point,1,500,b26,,,,,tbr5,o3,River
-o3,Loader-Customer,ld1 - b27,2025-01-22 08:59:39.756326,2025-01-22 09:14:39.756326,0.0,0.25,2000.0,loading_point,1,500,b27,,,,,tbr5,o3,River
-Start,Start,River Start,2025-01-23 16:15:00.000000,2025-01-23 16:15:00.000000,0.0,0.0,0.0,main_point,2,3000,b32,,,,,tbr5,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-23 16:45:00.000000,2025-01-23 17:15:00.000000,109.0,11.237113402061857,9.7,main_point,2,3000,b32,,,,,tbr5,o3,River
-Barge,Barge Change Collection,Change Barge - b32,2025-01-23 16:45:00.000000,2025-01-23 17:05:00.000000,109.0,11.237113402061857,9.7,travel_point,2,3000,b32,,,,,tbr5,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-24 05:19:09.836560,2025-01-24 20:19:09.836560,100.0,,8.285416666666666,main_point,2,3000,b32,,,,,tbr5,o3,River
-o3,Loader-Customer,ld1 - b32,2025-01-24 18:49:09.836560,2025-01-24 20:19:09.836560,0.0,1.5,2000.0,loading_point,2,3000,b32,,,,,tbr5,o3,River
-Start,Start,River Start,2025-01-20 11:00:00.000000,2025-01-20 11:00:00.000000,0.0,0.0,0.0,main_point,1,4000,"b16,b21,b22",,,,,tbr6,o3,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-20 17:45:00.000000,2025-01-21 00:30:00.000000,9.0,0.9183673469387754,9.8,main_point,1,4000,"b16,b21,b22",,,,,tbr6,o3,River
-Barge,Barge Change Collection,Change Barge - b16,2025-01-20 17:45:00.000000,2025-01-20 18:05:00.000000,9.0,0.9183673469387754,9.8,travel_point,1,4000,"b16,b21,b22",,,,,tbr6,o3,River
-Barge,Barge Change Collection,Change Barge - b21,2025-01-20 18:05:00.000000,2025-01-20 18:25:00.000000,50.656428592526716,5.578300832500398,9.080978260869566,travel_point,1,4000,"b16,b21,b22",,,,,tbr6,o3,River
-Barge,Barge Change Collection,Change Barge - b22,2025-01-20 18:25:00.000000,2025-01-20 18:45:00.000000,0.0,0.0,0.0,travel_point,1,4000,"b16,b21,b22",,,,,tbr6,o3,River
-s12,Customer Station,Wat Chang Yai,2025-01-21 15:01:31.379185,2025-01-22 07:01:31.379185,100.0,,6.884500000000001,main_point,1,4000,"b16,b21,b22",,,,,tbr6,o3,River
-o3,Loader-Customer,ld1 - b16,2025-01-22 05:01:31.379185,2025-01-22 06:31:31.379185,0.0,1.5,2000.0,loading_point,1,3000,b16,,,,,tbr6,o3,River
-o3,Loader-Customer,ld1 - b21,2025-01-22 06:31:31.379185,2025-01-22 06:46:31.379185,0.0,0.25,2000.0,loading_point,1,500,b21,,,,,tbr6,o3,River
-o3,Loader-Customer,ld1 - b22,2025-01-22 06:46:31.379185,2025-01-22 07:01:31.379185,0.0,0.25,2000.0,loading_point,1,500,b22,,,,,tbr6,o3,River
-Start,Start,Start,2025-01-23 14:45:00.000000,2025-01-23 14:45:00.000000,0.0,0.0,0.0,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-Barge,Barge Collection,Barge Location,2025-01-23 23:00:00.000000,2025-01-24 09:00:00.000000,100.0,8.333333333333332,12.0,main_point,1,2500,"b1,b2,b3,b4,b5",163.7929956492242,19.269764194026376,8.5,2025-01-25 04:30:00,tbs1,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b1,2025-01-23 23:00:00.000000,2025-01-24 07:45:00.000000,100.0,8.333333333333332,12.000000000000002,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b2,2025-01-24 07:45:00.000000,2025-01-24 08:15:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b3,2025-01-24 08:15:00.000000,2025-01-24 08:45:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b4,2025-01-24 08:45:00.000000,2025-01-24 09:15:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b5,2025-01-24 09:15:00.000000,2025-01-24 09:45:00.000000,0.0,0.0,0.0,travel_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-o4,Start Order Carrier,carrier1,2025-01-25 04:30:00.000000,2025-01-25 07:00:00.000000,163.7929956492242,,8.5,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-o4,Crane-Carrier,cr5 - b1,2025-01-25 04:30:00.000000,2025-01-25 05:41:25.714286,0.0,,420.0,loading_point,1,500,b1,,,,,tbs1,o4,Sea
-o4,Crane-Carrier,cr4 - b2,2025-01-25 04:30:00.000000,2025-01-25 05:45:00.000000,0.0,,400.0,loading_point,1,500,b2,,,,,tbs1,o4,Sea
-o4,Crane-Carrier,cr1 - b3,2025-01-25 04:30:00.000000,2025-01-25 05:48:56.842105,0.0,,380.0,loading_point,1,500,b3,,,,,tbs1,o4,Sea
-o4,Crane-Carrier,cr6 - b4,2025-01-25 04:30:00.000000,2025-01-25 05:48:56.842105,0.0,,380.0,loading_point,1,500,b4,,,,,tbs1,o4,Sea
-o4,Crane-Carrier,cr5 - b5,2025-01-25 05:41:25.714286,2025-01-25 06:52:51.428572,0.0,,420.0,loading_point,1,500,b5,,,,,tbs1,o4,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-25 15:00:00.000000,2025-01-25 16:30:00.000000,64.46761922303374,,8.0,main_point,1,2500,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
-Start,Start,Start,2025-01-23 17:30:00.000000,2025-01-23 17:30:00.000000,0.0,0.0,0.0,main_point,1,1500,"b6,b7,b8",,,,,tbs2,o4,Sea
-Barge,Barge Collection,Barge Location,2025-01-24 01:45:00.000000,2025-01-24 11:00:00.000000,100.0,8.333333333333332,12.0,main_point,1,1500,"b6,b7,b8",163.7929956492242,16.513471521030795,9.91875,2025-01-25 03:45:00,tbs2,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b6,2025-01-24 01:45:00.000000,2025-01-24 10:30:00.000000,100.0,8.333333333333332,12.000000000000002,travel_point,1,1500,"b6,b7,b8",,,,,tbs2,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b7,2025-01-24 10:30:00.000000,2025-01-24 11:00:00.000000,0.0,0.0,0.0,travel_point,1,1500,"b6,b7,b8",,,,,tbs2,o4,Sea
-Barge,Barge Step Collection,Collecting Barge - b8,2025-01-24 11:00:00.000000,2025-01-24 11:30:00.000000,0.0,0.0,0.0,travel_point,1,1500,"b6,b7,b8",,,,,tbs2,o4,Sea
-o4,Start Order Carrier,carrier1,2025-01-25 03:45:00.000000,2025-01-25 07:15:00.000000,163.7929956492242,,9.91875,main_point,1,1500,"b6,b7,b8",,,,,tbs2,o4,Sea
-o4,Crane-Carrier,cr2 - b6,2025-01-25 03:45:00.000000,2025-01-25 05:10:42.857143,0.0,,350.0,loading_point,1,500,b6,,,,,tbs2,o4,Sea
-o4,Crane-Carrier,cr4 - b7,2025-01-25 05:00:00.000000,2025-01-25 06:15:00.000000,0.0,,400.0,loading_point,1,500,b7,,,,,tbs2,o4,Sea
-o4,Crane-Carrier,cr1 - b8,2025-01-25 05:03:56.842105,2025-01-25 06:22:53.684210,0.0,,380.0,loading_point,1,500,b8,,,,,tbs2,o4,Sea
-s2,Appointment,3-Bang Hua Suea Pier,2025-01-25 13:45:00.000000,2025-01-25 16:30:00.000000,64.46761922303374,,9.6375,main_point,1,1500,"b6,b7,b8",,,,,tbs2,o4,Sea
-Start,Start,River Start,2025-01-25 13:30:00.000000,2025-01-25 13:30:00.000000,0.0,0.0,0.0,main_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-25 15:00:00.000000,2025-01-25 16:30:00.000000,159.6564285925267,15.965642859252673,10.0,main_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-Barge,Barge Change Collection,Change Barge - b6,2025-01-25 15:00:00.000000,2025-01-25 15:20:00.000000,159.6564285925267,15.965642859252673,9.999999999999998,travel_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-Barge,Barge Change Collection,Change Barge - b7,2025-01-25 15:20:00.000000,2025-01-25 15:40:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-Barge,Barge Change Collection,Change Barge - b8,2025-01-25 15:40:00.000000,2025-01-25 16:00:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-Barge,Barge Change Collection,Change Barge - b1,2025-01-25 16:00:00.000000,2025-01-25 16:20:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-s13,Customer Station,Bang Pa-In (District),2025-01-26 09:27:00.000000,2025-01-26 14:27:00.000000,113.0,,6.666666666666667,main_point,1,2000,"b6,b7,b8,b1",,,,,tbr1,o4,River
-o4,Loader-Customer,ld1 - b6,2025-01-26 09:27:00.000000,2025-01-26 10:42:00.000000,0.0,1.25,400.0,loading_point,1,500,b6,,,,,tbr1,o4,River
-o4,Loader-Customer,ld1 - b7,2025-01-26 10:42:00.000000,2025-01-26 11:57:00.000000,0.0,1.25,400.0,loading_point,1,500,b7,,,,,tbr1,o4,River
-o4,Loader-Customer,ld1 - b8,2025-01-26 11:57:00.000000,2025-01-26 13:12:00.000000,0.0,1.25,400.0,loading_point,1,500,b8,,,,,tbr1,o4,River
-o4,Loader-Customer,ld1 - b1,2025-01-26 13:12:00.000000,2025-01-26 14:27:00.000000,0.0,1.25,400.0,loading_point,1,500,b1,,,,,tbr1,o4,River
-Start,Start,River Start,2025-01-25 13:30:00.000000,2025-01-25 13:30:00.000000,0.0,0.0,0.0,main_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-s2,Barge Change,3-Bang Hua Suea Pier,2025-01-25 15:00:00.000000,2025-01-25 16:30:00.000000,159.6564285925267,15.965642859252673,10.0,main_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-Barge,Barge Change Collection,Change Barge - b2,2025-01-25 15:00:00.000000,2025-01-25 15:20:00.000000,159.6564285925267,15.965642859252673,9.999999999999998,travel_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-Barge,Barge Change Collection,Change Barge - b3,2025-01-25 15:20:00.000000,2025-01-25 15:40:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-Barge,Barge Change Collection,Change Barge - b4,2025-01-25 15:40:00.000000,2025-01-25 16:00:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-Barge,Barge Change Collection,Change Barge - b5,2025-01-25 16:00:00.000000,2025-01-25 16:20:00.000000,0.0,0.0,0.0,travel_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-s13,Customer Station,Bang Pa-In (District),2025-01-26 09:17:18.857143,2025-01-26 19:17:18.857143,113.0,,6.730769230769231,main_point,1,2000,"b2,b3,b4,b5",,,,,tbr2,o4,River
-o4,Loader-Customer,ld1 - b2,2025-01-26 14:17:18.857143,2025-01-26 15:32:18.857143,0.0,1.25,400.0,loading_point,1,500,b2,,,,,tbr2,o4,River
-o4,Loader-Customer,ld1 - b3,2025-01-26 15:32:18.857143,2025-01-26 16:47:18.857143,0.0,1.25,400.0,loading_point,1,500,b3,,,,,tbr2,o4,River
-o4,Loader-Customer,ld1 - b4,2025-01-26 16:47:18.857143,2025-01-26 18:02:18.857143,0.0,1.25,400.0,loading_point,1,500,b4,,,,,tbr2,o4,River
-o4,Loader-Customer,ld1 - b5,2025-01-26 18:02:18.857143,2025-01-26 19:17:18.857143,0.0,1.25,400.0,loading_point,1,500,b5,,,,,tbr2,o4,River
+Start,Start,Start,2025-01-13 01:15:00.000000,2025-01-13 01:15:00.000000,0.0,0.0,0.0,main_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
+Barge,Barge Collection,Barge Location,2025-01-13 06:15:00.000000,2025-01-13 12:15:00.000000,59.656428592526716,4.971369049377226,12.0,main_point,2,8000,"b29,b30,b41",3.2784233567617305,0.3318722125427637,9.87857142857143,2025-01-13 12:45:00,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b29,2025-01-13 06:15:00.000000,2025-01-13 11:33:16.928578,59.656428592526716,4.971369049377226,12.0,travel_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b30,2025-01-13 11:33:16.928578,2025-01-13 11:53:16.928578,0.0,0.0,0.0,travel_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b41,2025-01-13 11:53:16.928578,2025-01-13 12:13:16.928578,0.0,0.0,0.0,travel_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
+o1,Start Order Carrier,carrier1,2025-01-13 12:45:00.000000,2025-01-13 20:00:00.000000,3.2784233567617305,,9.87857142857143,main_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr2 - b30,2025-01-13 12:45:00.000000,2025-01-13 19:53:34.285714,0.0,,420.0,loading_point,2,3000,b30,,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr1 - b29,2025-01-13 12:45:00.000000,2025-01-13 19:00:00.000000,0.0,,400.0,loading_point,2,2500,b29,,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr3 - b41,2025-01-13 12:45:00.000000,2025-01-13 19:19:44.210526,0.0,,380.0,loading_point,2,2500,b41,,,,,tbs1,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-14 03:30:00.000000,2025-01-15 01:00:00.000000,62.67749061125805,,8.164285714285715,main_point,2,8000,"b29,b30,b41",,,,,tbs1,o1,Sea
+Start,Start,Start,2025-01-13 14:45:00.000000,2025-01-13 14:45:00.000000,0.0,0.0,0.0,main_point,2,3000,b42,,,,,tbs2,o1,Sea
+Barge,Barge Collection,Barge Location,2025-01-13 19:45:00.000000,2025-01-14 01:00:00.000000,59.656428592526716,4.971369049377226,12.0,main_point,2,3000,b42,3.2784233567617305,0.29012596077537434,11.3,2025-01-14 01:30:00,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b42,2025-01-13 19:45:00.000000,2025-01-14 01:03:16.928578,59.656428592526716,4.971369049377226,12.0,travel_point,2,3000,b42,,,,,tbs2,o1,Sea
+o1,Start Order Carrier,carrier1,2025-01-14 01:30:00.000000,2025-01-14 08:45:00.000000,3.2784233567617305,,11.3,main_point,2,3000,b42,,,,,tbs2,o1,Sea
+o1,Crane-Carrier,cr2 - b42,2025-01-14 01:30:00.000000,2025-01-14 08:38:34.285714,0.0,,420.0,loading_point,2,3000,b42,,,,,tbs2,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-14 14:30:00.000000,2025-01-16 02:15:00.000000,62.67749061125805,,10.7,main_point,2,3000,b42,,,,,tbs2,o1,Sea
+Start,Start,Start,2025-01-15 01:00:00.000000,2025-01-15 01:00:00.000000,0.0,0.0,0.0,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o2,Sea
+Barge,Barge Collection,Barge Location,2025-01-15 07:45:00.000000,2025-01-15 15:45:00.000000,83.0,6.916666666666665,12.0,main_point,1,8000,"b1,b2,b3",146.79308490655745,14.859748291336254,9.87857142857143,2025-01-16 06:45:00,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,2025-01-15 07:45:00.000000,2025-01-15 15:00:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,2025-01-15 15:00:00.000000,2025-01-15 15:20:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,2025-01-15 15:20:00.000000,2025-01-15 15:40:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o2,Sea
+o2,Start Order Carrier,carrier2,2025-01-16 06:45:00.000000,2025-01-16 14:45:00.000000,146.79308490655745,,9.87857142857143,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr1 - b2,2025-01-16 06:45:00.000000,2025-01-16 14:38:41.052632,0.0,,380.0,loading_point,1,3000,b2,,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr4 - b1,2025-01-16 06:45:00.000000,2025-01-16 13:19:44.210526,0.0,,380.0,loading_point,1,2500,b1,,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr2 - b3,2025-01-16 06:45:00.000000,2025-01-16 13:53:34.285714,0.0,,350.0,loading_point,1,2500,b3,,,,,tbs1,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-16 22:30:00.000000,2025-01-17 00:45:00.000000,64.46773860591682,,8.164285714285715,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o2,Sea
+Start,Start,Start,2025-01-16 02:15:00.000000,2025-01-16 02:15:00.000000,0.0,0.0,0.0,main_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+Barge,Barge Collection,Barge Location,2025-01-16 09:15:00.000000,2025-01-17 07:45:00.000000,83.0,6.916666666666665,12.0,main_point,1,11000,"b4,b5,b6,b43",5.240947496916935,0.5674254179732903,9.236363636363636,2025-01-17 08:30:00,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b4,2025-01-16 09:15:00.000000,2025-01-16 16:30:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b5,2025-01-16 16:30:00.000000,2025-01-16 16:50:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b6,2025-01-16 16:50:00.000000,2025-01-16 17:10:00.000000,0.0,0.0,0.0,travel_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b43,2025-01-16 17:10:00.000000,2025-01-17 07:52:57.002438,142.6564285925267,14.382500677255372,9.91875,travel_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+o2,Start Order Carrier,carrier2,2025-01-17 08:30:00.000000,2025-01-17 16:30:00.000000,5.240947496916935,,9.236363636363636,main_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr1 - b4,2025-01-17 08:30:00.000000,2025-01-17 16:23:41.052632,0.0,,380.0,loading_point,1,3000,b4,,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr4 - b6,2025-01-17 08:30:00.000000,2025-01-17 16:23:41.052632,0.0,,380.0,loading_point,1,3000,b6,,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr2 - b5,2025-01-17 08:30:00.000000,2025-01-17 15:38:34.285714,0.0,,350.0,loading_point,1,2500,b5,,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr5 - b43,2025-01-17 08:30:00.000000,2025-01-17 15:38:34.285714,0.0,,350.0,loading_point,1,2500,b43,,,,,tbs2,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 01:15:00.000000,2025-01-18 09:30:00.000000,64.46773860591682,,7.236363636363636,main_point,1,11000,"b4,b5,b6,b43",,,,,tbs2,o2,Sea
+Start,Start,Start,2025-01-13 20:00:00.000000,2025-01-13 20:00:00.000000,0.0,0.0,0.0,main_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+Barge,Barge Collection,Barge Location,2025-01-14 01:30:00.000000,2025-01-14 08:15:00.000000,59.656428592526716,5.423311690229701,11.0,main_point,1,11000,"b44,b45,b46,b47",5.240947496916935,0.619009546879953,8.466666666666667,2025-01-14 09:00:00,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b44,2025-01-14 01:30:00.000000,2025-01-14 07:15:23.922085,59.656428592526716,5.423311690229701,11.000000000000002,travel_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b45,2025-01-14 07:15:23.922085,2025-01-14 07:35:23.922085,0.0,0.0,0.0,travel_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b46,2025-01-14 07:35:23.922085,2025-01-14 07:55:23.922085,0.0,0.0,0.0,travel_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b47,2025-01-14 07:55:23.922085,2025-01-14 08:15:23.922085,0.0,0.0,0.0,travel_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+o2,Start Order Carrier,carrier2,2025-01-14 09:00:00.000000,2025-01-17 23:00:00.000000,5.240947496916935,,8.466666666666667,main_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr3 - b44,2025-01-14 09:00:00.000000,2025-01-14 19:00:00.000000,0.0,,300.0,loading_point,1,3000,b44,,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr6 - b46,2025-01-14 09:00:00.000000,2025-01-14 19:00:00.000000,0.0,,300.0,loading_point,1,3000,b46,,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr2 - b45,2025-01-14 16:08:34.285714,2025-01-14 23:17:08.571428,0.0,,350.0,loading_point,1,2500,b45,,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr5 - b47,2025-01-14 16:08:34.285714,2025-01-14 23:17:08.571428,0.0,,350.0,loading_point,1,2500,b47,,,,,tbs4,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 08:30:00.000000,2025-01-18 13:30:00.000000,64.46773860591682,,6.633333333333333,main_point,1,11000,"b44,b45,b46,b47",,,,,tbs4,o2,Sea
+Start,Start,Start,2025-01-13 20:00:00.000000,2025-01-13 20:00:00.000000,0.0,0.0,0.0,main_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+Barge,Barge Collection,Barge Location,2025-01-13 22:00:00.000000,2025-01-14 05:15:00.000000,20.0,1.8181818181818183,11.0,main_point,1,11000,"b48,b49,b50,b17",48.79308490655744,5.762962784239067,8.466666666666667,2025-01-14 11:15:00,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b17,2025-01-13 22:00:00.000000,2025-01-14 00:09:05.454545,20.0,1.8181818181818183,10.999999999999998,travel_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b48,2025-01-14 00:09:05.454545,2025-01-14 04:47:45.629245,44.656428592526716,4.311159638860182,10.358333333333334,travel_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b49,2025-01-14 04:47:45.629245,2025-01-14 05:07:45.629245,0.0,0.0,0.0,travel_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b50,2025-01-14 05:07:45.629245,2025-01-14 05:27:45.629245,0.0,0.0,0.0,travel_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+o2,Start Order Carrier,carrier2,2025-01-14 11:15:00.000000,2025-01-18 03:00:00.000000,48.79308490655744,,8.466666666666667,main_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr1 - b48,2025-01-14 11:15:00.000000,2025-01-14 19:08:41.052632,0.0,,380.0,loading_point,1,3000,b48,,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr4 - b50,2025-01-14 11:15:00.000000,2025-01-14 19:08:41.052632,0.0,,380.0,loading_point,1,3000,b50,,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr3 - b49,2025-01-14 13:21:18.947368,2025-01-14 21:41:18.947368,0.0,,300.0,loading_point,1,2500,b49,,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr6 - b17,2025-01-14 13:21:18.947368,2025-01-14 21:41:18.947368,0.0,,300.0,loading_point,1,2500,b17,,,,,tbs5,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 12:30:00.000000,2025-01-18 18:30:00.000000,64.46773860591682,,6.633333333333333,main_point,1,11000,"b48,b49,b50,b17",,,,,tbs5,o2,Sea
+Start,Start,Start,2025-01-17 00:45:00.000000,2025-01-17 00:45:00.000000,0.0,0.0,0.0,main_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+Barge,Barge Collection,Barge Location,2025-01-17 02:30:59.487134,2025-01-17 06:45:00.000000,20.0,1.6666666666666665,12.0,main_point,2,9000,"b18,b19,b20,b37",48.79308490655744,5.311559543131253,9.186206896551724,2025-01-17 12:15:00,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b18,2025-01-17 02:30:59.487134,2025-01-17 04:30:59.487134,20.0,1.6666666666666665,12.000000000000002,travel_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b19,2025-01-17 04:30:59.487134,2025-01-17 05:17:34.579159,5.0,0.4430811179277437,11.284615384615385,travel_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b20,2025-01-17 05:17:34.579159,2025-01-17 06:05:56.259831,5.0,0.4726890756302521,10.577777777777778,travel_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b37,2025-01-17 06:05:56.259831,2025-01-17 06:56:18.385644,5.0,0.5061460592913954,9.87857142857143,travel_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+o2,Start Order Carrier,carrier2,2025-01-17 12:15:00.000000,2025-01-17 20:15:00.000000,48.79308490655744,,9.186206896551724,main_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr1 - b18,2025-01-17 12:15:00.000000,2025-01-17 20:08:41.052632,0.0,,380.0,loading_point,2,3000,b18,,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr4 - b20,2025-01-17 12:15:00.000000,2025-01-17 20:08:41.052632,0.0,,380.0,loading_point,2,3000,b20,,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr2 - b19,2025-01-17 12:15:00.000000,2025-01-17 19:23:34.285714,0.0,,350.0,loading_point,2,2500,b19,,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr5 - b37,2025-01-17 12:15:00.000000,2025-01-17 13:40:42.857143,0.0,,350.0,loading_point,2,500,b37,,,,,tbs1,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-18 05:00:00.000000,2025-01-18 07:15:00.000000,64.46773860591682,,7.324137931034483,main_point,2,9000,"b18,b19,b20,b37",,,,,tbs1,o2,Sea
+Start,Start,Start,2025-01-18 07:15:00.000000,2025-01-18 07:15:00.000000,0.0,0.0,0.0,main_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-18 14:30:00.000000,2025-01-18 23:30:00.000000,87.0,7.249999999999998,12.0,main_point,1,10500,"b1,b2,b3,b7",146.7929956492242,15.979717994847979,9.186206896551724,2025-01-19 15:30:00,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,2025-01-18 14:30:00.000000,2025-01-18 22:05:00.000000,87.0,7.249999999999998,12.000000000000004,travel_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,2025-01-18 22:05:00.000000,2025-01-18 22:25:00.000000,0.0,0.0,0.0,travel_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,2025-01-18 22:25:00.000000,2025-01-18 22:45:00.000000,0.0,0.0,0.0,travel_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b7,2025-01-18 22:45:00.000000,2025-01-18 23:29:17.700651,4.0,0.40491684743311634,9.87857142857143,travel_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-19 15:30:00.000000,2025-01-19 22:45:00.000000,146.7929956492242,,9.186206896551724,main_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr5 - b2,2025-01-19 15:30:00.000000,2025-01-19 22:38:34.285714,0.0,,420.0,loading_point,1,3000,b2,,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr4 - b1,2025-01-19 15:30:00.000000,2025-01-19 21:45:00.000000,0.0,,400.0,loading_point,1,2500,b1,,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr1 - b3,2025-01-19 15:30:00.000000,2025-01-19 22:04:44.210526,0.0,,380.0,loading_point,1,2500,b3,,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr6 - b7,2025-01-19 15:30:00.000000,2025-01-19 22:04:44.210526,0.0,,380.0,loading_point,1,2500,b7,,,,,tbs1,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 07:45:00.000000,2025-01-21 04:15:00.000000,64.46761922303374,,7.0137931034482754,main_point,1,10500,"b1,b2,b3,b7",,,,,tbs1,o3,Sea
+Start,Start,Start,2025-01-18 09:30:05.343691,2025-01-18 09:30:05.343691,0.0,0.0,0.0,main_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-18 10:15:05.343691,2025-01-18 16:45:00.000000,9.0,0.75,12.0,main_point,1,11000,"b8,b9,b10,b11",54.7929956492242,5.9323125210774235,9.236363636363636,2025-01-18 22:45:00,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b11,2025-01-18 10:15:05.343691,2025-01-18 11:20:05.343691,9.0,0.75,12.0,travel_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b8,2025-01-18 11:20:05.343691,2025-01-18 16:09:03.674924,50.656428592526716,4.482869786949267,11.3,travel_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b9,2025-01-18 16:09:03.674924,2025-01-18 16:29:03.674924,0.0,0.0,0.0,travel_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b10,2025-01-18 16:29:03.674924,2025-01-18 16:49:03.674924,0.0,0.0,0.0,travel_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-18 22:45:00.000000,2025-01-20 04:45:00.000000,54.7929956492242,,9.236363636363636,main_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr2 - b8,2025-01-18 22:45:00.000000,2025-01-19 07:19:17.142857,0.0,,350.0,loading_point,1,3000,b8,,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr3 - b10,2025-01-18 22:45:00.000000,2025-01-19 08:45:00.000000,0.0,,300.0,loading_point,1,3000,b10,,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr4 - b9,2025-01-19 05:00:00.000000,2025-01-19 11:15:00.000000,0.0,,400.0,loading_point,1,2500,b9,,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr1 - b11,2025-01-19 05:19:44.210526,2025-01-19 11:54:28.421052,0.0,,380.0,loading_point,1,2500,b11,,,,,tbs2,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 13:30:00.000000,2025-01-22 12:00:00.000000,64.46761922303374,,7.236363636363636,main_point,1,11000,"b8,b9,b10,b11",,,,,tbs2,o3,Sea
+Start,Start,Start,2025-01-18 08:00:00.000000,2025-01-18 08:00:00.000000,0.0,0.0,0.0,main_point,1,8500,"b12,b13,b14",,,,,tbs3,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-18 12:30:00.000000,2025-01-18 18:00:00.000000,50.43107238719272,4.584642944290247,11.0,main_point,1,8500,"b12,b13,b14",54.7929956492242,6.050892834463725,9.055357142857144,2025-01-19 00:15:00,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b12,2025-01-18 12:30:00.000000,2025-01-18 17:25:04.714599,50.43107238719272,4.584642944290247,11.0,travel_point,1,8500,"b12,b13,b14",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b13,2025-01-18 17:25:04.714599,2025-01-18 17:45:04.714599,0.0,0.0,0.0,travel_point,1,8500,"b12,b13,b14",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b14,2025-01-18 17:45:04.714599,2025-01-18 18:05:04.714599,0.0,0.0,0.0,travel_point,1,8500,"b12,b13,b14",,,,,tbs3,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-19 00:15:00.000000,2025-01-20 07:15:00.000000,54.7929956492242,,9.055357142857144,main_point,1,8500,"b12,b13,b14",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr6 - b12,2025-01-19 00:15:00.000000,2025-01-19 08:08:41.052632,0.0,,380.0,loading_point,1,3000,b12,,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr5 - b14,2025-01-19 00:48:50.075188,2025-01-19 07:57:24.360902,0.0,,420.0,loading_point,1,3000,b14,,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr2 - b13,2025-01-19 02:14:32.932331,2025-01-19 09:23:07.218045,0.0,,350.0,loading_point,1,2500,b13,,,,,tbs3,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 15:45:00.000000,2025-01-23 01:45:00.000000,64.46761922303374,,7.385714285714286,main_point,1,8500,"b12,b13,b14",,,,,tbs3,o3,Sea
+Start,Start,Start,2025-01-18 13:30:00.000000,2025-01-18 13:30:00.000000,0.0,0.0,0.0,main_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-18 14:15:00.000000,2025-01-19 02:15:00.000000,9.0,0.8181818181818182,11.0,main_point,1,11000,"b15,b16,b18,b19",150.7929956492242,17.81019633652254,8.466666666666667,2025-01-19 20:15:00,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b15,2025-01-18 14:15:00.000000,2025-01-18 15:24:05.454545,9.0,0.8181818181818182,11.0,travel_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b16,2025-01-18 15:24:05.454545,2025-01-18 15:44:05.454545,0.0,0.0,0.0,travel_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b18,2025-01-18 15:44:05.454545,2025-01-19 01:56:31.572660,96.0,9.873921698739217,9.72258064516129,travel_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b19,2025-01-19 01:56:31.572660,2025-01-19 02:16:31.572660,0.0,0.0,0.0,travel_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-19 20:15:00.000000,2025-01-20 11:45:00.000000,150.7929956492242,,8.466666666666667,main_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr3 - b16,2025-01-19 20:15:00.000000,2025-01-20 06:15:00.000000,0.0,,300.0,loading_point,1,3000,b16,,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr4 - b18,2025-01-19 22:45:00.000000,2025-01-20 06:15:00.000000,0.0,,400.0,loading_point,1,3000,b18,,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr1 - b15,2025-01-19 23:24:28.421053,2025-01-20 05:59:12.631579,0.0,,380.0,loading_point,1,2500,b15,,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr5 - b19,2025-01-20 00:32:08.571429,2025-01-20 06:29:17.142858,0.0,,420.0,loading_point,1,2500,b19,,,,,tbs4,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-20 21:15:00.000000,2025-01-23 01:45:00.000000,64.46761922303374,,6.633333333333333,main_point,1,11000,"b15,b16,b18,b19",,,,,tbs4,o3,Sea
+Start,Start,Start,2025-01-18 18:30:00.000000,2025-01-18 18:30:00.000000,0.0,0.0,0.0,main_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-19 02:30:00.000000,2025-01-19 12:00:00.000000,87.0,7.909090909090909,11.0,main_point,1,11000,"b20,b21,b22,b23",146.7929956492242,17.337755391640652,8.466666666666667,2025-01-20 05:30:00,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b20,2025-01-19 02:30:00.000000,2025-01-19 10:44:32.727273,87.0,7.909090909090909,11.0,travel_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b21,2025-01-19 10:44:32.727273,2025-01-19 11:27:42.912309,4.0,0.38616251005631536,10.358333333333334,travel_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b22,2025-01-19 11:27:42.912309,2025-01-19 11:47:42.912309,0.0,0.0,0.0,travel_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b23,2025-01-19 11:47:42.912309,2025-01-19 12:07:42.912309,0.0,0.0,0.0,travel_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-20 05:30:00.000000,2025-01-20 18:00:00.000000,146.7929956492242,,8.466666666666667,main_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr6 - b20,2025-01-20 05:30:00.000000,2025-01-20 13:23:41.052632,0.0,,380.0,loading_point,1,3000,b20,,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr2 - b22,2025-01-20 06:44:26.165414,2025-01-20 15:18:43.308271,0.0,,350.0,loading_point,1,3000,b22,,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr1 - b21,2025-01-20 10:45:47.368421,2025-01-20 17:20:31.578947,0.0,,380.0,loading_point,1,2500,b21,,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr4 - b23,2025-01-20 11:01:34.736842,2025-01-20 17:16:34.736842,0.0,,400.0,loading_point,1,2500,b23,,,,,tbs5,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-21 03:30:00.000000,2025-01-21 09:30:00.000000,64.46761922303374,,6.633333333333333,main_point,1,11000,"b20,b21,b22,b23",,,,,tbs5,o3,Sea
+Start,Start,Start,2025-01-21 04:15:00.000000,2025-01-21 04:15:00.000000,0.0,0.0,0.0,main_point,2,8500,"b24,b25,b26",,,,,tbs1,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-21 11:00:00.000000,2025-01-21 19:00:00.000000,83.0,6.916666666666665,12.0,main_point,2,8500,"b24,b25,b26",146.7929956492242,14.859739255886756,9.87857142857143,2025-01-22 10:00:00,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b24,2025-01-21 11:00:00.000000,2025-01-21 18:15:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,2,8500,"b24,b25,b26",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b25,2025-01-21 18:15:00.000000,2025-01-21 18:35:00.000000,0.0,0.0,0.0,travel_point,2,8500,"b24,b25,b26",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b26,2025-01-21 18:35:00.000000,2025-01-21 18:55:00.000000,0.0,0.0,0.0,travel_point,2,8500,"b24,b25,b26",,,,,tbs1,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-22 10:00:00.000000,2025-01-22 17:30:00.000000,146.7929956492242,,9.87857142857143,main_point,2,8500,"b24,b25,b26",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr5 - b24,2025-01-22 10:00:00.000000,2025-01-22 17:08:34.285714,0.0,,420.0,loading_point,2,3000,b24,,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr4 - b26,2025-01-22 10:00:00.000000,2025-01-22 17:30:00.000000,0.0,,400.0,loading_point,2,3000,b26,,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr1 - b25,2025-01-22 10:00:00.000000,2025-01-22 16:34:44.210526,0.0,,380.0,loading_point,2,2500,b25,,,,,tbs1,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-23 01:30:04.680929,2025-01-23 02:45:00.000000,64.46761922303374,,8.057142857142857,main_point,2,8500,"b24,b25,b26",,,,,tbs1,o3,Sea
+Start,Start,Start,2025-01-22 12:00:00.000000,2025-01-22 12:00:00.000000,0.0,0.0,0.0,main_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-22 19:00:00.000000,2025-01-23 03:15:00.000000,83.0,6.916666666666665,12.0,main_point,2,11000,"b27,b28,b29,b30",146.7929956492242,15.892942442337265,9.236363636363636,2025-01-23 19:15:00,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b27,2025-01-22 19:00:00.000000,2025-01-23 02:15:00.000000,83.0,6.916666666666665,12.000000000000002,travel_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b28,2025-01-23 02:15:00.000000,2025-01-23 02:35:00.000000,0.0,0.0,0.0,travel_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b29,2025-01-23 02:35:00.000000,2025-01-23 02:55:00.000000,0.0,0.0,0.0,travel_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b30,2025-01-23 02:55:00.000000,2025-01-23 03:15:00.000000,0.0,0.0,0.0,travel_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-23 19:15:00.000000,2025-01-24 02:45:00.000000,146.7929956492242,,9.236363636363636,main_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr5 - b28,2025-01-23 19:15:00.000000,2025-01-24 02:23:34.285714,0.0,,420.0,loading_point,2,3000,b28,,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr4 - b30,2025-01-23 19:15:00.000000,2025-01-24 02:45:00.000000,0.0,,400.0,loading_point,2,3000,b30,,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr1 - b27,2025-01-23 19:15:00.000000,2025-01-24 01:49:44.210526,0.0,,380.0,loading_point,2,2500,b27,,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr6 - b29,2025-01-23 19:15:00.000000,2025-01-24 01:49:44.210526,0.0,,380.0,loading_point,2,2500,b29,,,,,tbs2,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-24 11:30:00.000000,2025-01-24 23:45:00.000000,64.46761922303374,,7.236363636363636,main_point,2,11000,"b27,b28,b29,b30",,,,,tbs2,o3,Sea
+Start,Start,Start,2025-01-23 01:45:00.000000,2025-01-23 01:45:00.000000,0.0,0.0,0.0,main_point,2,8000,"b31,b32,b33",,,,,tbs3,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-23 02:30:00.000000,2025-01-23 04:15:00.000000,9.0,0.8181818181818182,11.0,main_point,2,8000,"b31,b32,b33",54.7929956492242,6.050892834463725,9.055357142857144,2025-01-23 10:30:00,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b31,2025-01-23 02:30:00.000000,2025-01-23 03:39:05.454545,9.0,0.8181818181818182,11.0,travel_point,2,8000,"b31,b32,b33",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b32,2025-01-23 03:39:05.454545,2025-01-23 03:59:05.454545,0.0,0.0,0.0,travel_point,2,8000,"b31,b32,b33",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b33,2025-01-23 03:59:05.454545,2025-01-23 04:19:05.454545,0.0,0.0,0.0,travel_point,2,8000,"b31,b32,b33",,,,,tbs3,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-23 10:30:00.000000,2025-01-24 08:30:00.000000,54.7929956492242,,9.055357142857144,main_point,2,8000,"b31,b32,b33",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr2 - b32,2025-01-23 10:30:00.000000,2025-01-23 19:04:17.142857,0.0,,350.0,loading_point,2,3000,b32,,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr3 - b31,2025-01-23 10:30:00.000000,2025-01-23 18:50:00.000000,0.0,,300.0,loading_point,2,2500,b31,,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr5 - b33,2025-01-23 17:38:34.285714,2025-01-23 23:35:42.857143,0.0,,420.0,loading_point,2,2500,b33,,,,,tbs3,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-24 17:00:00.000000,2025-01-25 03:15:00.000000,64.46761922303374,,7.483928571428572,main_point,2,8000,"b31,b32,b33",,,,,tbs3,o3,Sea
+Start,Start,Start,2025-01-23 01:45:00.000000,2025-01-23 01:45:00.000000,0.0,0.0,0.0,main_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-23 02:30:00.000000,2025-01-23 15:15:00.000000,9.0,0.8181818181818182,11.0,main_point,2,11000,"b34,b35,b36,b37",150.7929956492242,17.81019633652254,8.466666666666667,2025-01-24 09:15:00,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b34,2025-01-23 02:30:00.000000,2025-01-23 03:39:05.454545,9.0,0.8181818181818182,11.0,travel_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b35,2025-01-23 03:39:05.454545,2025-01-23 03:59:05.454545,0.0,0.0,0.0,travel_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b36,2025-01-23 03:59:05.454545,2025-01-23 04:19:05.454545,0.0,0.0,0.0,travel_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b37,2025-01-23 04:19:05.454545,2025-01-23 15:12:36.109297,96.0,10.558515208798763,9.0921875,travel_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-24 09:15:00.000000,2025-01-24 16:45:00.000000,150.7929956492242,,8.466666666666667,main_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr5 - b34,2025-01-24 09:15:00.000000,2025-01-24 16:23:34.285714,0.0,,420.0,loading_point,2,3000,b34,,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr4 - b36,2025-01-24 09:15:00.000000,2025-01-24 16:45:00.000000,0.0,,400.0,loading_point,2,3000,b36,,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr1 - b35,2025-01-24 09:15:00.000000,2025-01-24 15:49:44.210526,0.0,,380.0,loading_point,2,2500,b35,,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr6 - b37,2025-01-24 09:15:00.000000,2025-01-24 15:49:44.210526,0.0,,380.0,loading_point,2,2500,b37,,,,,tbs4,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-25 02:15:00.000000,2025-01-25 10:45:00.000000,64.46761922303374,,6.633333333333333,main_point,2,11000,"b34,b35,b36,b37",,,,,tbs4,o3,Sea
+Start,Start,Start,2025-01-21 09:30:00.000000,2025-01-21 09:30:00.000000,0.0,0.0,0.0,main_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+Barge,Barge Collection,Barge Location,2025-01-21 11:15:00.000000,2025-01-22 02:15:00.000000,20.0,1.8181818181818183,11.0,main_point,2,9500,"b38,b39,b40,b41",146.7929956492242,17.337755391640652,8.466666666666667,2025-01-22 19:45:00,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b38,2025-01-21 11:15:00.000000,2025-01-21 13:24:05.454545,20.0,1.8181818181818183,10.999999999999998,travel_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b39,2025-01-21 13:24:05.454545,2025-01-21 14:13:03.185840,5.0,0.4827031375703942,10.358333333333334,travel_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b40,2025-01-21 14:13:03.185840,2025-01-21 15:03:54.546159,5.0,0.5142667551426675,9.72258064516129,travel_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b41,2025-01-21 15:03:54.546159,2025-01-22 02:10:37.089551,98.0,10.778484275648736,9.0921875,travel_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+o3,Start Order Carrier,carrier3,2025-01-22 19:45:00.000000,2025-01-24 22:30:00.000000,146.7929956492242,,8.466666666666667,main_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr2 - b38,2025-01-22 19:45:00.000000,2025-01-23 04:19:17.142857,0.0,,350.0,loading_point,2,3000,b38,,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr3 - b40,2025-01-22 19:45:00.000000,2025-01-23 05:45:00.000000,0.0,,300.0,loading_point,2,3000,b40,,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr5 - b39,2025-01-23 02:53:34.285714,2025-01-23 08:50:42.857143,0.0,,420.0,loading_point,2,2500,b39,,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr4 - b41,2025-01-23 03:15:00.000000,2025-01-23 05:45:00.000000,0.0,,400.0,loading_point,2,1000,b41,,,,,tbs5,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-25 07:45:00.000000,2025-01-25 14:45:00.000000,64.46761922303374,,6.883333333333333,main_point,2,9500,"b38,b39,b40,b41",,,,,tbs5,o3,Sea
+Start,Start,Start,2025-01-23 02:45:09.710913,2025-01-23 02:45:09.710913,0.0,0.0,0.0,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o4,Sea
+Barge,Barge Collection,Barge Location,2025-01-23 11:00:00.000000,2025-01-23 20:15:00.000000,100.0,8.333333333333332,12.0,main_point,1,8000,"b1,b2,b3",163.7929956492242,16.5806358574775,9.87857142857143,2025-01-24 13:00:00,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,2025-01-23 11:00:00.000000,2025-01-23 19:40:00.000000,100.0,8.333333333333332,12.000000000000002,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,2025-01-23 19:40:00.000000,2025-01-23 20:00:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,2025-01-23 20:00:00.000000,2025-01-23 20:20:00.000000,0.0,0.0,0.0,travel_point,1,8000,"b1,b2,b3",,,,,tbs1,o4,Sea
+o4,Start Order Carrier,carrier1,2025-01-24 13:00:00.000000,2025-01-24 20:15:00.000000,163.7929956492242,,9.87857142857143,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr5 - b2,2025-01-24 13:00:00.000000,2025-01-24 20:08:34.285714,0.0,,420.0,loading_point,1,3000,b2,,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr4 - b1,2025-01-24 13:00:00.000000,2025-01-24 19:15:00.000000,0.0,,400.0,loading_point,1,2500,b1,,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr1 - b3,2025-01-24 13:00:00.000000,2025-01-24 19:34:44.210526,0.0,,380.0,loading_point,1,2500,b3,,,,,tbs1,o4,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-25 04:00:00.000000,2025-01-25 05:00:00.000000,64.46761922303374,,8.164285714285715,main_point,1,8000,"b1,b2,b3",,,,,tbs1,o4,Sea
+Start,Start,Start,2025-01-24 23:45:00.000000,2025-01-24 23:45:00.000000,0.0,0.0,0.0,main_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+Barge,Barge Collection,Barge Location,2025-01-25 07:00:00.000000,2025-01-25 17:15:00.000000,87.0,7.249999999999998,12.0,main_point,1,12000,"b4,b5,b6,b7,b8",163.7929956492242,19.137325952143033,8.558823529411764,2025-01-26 12:30:00,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b4,2025-01-25 07:00:00.000000,2025-01-25 14:35:00.000000,87.0,7.249999999999998,12.000000000000004,travel_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b5,2025-01-25 14:35:00.000000,2025-01-25 14:55:00.000000,0.0,0.0,0.0,travel_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b6,2025-01-25 14:55:00.000000,2025-01-25 15:15:00.000000,0.0,0.0,0.0,travel_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b7,2025-01-25 15:15:00.000000,2025-01-25 16:53:38.336484,13.0,1.31064902331443,9.91875,travel_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b8,2025-01-25 16:53:38.336484,2025-01-25 17:13:38.336484,0.0,0.0,0.0,travel_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+o4,Start Order Carrier,carrier1,2025-01-26 12:30:00.000000,2025-01-26 20:00:00.000000,163.7929956492242,,8.558823529411764,main_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr5 - b4,2025-01-26 12:30:00.000000,2025-01-26 19:38:34.285714,0.0,,420.0,loading_point,1,3000,b4,,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr4 - b6,2025-01-26 12:30:00.000000,2025-01-26 20:00:00.000000,0.0,,400.0,loading_point,1,3000,b6,,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr1 - b5,2025-01-26 12:30:00.000000,2025-01-26 19:04:44.210526,0.0,,380.0,loading_point,1,2500,b5,,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr6 - b7,2025-01-26 12:30:00.000000,2025-01-26 19:04:44.210526,0.0,,380.0,loading_point,1,2500,b7,,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr2 - b8,2025-01-26 12:30:00.000000,2025-01-26 15:21:25.714286,0.0,,350.0,loading_point,1,1000,b8,,,,,tbs2,o4,Sea
+s2,Appointment,3-Bang Hua Suea Pier,2025-01-27 06:00:31.217319,2025-01-27 07:15:00.000000,64.46761922303374,,6.4411764705882355,main_point,1,12000,"b4,b5,b6,b7,b8",,,,,tbs2,o4,Sea

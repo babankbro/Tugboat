@@ -279,7 +279,7 @@ class Solution:
             for collection_info in collection_time_info['barge_collect_infos'][:]:
                 finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['travel_time'] + collection_info['setup_time'])*60)
                 #print(collection_info)
-                finish_barge_time = get_next_quarter_hour(finish_barge_time)
+                #finish_barge_time = get_next_quarter_hour(finish_barge_time)
                 barge_step ={
                     "ID": "Barge",
                     'type': "Barge Step Collection",
