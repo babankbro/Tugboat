@@ -177,7 +177,7 @@ def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tug
             #loader_start = get_next_quarter_hour(loader_start)
             loader_end = arrival_customer_time + timedelta(minutes=int(loader['loader_schedule']*60))
             #loader_end = get_next_quarter_hour(loader_end)
-            print("Loader Info:", loader) if tugboat_id == 'tbr1' and order.order_id == 'o1'   else None
+            #print("Loader Info:", loader) if tugboat_id == 'tbr1' and order.order_id == 'o1'   else None
             crane_location = {
                 "ID": order.start_object.order_id,
                 'type': "Loader-Customer",

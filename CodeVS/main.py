@@ -142,7 +142,7 @@ def test_transport_order(data):
     tugboat_df, barge_df = solution.generate_schedule()
     
     
-    solution.save_schedule_to_csv(tugboat_df, barge_df)
+    
     filtered_df = tugboat_df[
                             ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
                             &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
@@ -158,7 +158,7 @@ def test_transport_order(data):
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     
-    print(temp_df.head(20))
+    #print(temp_df.head(20))
 
     
     filtered_df = tugboat_df[
@@ -170,14 +170,39 @@ def test_transport_order(data):
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
     ]
-    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'order_id',
+                           'exit_datetime', 'tugboat_id','distance', 'time', 'speed','order_trip'
+                      # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+       #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
+       #'tugboat_id', 'order_id', 'water_type'
+       ]]
+    #print(temp_df)
+    
+    
+    filtered_df = tugboat_df[
+                            (
+                            #& (tugboat_df['order_trip'] == 1) 
+                             #(tugboat_df['type'] == 'Customer Station'))
+                            (tugboat_df['type'] == 'Appointment'))
+                            #& (tugboat_df['distance'] > 60)
+                            #(tugboat_df['distance'] > 60)
+    ]
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime',  'total_load', 'order_id',
                            'exit_datetime', 'tugboat_id','distance', 'time', 'speed','order_trip'
                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     print(temp_df)
+    demand_load = sum(order_df['DEMAND'])
+    print("Total Load",  sum(temp_df['total_load']), demand_load)
     
+    grouped_df = temp_df.groupby('order_id')['total_load'].sum().reset_index()
+# Now you can print the grouped data
+    print(grouped_df)
+    grouped_df = order_df.groupby('ID')['DEMAND'].sum().reset_index()
+# Now you can print the grouped data
+    print(grouped_df)
 
     #print("customer_river_time_lates", customer_river_time_lates, list_lates)
 
@@ -190,7 +215,7 @@ def test_transport_order(data):
     # for tugboat_id, results in lookup_river_tugboat_results.items( ):
     #     print(tugboat_id, results['data_points'][1]['exit_datetime'])
 
-  
+    solution.save_schedule_to_csv(tugboat_df, barge_df)
     
     
 def main():
