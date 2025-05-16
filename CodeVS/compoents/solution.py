@@ -920,6 +920,7 @@ class Solution:
           
             temp_river_assigned_tugboats.extend(river_assigned_tugboats)
             temp_sea_tugboat_results.extend(tugboat_results)
+            temp_river_tugboat_results.extend(river_tugboat_results)
             
             
             self._extend_update_tugboat_results(tugboat_results, round_trip_order)

@@ -182,8 +182,8 @@ def test_transport_order(data):
     filtered_df = tugboat_df[
                             (
                             #& (tugboat_df['order_trip'] == 1) 
-                             #(tugboat_df['type'] == 'Customer Station'))
-                            (tugboat_df['type'] == 'Appointment'))
+                            (tugboat_df['type'] == 'Customer Station'))
+                            #(tugboat_df['type'] == 'Appointment'))
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
     ]
