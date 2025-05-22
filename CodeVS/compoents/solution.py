@@ -625,6 +625,11 @@ class Solution:
             station_last = data['stations'][end_point['ID']]
             # Ensure schedule continuity by using previous end time as new start
             prev_end = self.tugboat_scheule[tugboat_id][-1]['end_datetime']
+            print("DEGUGGGGGGGGGGGGGGGGGGGG")
+           
+            for point in tugboat_result['data_points']:
+                print(point)
+            print(tugboat_id, prev_end, end_point['enter_datetime'], end_point['exit_datetime'])
             new_start = max(end_point['enter_datetime'], prev_end)
             
             info = {
