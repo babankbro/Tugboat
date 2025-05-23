@@ -2,6 +2,11 @@ from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.transport_order import *
 import config_problem 
 from CodeVS.utility.helpers import *
+import string
+import pandas as pd
+import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class Solution:
@@ -1076,15 +1081,153 @@ class Solution:
         return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
 
     def save_schedule_to_csv(self, tugboat_df, barge_df, 
-                           tugboat_path='tugboat_schedule_v2.csv',
-                           barge_path='barges.csv'):
+                           tugboat_path='tugboat_schedule_v2.xlsx',
+                           barge_path='barges.xlsx'):
         """Saves schedule DataFrames to CSV files"""
-        tugboat_df.to_csv(tugboat_path, index=False)
-        barge_df.to_csv(barge_path, index=False)
+        tugboat_df["enter_datetime"] = pd.to_datetime(tugboat_df["enter_datetime"])
+        tugboat_df["exit_datetime"] = pd.to_datetime(tugboat_df["exit_datetime"])
+        early_start_time = min(tugboat_df["enter_datetime"])
+        late_finish_time = max(tugboat_df["exit_datetime"])
+        start_date = early_start_time.date()
+        end_date = late_finish_time.date()
+        start_datetime = pd.to_datetime(start_date)
+        end_datetime = pd.to_datetime(end_date)
+        hourly_range = pd.date_range(start=start_datetime, end=end_datetime, freq='H')
+
+        # Insert an empty row at the beginning
+        df = tugboat_df.copy()
+        df.loc[-1] = np.nan  # Add a row of NaNs at the top
+        df.index = df.index + 1  # Shift index to make room for the new row
+        df = df.sort_index()     # Sort by index to put the new row at the top
+
+        # Create a row with dates
+        date_row = pd.Series(index=df.columns)
+        for i, col in enumerate(df.columns):
+            if pd.api.types.is_datetime64_any_dtype(df[col]) and i > 2: # Assuming the first few columns are not dates
+                date_row[col] = df[col].iloc[1].date() # Get date from the first actual row
+            else:
+                date_row[col] = ''
+
+        # Assign the date_row to the first row of the DataFrame
+        df.iloc[0] = date_row
+
+        # Now, the data processing logic needs to be adjusted to handle the header row.
+        # You would likely skip the first row when iterating through the data rows for processing.
+
+        # For example, when creating the 'data' list, you would iterate from the second row:
+        data = []
+        for index, row in df.iloc[1:].iterrows(): # Start from the second row
+
+            # Filter out unwanted row
+            if row['type'] in ['Barge Collection', 'Barge Change', 'Start Order Carrier', 'Customer Station']:
+                continue
+            order_id_val = row['order_id']
+            activity_val = row['name']
+            if 'cr' in row['name']:
+                machine_val = row['name'].split(' - ')[0]
+            else:
+                machine_val = row['tugboat_id']
+            if row['type'] in ['Barge Step Collection', 'Barge Change Collection']:
+                barge_val = row['name'].split(' - ')[1]
+            else:
+                barge_val = row['barge_ids']
+            row_data = {"order_id": order_id_val,
+                        "activity": activity_val,
+                        "machine": machine_val,
+                        "barge": barge_val}
+
+            enter_time = row['enter_datetime']
+            exit_time = row['exit_datetime']
+
+
+            for hour in hourly_range:
+
+                # Check if the activity time range overlaps with the current hour\
+
+                if (enter_time <= hour) and (exit_time + pd.Timedelta(1,'h') >= hour):
+                    row_data[hour] = 'x'
+                else:
+                    row_data[hour] = '' # Or leave as NaN if preferred
+
+            data.append(row_data)
+
+        # When creating the output DataFrame, you will need to manually create the header
+        # including the date row and the original column names.
+        # A simpler approach for merging the date would be to create a MultiIndex header
+        # on the output_df after it's created.
+
+        output_df_data = pd.DataFrame(data)
+
+        # Create a list for the date header
+        date_header = [''] * 4 # Placeholders for the first 3 columns
+
+
+        for hour in hourly_range:
+            date_header.append(hour.date())
+
+        # Create a list for the column name header
+        column_name_header = []
+        for col in output_df_data.columns:
+            if col == 'order_id':
+                column_name_header.append('Order ID')
+            elif col == 'activity':
+                column_name_header.append('Activity')
+            elif col == 'machine':
+                column_name_header.append('Machine')
+            elif col == 'barge':
+                column_name_header.append('Barge')
+            else:
+                column_name_header.append(col.hour)
+
+        # Create a MultiIndex from the two header rows
+        multiindex = pd.MultiIndex.from_arrays([date_header, column_name_header])
+
+        # Assign the MultiIndex to the output DataFrame
+        output_df_data.columns = multiindex
+
+        # output_df_data
+
+        # Create a Pandas Excel writer using XlsxWriter as the engine.
+        writer = pd.ExcelWriter('tugboat_schedule_v3.xlsx', engine='xlsxwriter')
+
+        # Convert the dataframe to an XlsxWriter Excel object.
+        tugboat_df.to_excel(writer, sheet_name='Summary', index=False)
+        tugboat_df_rows, tugboat_df_cols = tugboat_df.shape
+        # Get the xlsxwriter objects from the dataframe writer object.
+        workbook  = writer.book
+        worksheet_summary = writer.sheets['Summary']
+        max_char_tugboat = string.ascii_uppercase[(tugboat_df_cols%26) - 1]
+        cell_range = f"A1:{max_char_tugboat}1"
+        worksheet_summary.autofilter(cell_range)
+        worksheet_summary.freeze_panes(1, 0)
+        worksheet_summary.autofit()
+
+        output_df_data.to_excel(writer, sheet_name='Timeline')
+        worksheet_timeline = writer.sheets['Timeline']
+
+        (max_row, max_col) = output_df_data.shape
+        main_char = string.ascii_uppercase[(max_col // 26)-1] if max_col // 26 > 0 else ""
+        max_char = main_char + string.ascii_uppercase[max_col%26]
+        cell_range = f"A1:{max_char}{max_row+4}"
+
+        worksheet_timeline.conditional_format(cell_range,
+        {
+            'type': 'text',
+            'criteria': 'containing',
+            'value': 'x',
+            'format': workbook.add_format({'bg_color': '#0f5c3c',
+                                        'font_color': '#0f5c3c'})
+        }
+                                    )
+        worksheet_timeline.autofit(25)
+        worksheet_timeline.autofilter(f'A3:E3')
+        worksheet_timeline.freeze_panes(3, 5)
+        writer.close()
+        # output_df_data.to_excel('tugboat_timeline_analysis.xlsx')
+        barge_df.to_excel(barge_path, index=False)
         
         
             #         print()
-            
             
         # data = self.data
         # orders = data['orders']

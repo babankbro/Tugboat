@@ -180,7 +180,7 @@ def test_transport_order(data):
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
-    print(temp_df)
+    # print(temp_df)
     
     
 
@@ -198,7 +198,7 @@ def test_transport_order(data):
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
-    #print(temp_df)
+    print(temp_df)
     #demand_load = sum(order_df['DEMAND'])
     #print("Total Load",  sum(temp_df['total_load']), demand_load)
     
@@ -221,7 +221,7 @@ def test_transport_order(data):
     #     print(tugboat_id, results['data_points'][1]['exit_datetime'])
 
     solution.save_schedule_to_csv(tugboat_df, barge_df)
-    
+    return tugboat_df
     
 def main():
     # Initialize data structures
@@ -235,10 +235,10 @@ def main():
     
     # Run tests
     #test_assign_barge_to_order(data)
-    test_transport_order(data)
+    result_df = test_transport_order(data)
     # print(Travel_Helper.get_next_station(TransportType.IMPORT, 11))
     # print(Travel_Helper.get_next_station(TransportType.IMPORT, 15))
     # print(Travel_Helper.get_next_station(TransportType.EXPORT, 15))
-
+    return result_df
 if __name__ == "__main__":
-    main()
+    result_df = main()
