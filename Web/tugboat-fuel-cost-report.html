@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugboat Fuel Cost Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --light-color: #f0f9ff;
+            --dark-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .report-meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .main-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 1.2rem;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+        
+        thead {
+            background-color: var(--light-color);
+        }
+        
+        th {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: rgba(240, 249, 255, 0.5);
+        }
+        
+        .highlighted-row {
+            background-color: rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Tugboat Operations</div>
+            <div class="report-meta">
+                Fuel Cost Report | Generated: May 1, 2025
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1 class="main-title">Tugboat Fuel Cost Analysis Report</h1>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-title">Total Cargo Weight</div>
+                <div class="card-content">244,000</div>
+                <div class="card-subtitle">tons</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Distance</div>
+                <div class="card-content">4,580.03</div>
+                <div class="card-subtitle">kilometers</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Travel Time</div>
+                <div class="card-content">202.91</div>
+                <div class="card-subtitle">hours</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Fuel Consumption</div>
+                <div class="card-content">16,781.78</div>
+                <div class="card-subtitle">liters</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Table BB4.1: Fuel Cost Details for Sea Tugboats by Order</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tugboat ID</th>
+                            <th>Order</th>
+                            <th>Weight (tons)</th>
+                            <th>Distance (km)</th>
+                            <th>Travel Time (hrs)</th>
+                            <th>Liters/hr</th>
+                            <th>Fuel Used (liters)</th>
+                            <th>Liters/ton</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TBS1</td>
+                            <td>o2</td>
+                            <td>8,500</td>
+                            <td>72.66</td>
+                            <td>6.05</td>
+                            <td>100</td>
+                            <td>605.47</td>
+                            <td>0.0712</td>
+                        </tr>
+                        <tr>
+                            <td>TBS1</td>
+                            <td>o3</td>
+                            <td>8,500</td>
+                            <td>72.66</td>
+                            <td>6.05</td>
+                            <td>100</td>
+                            <td>605.47</td>
+                            <td>0.0712</td>
+                        </tr>
+                        <tr>
+                            <td>TBS2</td>
+                            <td>o1</td>
+                            <td>11,000</td>
+                            <td>72.66</td>
+                            <td>6.05</td>
+                            <td>110</td>
+                            <td>666.02</td>
+                            <td>0.0605</td>
+                        </tr>
+                        <tr>
+                            <td>TBS2</td>
+                            <td>o2</td>
+                            <td>11,000</td>
+                            <td>72.66</td>
+                            <td>6.05</td>
+                            <td>110</td>
+                            <td>666.02</td>
+                            <td>0.0605</td>
+                        </tr>
+                        <tr>
+                            <td>TBS2</td>
+                            <td>o3</td>
+                            <td>11,000</td>
+                            <td>20.00</td>
+                            <td>1.67</td>
+                            <td>110</td>
+                            <td>183.33</td>
+                            <td>0.0167</td>
+                        </tr>
+                        <tr>
+                            <td>TBS3</td>
+                            <td>o3</td>
+                            <td>8,000</td>
+                            <td>50.43</td>
+                            <td>4.58</td>
+                            <td>100</td>
+                            <td>458.46</td>
+                            <td>0.0573</td>
+                        </tr>
+                        <tr>
+                            <td>TBS4</td>
+                            <td>o1</td>
+                            <td>11,000</td>
+                            <td>67.66</td>
+                            <td>6.15</td>
+                            <td>110</td>
+                            <td>676.56</td>
+                            <td>0.0615</td>
+                        </tr>
+                        <tr>
+                            <td>TBS4</td>
+                            <td>o2</td>
+                            <td>11,000</td>
+                            <td>72.66</td>
+                            <td>6.61</td>
+                            <td>110</td>
+                            <td>726.56</td>
+                            <td>0.0661</td>
+                        </tr>
+                        <tr>
+                            <td>TBS4</td>
+                            <td>o3</td>
+                            <td>11,000</td>
+                            <td>20.00</td>
+                            <td>1.82</td>
+                            <td>110</td>
+                            <td>200.00</td>
+                            <td>0.0182</td>
+                        </tr>
+                        <tr>
+                            <td>TBS5</td>
+                            <td>o2</td>
+                            <td>9,500</td>
+                            <td>72.66</td>
+                            <td>6.61</td>
+                            <td>110</td>
+                            <td>726.56</td>
+                            <td>0.0765</td>
+                        </tr>
+                        <tr>
+                            <td>TBS5</td>
+                            <td>o3</td>
+                            <td>11,500</td>
+                            <td>9.00</td>
+                            <td>0.82</td>
+                            <td>110</td>
+                            <td>90.00</td>
+                            <td>0.0078</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="two-columns">
+            <div class="chart-container">
+                <canvas id="fuelChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="distanceChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Table BB4.2: Fuel Cost for Each Tugboat by Transport Weight</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tugboat ID</th>
+                            <th>Total Weight (tons)</th>
+                            <th>Distance (km)</th>
+                            <th>Travel Time (hrs)</th>
+                            <th>Avg Liters/hr</th>
+                            <th>Fuel Used (liters)</th>
+                            <th>Liters/ton</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TBS1</td>
+                            <td>25,000.00</td>
+                            <td>350.69</td>
+                            <td>12.11</td>
+                            <td>92.00</td>
+                            <td>1,114.08</td>
+                            <td>0.04</td>
+                        </tr>
+                        <tr>
+                            <td>TBS2</td>
+                            <td>33,000.00</td>
+                            <td>427.24</td>
+                            <td>13.78</td>
+                            <td>86.98</td>
+                            <td>1,198.60</td>
+                            <td>0.04</td>
+                        </tr>
+                        <tr>
+                            <td>TBS3</td>
+                            <td>8,000.00</td>
+                            <td>176.69</td>
+                            <td>4.58</td>
+                            <td>82.07</td>
+                            <td>375.87</td>
+                            <td>0.05</td>
+                        </tr>
+                        <tr>
+                            <td>TBS4</td>
+                            <td>33,000.00</td>
+                            <td>437.24</td>
+                            <td>14.57</td>
+                            <td>83.02</td>
+                            <td>1,209.57</td>
+                            <td>0.04</td>
+                        </tr>
+                        <tr>
+                            <td>TBS5</td>
+                            <td>23,000.00</td>
+                            <td>349.58</td>
+                            <td>7.42</td>
+                            <td>83.03</td>
+                            <td>616.08</td>
+                            <td>0.03</td>
+                        </tr>
+                        <tr>
+                            <td>TBR1</td>
+                            <td>25,000.00</td>
+                            <td>657.97</td>
+                            <td>38.80</td>
+                            <td>91.99</td>
+                            <td>3,569.39</td>
+                            <td>0.14</td>
+                        </tr>
+                        <tr>
+                            <td>TBR2</td>
+                            <td>16,500.00</td>
+                            <td>438.66</td>
+                            <td>25.57</td>
+                            <td>75.99</td>
+                            <td>1,943.03</td>
+                            <td>0.12</td>
+                        </tr>
+                        <tr>
+                            <td>TBR3</td>
+                            <td>15,500.00</td>
+                            <td>358.66</td>
+                            <td>18.49</td>
+                            <td>77.00</td>
+                            <td>1,423.74</td>
+                            <td>0.09</td>
+                        </tr>
+                        <tr>
+                            <td>TBR4</td>
+                            <td>16,500.00</td>
+                            <td>358.66</td>
+                            <td>18.30</td>
+                            <td>78.99</td>
+                            <td>1,445.54</td>
+                            <td>0.09</td>
+                        </tr>
+                        <tr>
+                            <td>TBR5</td>
+                            <td>16,500.00</td>
+                            <td>346.66</td>
+                            <td>16.46</td>
+                            <td>80.00</td>
+                            <td>1,316.76</td>
+                            <td>0.08</td>
+                        </tr>
+                        <tr>
+                            <td>TBR6</td>
+                            <td>8,500.00</td>
+                            <td>109.00</td>
+                            <td>0.92</td>
+                            <td>73.88</td>
+                            <td>67.97</td>
+                            <td>0.01</td>
+                        </tr>
+                        <tr>
+                            <td>TBR8</td>
+                            <td>8,500.00</td>
+                            <td>159.66</td>
+                            <td>7.27</td>
+                            <td>77.96</td>
+                            <td>566.77</td>
+                            <td>0.07</td>
+                        </tr>
+                        <tr>
+                            <td>TBR9</td>
+                            <td>8,000.00</td>
+                            <td>199.66</td>
+                            <td>11.86</td>
+                            <td>77.99</td>
+                            <td>924.98</td>
+                            <td>0.12</td>
+                        </tr>
+                        <tr>
+                            <td>TBR10</td>
+                            <td>7,000.00</td>
+                            <td>209.66</td>
+                            <td>12.78</td>
+                            <td>78.98</td>
+                            <td>1,009.40</td>
+                            <td>0.14</td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <td>Total</td>
+                            <td>244,000.00</td>
+                            <td>4,580.03</td>
+                            <td>202.91</td>
+                            <td>-</td>
+                            <td>16,781.78</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="fuelConsumptionByTugboat"></canvas>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Table BB4.3: Fuel Cost by Transport Order</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Total Weight (tons)</th>
+                            <th>Total Time (hrs)</th>
+                            <th>Sea Tugboats (liters)</th>
+                            <th>River Tugboats (liters)</th>
+                            <th>Total Fuel (liters)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>O1</td>
+                            <td>32,000.00</td>
+                            <td>55.86</td>
+                            <td>1,801.01 (41.60%)</td>
+                            <td>2,528.60 (58.40%)</td>
+                            <td>4,329.61</td>
+                        </tr>
+                        <tr>
+                            <td>O2</td>
+                            <td>40,000.00</td>
+                            <td>80.29</td>
+                            <td>2,725.69 (42.11%)</td>
+                            <td>3,747.65 (57.89%)</td>
+                            <td>6,473.34</td>
+                        </tr>
+                        <tr>
+                            <td>O3</td>
+                            <td>50,000.00</td>
+                            <td>72.67</td>
+                            <td>1,537.66 (28.12%)</td>
+                            <td>3,930.80 (71.88%)</td>
+                            <td>5,468.46</td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <td>Total</td>
+                            <td>122,000.00</td>
+                            <td>208.82</td>
+                            <td>6,064.36 (37.27%)</td>
+                            <td>10,207.05 (62.73%)</td>
+                            <td>16,781.78</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="two-columns">
+            <div class="chart-container">
+                <canvas id="orderWeightChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="fuelDistributionChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Summary Findings</h2>
+            <ul style="list-style-position: inside; padding: 10px 0px 10px 20px;">
+                <li>Total fuel consumption across all tugboats amounts to 16,781.78 liters for transporting 244,000 tons of cargo.</li>
+                <li>River tugboats consume a larger proportion (62.73%) of total fuel despite handling fewer orders.</li>
+                <li>Order O2 has the highest fuel consumption at 6,473.34 liters, representing 38.57% of total fuel used.</li>
+                <li>TBR1 (River tugboat) has the highest individual fuel consumption at 3,569.39 liters.</li>
+                <li>Average fuel efficiency for sea tugboats (0.04 liters/ton) is better than river tugboats (0.09 liters/ton).</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        Tugboat Operations Fuel Cost Report &copy; 2025 | Generated for Operations Management Team
+    </footer>
+    
+    <script>
+        // Chart for fuel consumption by tugboat
+        const fuelConsumptionCtx = document.getElementById('fuelConsumptionByTugboat').getContext('2d');
+        const fuelConsumptionChart = new Chart(fuelConsumptionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['TBS1', 'TBS2', 'TBS3', 'TBS4', 'TBS5', 'TBR1', 'TBR2', 'TBR3', 'TBR4', 'TBR5', 'TBR6', 'TBR8', 'TBR9', 'TBR10'],
+                datasets: [{
+                    label: 'Fuel Consumption (liters)',
+                    data: [1114.08, 1198.60, 375.87, 1209.57, 616.08, 3569.39, 1943.03, 1423.74, 1445.54, 1316.76, 67.97, 566.77, 924.98, 1009.40],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(54, 162, 235, 0.5)', 
+                        'rgba(54, 162, 235, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)', 
+                        'rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 0.5)', 
+                        'rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 0.5)', 
+                        'rgba(255, 99, 132, 0.5)', 'rgba(255, 99, 132, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)', 'rgba(54, 162, 235, 1)', 'rgba(54, 162, 235, 1)', 
+                        'rgba(54, 162, 235, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 
+                        'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 1)', 
+                        'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 1)', 
+                        'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Fuel Consumption by Tugboat',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Fuel Consumption (liters)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for fuel usage by type
+        const fuelChartCtx = document.getElementById('fuelChart').getContext('2d');
+        const fuelChart = new Chart(fuelChartCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Sea Tugboats', 'River Tugboats'],
+                datasets: [{
+                    label: 'Fuel Usage (liters)',
+                    data: [6064.36, 10207.05],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 99, 132, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Fuel Usage Distribution by Tugboat Type',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.formattedValue;
+                                const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                return `${label}: ${value} liters (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for distance by tugboat type
+        const distanceChartCtx = document.getElementById('distanceChart').getContext('2d');
+        const distanceChart = new Chart(distanceChartCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sea Tugboats', 'River Tugboats'],
+                datasets: [{
+                    label: 'Distance (km)',
+                    data: [1741.44, 2838.59], // Calculated from table BB4.2
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 99, 132, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Distance Traveled by Tugboat Type',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.formattedValue;
+                                const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                return `${label}: ${value} km (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for order weights
+        const orderWeightChartCtx = document.getElementById('orderWeightChart').getContext('2d');
+        const orderWeightChart = new Chart(orderWeightChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['O1', 'O2', 'O3'],
+                datasets: [{
+                    label: 'Weight (tons)',
+                    data: [32000, 40000, 50000],
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cargo Weight by Order',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Weight (tons)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart for fuel distribution by order
+        const fuelDistributionChartCtx = document.getElementById('fuelDistributionChart').getContext('2d');
+        const fuelDistributionChart = new Chart(fuelDistributionChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['O1', 'O2', 'O3'],
+                datasets: [{
+                    label: 'Sea Tugboats',
+                    data: [1801.01, 2725.69, 1537.66],
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'River Tugboats',
+                    data: [2528.6, 3747.65, 3930.8],
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Fuel Consumption by Order and Tugboat Type',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Fuel Consumption (liters)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 import pandas as pd
+from config_problem import *
 
 # Define the file path
-file_path = "Tugboat Problem V1-Demo.xlsx"
+file_path = FILE_INPUT_NAME
 
 # Load the Excel file
 xls = pd.ExcelFile(file_path)
@@ -14,7 +15,6 @@ station_df = xls.parse("station")
 order_df = xls.parse("order")
 #assigned_barge_df = xls.parse("assigned_barge")
 
-# Display the first few rows of each DataFrame
 def print_df():
     print("Carrier:")
     print(carrier_df.head())

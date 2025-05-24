@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrated Travel Data - TBS1 and TBR1 for Order o1</title>
+  <style>
+    :root {
+      --primary-color: #005792;
+      --secondary-color: #00a8e8;
+      --accent-color: #0077b6;
+      --light-color: #f5f5f5;
+      --dark-color: #333;
+      --text-color: #444;
+      --table-header-bg: #005792;
+      --table-odd-row: #e6f7ff;
+      --table-even-row: #ffffff;
+      --table-hover: #c7e6ff;
+      --tbs-color: #e6f0ff;
+      --tbr-color: #e6fff0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      color: var(--text-color);
+      background-color: var(--light-color);
+      line-height: 1.6;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .logo span.highlight {
+      color: #ffcc00;
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin-left: 2rem;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    nav ul li a:hover {
+      color: #ffcc00;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 20px;
+    }
+    
+    .table-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .table-subtitle {
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .travel-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+    
+    .travel-table th {
+      background-color: var(--table-header-bg);
+      color: white;
+      padding: 12px 15px;
+      text-align: center;
+      font-weight: bold;
+      border: 1px solid #ddd;
+    }
+    
+    .travel-table td {
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    
+    .travel-table tr:hover {
+      background-color: var(--table-hover);
+    }
+    
+    .tbs-row {
+      background-color: var(--tbs-color);
+    }
+    
+    .tbr-row {
+      background-color: var(--tbr-color);
+    }
+    
+    .vessel-label {
+      font-weight: bold;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+    
+    .travel-stats {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      gap: 1rem;
+    }
+    
+    .stat-card {
+      flex: 1;
+      min-width: 200px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+    }
+    
+    .stat-card h3 {
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 0.5rem;
+    }
+    
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+    }
+    
+    .journey-visualization {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .journey-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background-color: var(--secondary-color);
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+    }
+    
+    .timeline-container {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+    }
+    
+    .timeline-container::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      right: -10px;
+      background-color: white;
+      border: 4px solid var(--accent-color);
+      top: 15px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .left {
+      left: 0;
+    }
+    
+    .right {
+      left: 50%;
+    }
+    
+    .right::after {
+      left: -10px;
+    }
+    
+    .timeline-content {
+      padding: 20px 30px;
+      background-color: white;
+      position: relative;
+      border-radius: 6px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .timeline-content h2 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .legend {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+    
+    .tbs-color {
+      background-color: var(--tbs-color);
+    }
+    
+    .tbr-color {
+      background-color: var(--tbr-color);
+    }
+    
+    @media (max-width: 1200px) {
+      .travel-table {
+        font-size: 0.9rem;
+      }
+      
+      .travel-table th,
+      .travel-table td {
+        padding: 8px 10px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      nav ul li {
+        margin: 0.5rem;
+      }
+      
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-container::after {
+        left: 15px;
+      }
+      
+      .right {
+        left: 0%;
+      }
+    }
+    
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 2rem 0;
+      margin-top: 3rem;
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .footer-column {
+      flex: 1;
+      min-width: 250px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-column h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid #555;
+      margin-top: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <span>KKU</span>
+        <span> x </span>
+        <span class="highlight">S.Pmarine</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Vessel Data</a></li>
+          <li><a href="#">Travel Logs</a></li>
+          <li><a href="#">Reports</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1 class="table-title">Integrated Travel Data</h1>
+    <h2 class="table-subtitle">Sea Tugboat TBS1 and River Tugboat TBR1 - Order o1</h2>
+    
+    <div class="travel-stats">
+      <div class="stat-card">
+        <h3>TBS1 Journey Summary</h3>
+        <div class="stat-row">
+          <span class="stat-label">Total Distance:</span>
+          <span class="stat-value">69.24 km</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total Travel Time:</span>
+          <span class="stat-value">17.76 hours</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Average Speed:</span>
+          <span class="stat-value">3.95 km/h</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total Operation Duration:</span>
+          <span class="stat-value">25.75 hours</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <h3>TBR1 Journey Summary</h3>
+        <div class="stat-row">
+          <span class="stat-label">Total Distance:</span>
+          <span class="stat-value">12.5 km</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total Travel Time:</span>
+          <span class="stat-value">6.5 hours</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Average Speed:</span>
+          <span class="stat-value">1.92 km/h</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total Operation Duration:</span>
+          <span class="stat-value">8.5 hours</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Combined Stats</h3>
+        <div class="stat-row">
+          <span class="stat-label">Total Distance:</span>
+          <span class="stat-value">81.74 km</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total Travel Time:</span>
+          <span class="stat-value">24.26 hours</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Handover Success:</span>
+          <span class="stat-value">100%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Start to End Duration:</span>
+          <span class="stat-value">34 hours</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color tbs-color"></div>
+        <span>Sea Tugboat (TBS1)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color tbr-color"></div>
+        <span>River Tugboat (TBR1)</span>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="travel-table">
+        <thead>
+          <tr>
+            <th>Trip Code</th>
+            <th>Vessel Code</th>
+            <th>Origin/Destination</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Distance (km)</th>
+            <th>Travel Time (hrs)</th>
+            <th>Avg. Speed (km/h)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- TBS1 Rows -->
+          <tr class="tbs-row">
+            <td>Start</td>
+            <td>TBS1</td>
+            <td>Starting Point</td>
+            <td>1/12/25 6:30</td>
+            <td>1/12/25 6:30</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr class="tbs-row">
+            <td>Barge</td>
+            <td>TBS1</td>
+            <td>Barge Collection Point</td>
+            <td>1/12/25 6:30</td>
+            <td>1/12/25 7:30</td>
+            <td>3.28</td>
+            <td>1</td>
+            <td>3.28</td>
+          </tr>
+          <tr class="tbs-row">
+            <td>o1</td>
+            <td>TBS1</td>
+            <td>Cargo Ship carrier1</td>
+            <td>1/12/25 8:00</td>
+            <td>1/12/25 16:45</td>
+            <td>3.28</td>
+            <td>8.75</td>
+            <td>0.37</td>
+          </tr>
+          <tr class="tbs-row">
+            <td>s2</td>
+            <td>TBS1</td>
+            <td>Bang Hua Suea Port</td>
+            <td>1/13/25 0:15</td>
+            <td>1/13/25 7:53</td>
+            <td>62.68</td>
+            <td>7.68</td>
+            <td>8.16</td>
+          </tr>
+          <tr class="tbs-row">
+            <td>HandOver</td>
+            <td>TBS1</td>
+            <td>Barge Handover Point</td>
+            <td>1/13/25 7:55</td>
+            <td>1/13/25 8:15</td>
+            <td>0</td>
+            <td>0.33</td>
+            <td>0</td>
+          </tr>
+          <tr class="tbs-row">
+            <td>End</td>
+            <td>TBS1</td>
+            <td>TBS1 End Point</td>
+            <td>1/13/25 8:15</td>
+            <td>1/13/25 8:15</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          
+          <!-- TBR1 Rows -->
+          <tr class="tbr-row">
+            <td>Start</td>
+            <td>TBR1</td>
+            <td>Starting Point</td>
+            <td>1/13/25 8:00</td>
+            <td>1/13/25 8:00</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr class="tbr-row">
+            <td>Meeting</td>
+            <td>TBR1</td>
+            <td>Bang Hua Suea Meeting Point</td>
+            <td>1/13/25 8:15</td>
+            <td>1/13/25 9:30</td>
+            <td>0.5</td>
+            <td>1.25</td>
+            <td>0.4</td>
+          </tr>
+          <tr class="tbr-row">
+            <td>Transit</td>
+            <td>TBR1</td>
+            <td>Phra Samut Chedi Strait</td>
+            <td>1/13/25 9:45</td>
+            <td>1/13/25 11:15</td>
+            <td>4.2</td>
+            <td>1.5</td>
+            <td>2.8</td>
+          </tr>
+          <tr class="tbr-row">
+            <td>Transit</td>
+            <td>TBR1</td>
+            <td>Rama 9 Bridge</td>
+            <td>1/13/25 11:45</td>
+            <td>1/13/25 13:00</td>
+            <td>3.8</td>
+            <td>1.25</td>
+            <td>3.04</td>
+          </tr>
+          <tr class="tbr-row">
+            <td>Checkpoint</td>
+            <td>TBR1</td>
+            <td>Klong Toey Port</td>
+            <td>1/13/25 13:30</td>
+            <td>1/13/25 14:00</td>
+            <td>1.5</td>
+            <td>0.5</td>
+            <td>3</td>
+          </tr>
+          <tr class="tbr-row">
+            <td>Customer</td>
+            <td>TBR1</td>
+            <td>Customer Port</td>
+            <td>1/13/25 14:30</td>
+            <td>1/13/25 16:30</td>
+            <td>2.5</td>
+            <td>2</td>
+            <td>1.25</td>
+          </tr>
+          <tr class="tbr-row">
+            <td>End</td>
+            <td>TBR1</td>
+            <td>End Point</td>
+            <td>1/13/25 16:30</td>
+            <td>1/13/25 16:30</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="journey-visualization">
+      <h2 class="journey-title">Journey Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-container left">
+          <div class="timeline-content">
+            <h2>TBS1: Start</h2>
+            <p>1/12/25 6:30</p>
+            <p>Starting point for sea operations</p>
+          </div>
+        </div>
+        <div class="timeline-container right">
+          <div class="timeline-content">
+            <h2>TBS1: Barge Collection</h2>
+            <p>1/12/25 6:30 - 7:30</p>
+            <p>Collected barges for transport</p>
+            <p>Distance: 3.28 km</p>
+          </div>
+        </div>
+        <div class="timeline-container left">
+          <div class="timeline-content">
+            <h2>TBS1: Cargo Loading</h2>
+            <p>1/12/25 8:00 - 16:45</p>
+            <p>Loading operation at carrier1</p>
+            <p>Duration: 8.75 hours</p>
+          </div>
+        </div>
+        <div class="timeline-container right">
+          <div class="timeline-content">
+            <h2>TBS1: Sea Transit</h2>
+            <p>1/13/25 0:15 - 7:53</p>
+            <p>Long-distance transit to Bang Hua Suea Port</p>
+            <p>Distance: 62.68 km at 8.16 km/h</p>
+          </div>
+        </div>
+        <div class="timeline-container left">
+          <div class="timeline-content">
+            <h2>Handover Operation</h2>
+            <p>1/13/25 7:55 - 8:15</p>
+            <p>TBS1 hands over barges to TBR1</p>
+          </div>
+        </div>
+        <div class="timeline-container right">
+          <div class="timeline-content">
+            <h2>TBR1: River Transit Begins</h2>
+            <p>1/13/25 9:45 - 11:15</p>
+            <p>Passage through Phra Samut Chedi Strait</p>
+            <p>Distance: 4.2 km</p>
+          </div>
+        </div>
+        <div class="timeline-container left">
+          <div class="timeline-content">
+            <h2>TBR1: Urban Waterway</h2>
+            <p>1/13/25 11:45 - 13:00</p>
+            <p>Transit via Rama 9 Bridge</p>
+            <p>Distance: 3.8 km</p>
+          </div>
+        </div>
+        <div class="timeline-container right">
+          <div class="timeline-content">
+            <h2>TBR1: Final Delivery</h2>
+            <p>1/13/25 14:30 - 16:30</p>
+            <p>Arrival and unloading at customer port</p>
+            <p>Duration: 2 hours</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>KKU x S.Pmarine</h3>
+        <p>A collaborative partnership for marine logistics and transportation management.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Vessel Data</a></li>
+          <li><a href="#">Travel Logs</a></li>
+          <li><a href="#">Reports</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Resources</h3>
+        <ul class="footer-links">
+          <li><a href="#">Transportation Guidelines</a></li>
+          <li><a href="#">Vessel Specifications</a></li>
+          <li><a href="#">Route Planning</a></li>
+          <li><a href="#">Logistics Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2025 KKU x S.Pmarine. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

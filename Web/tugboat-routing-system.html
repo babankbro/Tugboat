@@ -675,16 +675,16 @@
                             <input type="number" id="tugboatMaxBarge" class="form-control" placeholder="Maximum number of barges" required>
                         </div>
                         <div class="form-group">
-                            <label for="tugboatMaxFuel" data-en="Max Fuel" data-th="ความจุน้ำมันสูงสุด">Max Fuel</label>
+                            <label for="tugboatMaxFuel" data-en="Max Fuel Consumption" data-th="ความจุน้ำมันสูงสุด">Max Fuel Consumption</label>
                             <input type="number" id="tugboatMaxFuel" class="form-control" placeholder="Maximum fuel capacity" required>
                         </div>
                         <div class="form-group">
-                            <label for="tugboatControlType" data-en="Control Type" data-th="ประเภทการควบคุม">Control Type</label>
-                            <select id="tugboatControlType" class="form-control" required>
-                                <option value="" data-en="Select Control Type" data-th="เลือกประเภทการควบคุม">Select Control Type</option>
-                                <option value="SEA" data-en="SEA" data-th="ทะเล">SEA</option>
-                                <option value="RIVER" data-en="RIVER" data-th="แม่น้ำ">RIVER</option>
-                            </select>
+                            <label for="tugboatRPM" data-en="RPM" data-th="ประเภทการควบคุม">RPM</label>
+                            <input type="number" id="tugboatRPM" class="form-control" placeholder="300 RPM" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tugboatHP" data-en="HP" data-th="ประเภทการควบคุม">HP</label>
+                            <input type="number" id="tugboatHP" class="form-control" placeholder="3000 HP" required>
                         </div>
                         <div class="form-group">
                             <label for="tugboatMinSpeed" data-en="Min Speed" data-th="ความเร็วต่ำสุด">Min Speed</label>
@@ -720,7 +720,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="tugboatKM" data-en="KM" data-th="กิโลเมตร">KM</label>
+                            <label for="tugboatKM" data-en="KM" data-th="กิโลเมตร">River KM</label>
                             <input type="number" id="tugboatKM" class="form-control" placeholder="Distance in kilometers" required>
                         </div>
                         <div class="form-group">

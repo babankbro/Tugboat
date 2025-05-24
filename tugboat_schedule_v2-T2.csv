@@ -1,0 +1,495 @@
+ID,type,name,enter_datetime,exit_datetime,distance,time,speed,type_point,order_trip,total_load,barge_ids,order_distance,order_time,barge_speed,order_arrival_time,tugboat_id,order_id,water_type
+Start,Start,Start,30:00.0,30:00.0,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+Barge,Barge Collection,Barge Location,30:00.0,30:00.0,0,0,12,main_point,1,9500,"b1,b2,b3",3.278423357,0.331872213,9.878571429,1/12/2025 8:00,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,30:00.0,00:00.0,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,00:00.0,30:00.0,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,30:00.0,00:00.0,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+o1,Start Order,carrier1,00:00.0,45:00.0,3.278423357,,9.878571429,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr2 - b2,00:00.0,08:34.3,0,,420,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr1 - b1,00:00.0,15:00.0,0,,400,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr3 - b3,00:00.0,34:44.2,0,,380,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,15:00.0,62.67749061,,8.164285714,main_point,1,9500,"b1,b2,b3",,,,,tbs1,o1,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+Barge,Barge Collection,Barge Location,15:00.0,15:00.0,59.65642859,4.971369049,12,main_point,2,9500,"b29,b30,b41",3.278423357,0.331872213,9.878571429,1/13/2025 12:45,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b29,15:00.0,45:00.0,59.65642859,4.971369049,12,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b30,45:00.0,15:00.0,0,0,0,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b41,15:00.0,45:00.0,0,0,0,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+o1,Start Order,carrier1,45:00.0,00:00.0,3.278423357,,9.878571429,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr2 - b30,45:00.0,53:34.3,0,,420,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr1 - b29,45:00.0,00:00.0,0,,400,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+o1,Crane-Carrier,cr3 - b41,45:00.0,19:44.2,0,,380,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,45:00.0,62.67749061,,8.164285714,main_point,2,9500,"b29,b30,b41",,,,,tbs1,o1,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Collection,Barge Location,15:00.0,30:00.0,59.65642859,4.971369049,12,main_point,1,13000,"b4,b5,b6,b7",3.278423357,0.354947411,9.236363636,1/12/2025 8:00,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b4,15:00.0,45:00.0,59.65642859,4.971369049,12,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b5,45:00.0,15:00.0,0,0,0,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b6,15:00.0,45:00.0,0,0,0,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b7,45:00.0,15:00.0,0,0,0,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+o1,Start Order,carrier1,00:00.0,15:00.0,3.278423357,,9.236363636,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+o1,Crane-Carrier,cr5 - b4,00:00.0,20:00.0,0,,360,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+o1,Crane-Carrier,cr4 - b6,00:00.0,00:00.0,0,,300,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+o1,Crane-Carrier,cr1 - b5,15:00.0,30:00.0,0,,400,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+o1,Crane-Carrier,cr2 - b7,08:34.3,05:42.9,0,,420,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,45:00.0,62.67749061,,7.236363636,main_point,1,13000,"b4,b5,b6,b7",,,,,tbs2,o1,Sea
+Start,Start,Start,45:00.0,45:00.0,0,0,0,main_point,2,3500,b42,,,,,tbs2,o1,Sea
+Barge,Barge Collection,Barge Location,45:00.0,00:00.0,59.65642859,4.971369049,12,main_point,2,3500,b42,3.278423357,0.290125961,11.3,1/14/2025 1:30,tbs2,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b42,45:00.0,15:00.0,59.65642859,4.971369049,12,main_point,2,3500,b42,,,,,tbs2,o1,Sea
+o1,Start Order,carrier1,30:00.0,45:00.0,3.278423357,,11.3,main_point,2,3500,b42,,,,,tbs2,o1,Sea
+o1,Crane-Carrier,cr2 - b42,30:00.0,38:34.3,0,,420,main_point,2,3500,b42,,,,,tbs2,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,30:00.0,62.67749061,,10.7,main_point,2,3500,b42,,,,,tbs2,o1,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Collection,Barge Location,15:00.0,30:00.0,54.65642859,4.968766236,11,main_point,1,13000,"b21,b22,b23,b24",3.278423357,0.387215357,8.466666667,1/12/2025 8:00,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b21,15:00.0,45:00.0,54.65642859,4.968766236,11,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b22,45:00.0,15:00.0,0,0,0,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b23,15:00.0,45:00.0,0,0,0,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b24,45:00.0,15:00.0,0,0,0,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+o1,Start Order,carrier1,00:00.0,30:00.0,3.278423357,,8.466666667,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+o1,Crane-Carrier,cr3 - b22,00:00.0,53:41.1,0,,380,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+o1,Crane-Carrier,cr5 - b24,45:15.8,05:15.8,0,,360,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+o1,Crane-Carrier,cr4 - b21,25:15.8,45:15.8,0,,300,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+o1,Crane-Carrier,cr1 - b23,55:15.8,10:15.8,0,,400,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,00:00.0,62.67749061,,6.633333333,main_point,1,13000,"b21,b22,b23,b24",,,,,tbs4,o1,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Collection,Barge Location,15:00.0,30:00.0,0,0,11,main_point,1,13000,"b25,b26,b27,b28",3.278423357,0.387215357,8.466666667,1/12/2025 8:00,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b25,15:00.0,45:00.0,0,0,0,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b26,45:00.0,15:00.0,0,0,0,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b27,15:00.0,45:00.0,0,0,0,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Barge,Barge Step Collection,Collecting Barge - b28,45:00.0,15:00.0,0,0,0,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+o1,Start Order,carrier1,00:00.0,45:00.0,3.278423357,,8.466666667,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+o1,Crane-Carrier,cr2 - b26,00:00.0,08:34.3,0,,420,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+o1,Crane-Carrier,cr3 - b28,22:42.4,16:23.5,0,,380,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+o1,Crane-Carrier,cr5 - b25,34:17.1,30:57.1,0,,360,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+o1,Crane-Carrier,cr1 - b27,39:17.1,54:17.1,0,,400,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,00:00.0,62.67749061,,6.633333333,main_point,1,13000,"b25,b26,b27,b28",,,,,tbs5,o1,Sea
+Start,Start,River Start,1/12/25 23:15,1/12/25 23:15,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,1/13/25 0:15,1/13/25 1:15,59.65642859,5.965642859,10,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+Barge,Barge Change Collection,Change Barge - b1,1/13/25 0:15,1/13/25 0:35,59.65642859,5.965642859,10,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+Barge,Barge Change Collection,Change Barge - b2,1/13/25 0:35,1/13/25 0:55,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+Barge,Barge Change Collection,Change Barge - b3,1/13/25 0:55,1/13/25 1:15,0,0,0,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+s10,Customer Station,Wat Kai Tia Pier,1/13/25 14:56,1/14/25 10:15,83,,6.059782609,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+o1,Loader-Customer,ld1 - b2,1/13/25 15:00,1/13/25 22:15,0,,,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+o1,Loader-Customer,ld1 - b1,1/13/25 22:15,1/14/25 4:15,0,,,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+o1,Loader-Customer,ld1 - b3,1/14/25 4:15,1/14/25 10:15,0,,,main_point,1,9500,"b1,b2,b3",,,,,tbr1,o1,River
+Start,Start,River Start,1/14/25 23:30,1/14/25 23:30,0,0,0,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,1/15/25 0:30,1/15/25 1:45,142.6564286,14.26564286,10,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+Barge,Barge Change Collection,Change Barge - b29,1/15/25 0:30,1/15/25 0:50,142.6564286,14.26564286,10,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+Barge,Barge Change Collection,Change Barge - b30,1/15/25 0:50,1/15/25 1:10,0,0,0,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+Barge,Barge Change Collection,Change Barge - b41,1/15/25 1:10,1/15/25 1:30,0,0,0,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+s10,Customer Station,Wat Kai Tia Pier,1/15/25 15:26,1/16/25 10:45,83,,6.059782609,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+o1,Loader-Customer,ld1 - b30,1/15/25 15:30,1/15/25 22:45,0,,,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+o1,Loader-Customer,ld1 - b29,1/15/25 22:45,1/16/25 4:45,0,,,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+o1,Loader-Customer,ld1 - b41,1/16/25 4:45,1/16/25 10:45,0,,,main_point,2,9500,"b29,b30,b41",,,,,tbr1,o1,River
+Start,Start,River Start,45:00.0,45:00.0,0,0,0,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,45:00.0,139.6564286,13.96564286,10,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+Barge,Barge Change Collection,Change Barge - b4,45:00.0,05:00.0,139.6564286,13.96564286,10,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+Barge,Barge Change Collection,Change Barge - b5,05:00.0,25:00.0,0,0,0,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+Barge,Barge Change Collection,Change Barge - b6,25:00.0,45:00.0,0,0,0,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+s10,Customer Station,Wat Kai Tia Pier,18:03.7,45:00.0,83,,6.125,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+o1,Loader-Customer,ld1 - b4,30:00.0,45:00.0,0,,,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+o1,Loader-Customer,ld1 - b6,30:00.0,45:00.0,0,,,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+o1,Loader-Customer,ld1 - b5,45:00.0,45:00.0,0,,,main_point,1,10000,"b4,b5,b6",,,,,tbr2,o1,River
+Start,Start,River Start,30:00.0,30:00.0,0,0,0,main_point,2,3500,b42,,,,,tbr2,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:56.3,30:00.0,142.6564286,14.26564286,10,main_point,2,3500,b42,,,,,tbr2,o1,River
+Barge,Barge Change Collection,Change Barge - b42,00:56.3,20:56.3,142.6564286,14.26564286,10,main_point,2,3500,b42,,,,,tbr2,o1,River
+s10,Customer Station,Wat Kai Tia Pier,08:07.2,30:00.0,83,,8.614130435,main_point,2,3500,b42,,,,,tbr2,o1,River
+o1,Loader-Customer,ld1 - b42,15:00.0,30:00.0,0,,,main_point,2,3500,b42,,,,,tbr2,o1,River
+Start,Start,River Start,45:00.0,45:00.0,0,0,0,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,45:00.0,59.65642859,6.279624062,9.5,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+Barge,Barge Change Collection,Change Barge - b7,45:00.0,05:00.0,59.65642859,6.279624062,9.5,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+Barge,Barge Change Collection,Change Barge - b21,05:00.0,25:00.0,0,0,0,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+Barge,Barge Change Collection,Change Barge - b22,25:00.0,45:00.0,0,0,0,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+s10,Customer Station,Wat Kai Tia Pier,10:03.9,45:00.0,83,,5.756793478,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+o1,Loader-Customer,ld1 - b22,30:00.0,45:00.0,0,,,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+o1,Loader-Customer,ld1 - b7,45:00.0,45:00.0,0,,,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+o1,Loader-Customer,ld1 - b21,45:00.0,45:00.0,0,,,main_point,1,9500,"b7,b21,b22",,,,,tbr3,o1,River
+Start,Start,River Start,00:00.0,00:00.0,0,0,0,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,00:00.0,59.65642859,6.214211312,9.6,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+Barge,Barge Change Collection,Change Barge - b23,00:00.0,20:00.0,59.65642859,6.214211312,9.6,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+Barge,Barge Change Collection,Change Barge - b24,20:00.0,40:00.0,0,0,0,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+Barge,Barge Change Collection,Change Barge - b25,40:00.0,00:00.0,0,0,0,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+s10,Customer Station,Wat Kai Tia Pier,53:20.0,30:00.0,83,,5.976,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+o1,Loader-Customer,ld1 - b24,15:00.0,30:00.0,0,,,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+o1,Loader-Customer,ld1 - b23,30:00.0,30:00.0,0,,,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+o1,Loader-Customer,ld1 - b25,30:00.0,30:00.0,0,,,main_point,1,9500,"b23,b24,b25",,,,,tbr4,o1,River
+Start,Start,River Start,00:00.0,00:00.0,0,0,0,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,00:00.0,59.65642859,6.150147278,9.7,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+Barge,Barge Change Collection,Change Barge - b26,00:00.0,20:00.0,59.65642859,6.150147278,9.7,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+Barge,Barge Change Collection,Change Barge - b27,20:00.0,40:00.0,0,0,0,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+Barge,Barge Change Collection,Change Barge - b28,40:00.0,00:00.0,0,0,0,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+s10,Customer Station,Wat Kai Tia Pier,22:42.2,15:00.0,83,,5.772554348,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+o1,Loader-Customer,ld1 - b26,00:00.0,15:00.0,0,,,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+o1,Loader-Customer,ld1 - b28,00:00.0,15:00.0,0,,,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+o1,Loader-Customer,ld1 - b27,15:00.0,15:00.0,0,,,main_point,1,10000,"b26,b27,b28",,,,,tbr5,o1,River
+Start,Start,Start,45:00.0,45:00.0,0,0,0,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+Barge,Barge Collection,Barge Location,30:00.0,30:00.0,59.65642859,4.971369049,12,main_point,1,9500,"b43,b44,b45",5.240947497,0.530536985,9.878571429,1/15/2025 13:15,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b43,30:00.0,00:00.0,59.65642859,4.971369049,12,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b44,00:00.0,30:00.0,0,0,0,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b45,30:00.0,00:00.0,0,0,0,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+o2,Start Order,carrier2,15:00.0,15:00.0,5.240947497,,9.878571429,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr1 - b44,15:00.0,08:41.1,0,,380,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr4 - b43,15:00.0,49:44.2,0,,380,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr2 - b45,15:00.0,23:34.3,0,,350,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,15:00.0,64.46773861,,8.164285714,main_point,1,9500,"b43,b44,b45",,,,,tbs1,o2,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+Barge,Barge Collection,Barge Location,45:00.0,15:00.0,20,1.666666667,12,main_point,2,11000,"b40,b57,b58,b59",63.79308491,6.944442426,9.186206897,1/17/2025 15:15,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b40,45:00.0,45:00.0,20,1.666666667,12,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b57,45:00.0,30:00.0,15,1.329243354,11.28461538,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b58,30:00.0,00:00.0,0,0,0,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b59,00:00.0,30:00.0,0,0,0,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+o2,Start Order,carrier2,15:00.0,15:00.0,63.79308491,,9.186206897,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr1 - b40,15:00.0,08:41.1,0,,380,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr4 - b58,15:00.0,08:41.1,0,,380,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr2 - b57,15:00.0,23:34.3,0,,350,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+o2,Crane-Carrier,cr5 - b59,15:00.0,40:42.9,0,,350,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,45:00.0,64.46773861,,7.324137931,main_point,2,11000,"b40,b57,b58,b59",,,,,tbs1,o2,Sea
+Start,Start,Start,30:00.0,30:00.0,0,0,0,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+Barge,Barge Collection,Barge Location,30:00.0,45:00.0,59.65642859,4.971369049,12,main_point,1,13000,"b46,b47,b48,b49",5.240947497,0.567425418,9.236363636,1/16/2025 14:30,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b46,30:00.0,00:00.0,59.65642859,4.971369049,12,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b47,00:00.0,30:00.0,0,0,0,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b48,30:00.0,00:00.0,0,0,0,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b49,00:00.0,30:00.0,0,0,0,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+o2,Start Order,carrier2,30:00.0,30:00.0,5.240947497,,9.236363636,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr1 - b46,30:00.0,23:41.1,0,,380,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr4 - b48,30:00.0,23:41.1,0,,380,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr2 - b47,30:00.0,38:34.3,0,,350,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+o2,Crane-Carrier,cr5 - b49,30:00.0,38:34.3,0,,350,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,00:00.0,64.46773861,,7.236363636,main_point,1,13000,"b46,b47,b48,b49",,,,,tbs2,o2,Sea
+Start,Start,Start,00:00.0,00:00.0,0,0,0,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+Barge,Barge Collection,Barge Location,45:00.0,45:00.0,20,1.818181818,11,main_point,1,13000,"b50,b17,b18,b19",48.79308491,5.762962784,8.466666667,1/14/2025 12:45,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b17,45:00.0,00:00.0,20,1.818181818,11,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b18,00:00.0,00:00.0,5,0.482703138,10.35833333,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b19,00:00.0,00:00.0,5,0.514266755,9.722580645,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b50,00:00.0,15:00.0,44.65642859,4.911516463,9.0921875,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+o2,Start Order,carrier2,45:00.0,00:00.0,48.79308491,,8.466666667,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr3 - b50,45:00.0,45:00.0,0,,300,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr6 - b18,45:00.0,45:00.0,0,,300,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr2 - b17,53:34.3,02:08.6,0,,350,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+o2,Crane-Carrier,cr5 - b19,53:34.3,02:08.6,0,,350,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,15:00.0,64.46773861,,6.633333333,main_point,1,13000,"b50,b17,b18,b19",,,,,tbs4,o2,Sea
+Start,Start,Start,00:00.0,00:00.0,0,0,0,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+Barge,Barge Collection,Barge Location,00:00.0,30:00.0,20,1.818181818,11,main_point,1,13000,"b20,b37,b38,b39",48.79308491,5.762962784,8.466666667,1/14/2025 8:30,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b20,00:00.0,15:00.0,20,1.818181818,11,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b37,15:00.0,15:00.0,5,0.482703138,10.35833333,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b38,15:00.0,15:00.0,5,0.514266755,9.722580645,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+Barge,Barge Step Collection,Collecting Barge - b39,15:00.0,15:00.0,5,0.549922667,9.0921875,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+o2,Start Order,carrier2,30:00.0,00:00.0,48.79308491,,8.466666667,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr1 - b20,30:00.0,23:41.1,0,,380,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr4 - b38,30:00.0,23:41.1,0,,380,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr3 - b37,36:18.9,56:18.9,0,,300,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+o2,Crane-Carrier,cr6 - b39,36:18.9,56:18.9,0,,300,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,15:00.0,64.46773861,,6.633333333,main_point,1,13000,"b20,b37,b38,b39",,,,,tbs5,o2,Sea
+Start,Start,River Start,1/17/25 0:00,1/17/25 0:00,0,0,0,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,1/17/25 1:00,1/17/25 2:15,142.6564286,14.26564286,10,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+Barge,Barge Change Collection,Change Barge - b43,1/17/25 1:00,1/17/25 1:20,142.6564286,14.26564286,10,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+Barge,Barge Change Collection,Change Barge - b44,1/17/25 1:20,1/17/25 1:40,0,0,0,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+Barge,Barge Change Collection,Change Barge - b45,1/17/25 1:40,1/17/25 2:00,0,0,0,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+s11,Customer Station,Sam Khok Pier,1/17/25 16:36,1/18/25 12:45,87,,6.059782609,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+o2,Loader-Customer,ld1 - b44,1/17/25 16:45,1/18/25 0:15,0,,,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+o2,Loader-Customer,ld1 - b43,1/18/25 0:15,1/18/25 6:30,0,,,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+o2,Loader-Customer,ld1 - b45,1/18/25 6:30,1/18/25 12:45,0,,,main_point,1,9500,"b43,b44,b45",,,,,tbr1,o2,River
+Start,Start,River Start,45:56.3,45:56.3,0,0,0,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:56.3,00:00.0,142.6564286,14.26564286,10,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+Barge,Barge Change Collection,Change Barge - b46,45:56.3,05:56.3,142.6564286,14.26564286,10,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+Barge,Barge Change Collection,Change Barge - b47,05:56.3,25:56.3,0,0,0,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+Barge,Barge Change Collection,Change Barge - b48,25:56.3,45:56.3,0,0,0,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+s11,Customer Station,Sam Khok Pier,12:14.7,30:00.0,87,,6.125,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+o2,Loader-Customer,ld1 - b46,15:00.0,45:00.0,0,,,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+o2,Loader-Customer,ld1 - b48,45:00.0,15:00.0,0,,,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+o2,Loader-Customer,ld1 - b47,15:00.0,30:00.0,0,,,main_point,1,10000,"b46,b47,b48",,,,,tbr2,o2,River
+Start,Start,River Start,15:00.0,15:00.0,0,0,0,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,45:00.0,142.6564286,15.01646617,9.5,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+Barge,Barge Change Collection,Change Barge - b49,30:00.0,50:00.0,142.6564286,15.01646617,9.5,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+Barge,Barge Change Collection,Change Barge - b50,50:00.0,10:00.0,0,0,0,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+Barge,Barge Change Collection,Change Barge - b17,10:00.0,30:00.0,50.43107239,6.228679818,8.096590909,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+s11,Customer Station,Sam Khok Pier,51:45.3,15:00.0,87,,5.756793478,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+o2,Loader-Customer,ld1 - b50,15:00.0,45:00.0,0,,,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+o2,Loader-Customer,ld1 - b49,45:00.0,00:00.0,0,,,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+o2,Loader-Customer,ld1 - b17,00:00.0,15:00.0,0,,,main_point,1,9500,"b49,b50,b17",,,,,tbr3,o2,River
+Start,Start,River Start,45:00.0,45:00.0,0,0,0,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,15:00.0,103,10.72916667,9.6,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+Barge,Barge Change Collection,Change Barge - b18,00:00.0,20:00.0,103,10.72916667,9.6,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+Barge,Barge Change Collection,Change Barge - b19,20:00.0,40:00.0,5,0.562072336,8.895652174,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+Barge,Barge Change Collection,Change Barge - b20,40:00.0,00:00.0,5,0.609756098,8.2,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+s11,Customer Station,Sam Khok Pier,02:45.3,45:00.0,87,,5.88,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+o2,Loader-Customer,ld1 - b18,30:00.0,00:00.0,0,,,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+o2,Loader-Customer,ld1 - b20,00:00.0,30:00.0,0,,,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+o2,Loader-Customer,ld1 - b19,30:00.0,45:00.0,0,,,main_point,1,10000,"b18,b19,b20",,,,,tbr4,o2,River
+Start,Start,River Start,15:00.0,15:00.0,0,0,0,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,45:00.0,20,2,10,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+Barge,Barge Change Collection,Change Barge - b37,30:00.0,50:00.0,20,2,10,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+Barge,Barge Change Collection,Change Barge - b38,50:00.0,10:00.0,5,0.539589443,9.266304348,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+Barge,Barge Change Collection,Change Barge - b39,10:00.0,30:00.0,5,0.585365854,8.541666667,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+s11,Customer Station,Sam Khok Pier,43:33.3,15:00.0,87,,6.225,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+o2,Loader-Customer,ld1 - b38,15:00.0,45:00.0,0,,,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+o2,Loader-Customer,ld1 - b37,45:00.0,00:00.0,0,,,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+o2,Loader-Customer,ld1 - b39,00:00.0,15:00.0,0,,,main_point,1,9500,"b37,b38,b39",,,,,tbr8,o2,River
+Start,Start,River Start,15:00.0,15:00.0,0,0,0,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,45:00.0,60,6.315789474,9.5,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+Barge,Barge Change Collection,Change Barge - b40,00:00.0,20:00.0,60,6.315789474,9.5,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+Barge,Barge Change Collection,Change Barge - b57,20:00.0,40:00.0,15,1.705872398,8.793154762,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+Barge,Barge Change Collection,Change Barge - b58,40:00.0,00:00.0,0,0,0,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+s11,Customer Station,Sam Khok Pier,08:19.0,30:00.0,87,,5.653532609,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+o2,Loader-Customer,ld1 - b40,15:00.0,45:00.0,0,,,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+o2,Loader-Customer,ld1 - b58,45:00.0,15:00.0,0,,,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+o2,Loader-Customer,ld1 - b57,15:00.0,30:00.0,0,,,main_point,2,10000,"b40,b57,b58",,,,,tbr9,o2,River
+Start,Start,River Start,30:00.0,30:00.0,0,0,0,main_point,2,1000,b59,,,,,tbr10,o2,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,30:00.0,50,5.208333333,9.6,main_point,2,1000,b59,,,,,tbr10,o2,River
+Barge,Barge Change Collection,Change Barge - b59,00:00.0,20:00.0,50,5.208333333,9.6,main_point,2,1000,b59,,,,,tbr10,o2,River
+s11,Customer Station,Sam Khok Pier,23:46.1,00:00.0,87,,8.791304348,main_point,2,1000,b59,,,,,tbr10,o2,River
+o2,Loader-Customer,ld1 - b59,45:00.0,00:00.0,0,,,main_point,2,1000,b59,,,,,tbr10,o2,River
+Start,Start,Start,45:00.0,45:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+Barge,Barge Collection,Barge Location,45:00.0,15:00.0,83,6.916666667,12,main_point,1,5000,"b1,b2,b3,b4,b5",146.7929956,17.26976419,8.5,1/19/2025 19:45,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,45:00.0,00:00.0,83,6.916666667,12,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,00:00.0,30:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,30:00.0,00:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b4,00:00.0,30:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b5,30:00.0,00:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+o3,Start Order,carrier3,45:00.0,15:00.0,146.7929956,,8.5,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr5 - b1,45:00.0,56:25.7,0,,420,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr4 - b2,45:00.0,00:00.0,0,,400,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr1 - b3,45:00.0,03:56.8,0,,380,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr6 - b4,45:00.0,03:56.8,0,,380,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr2 - b5,45:00.0,10:42.9,0,,350,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,00:00.0,64.46761922,,8,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o3,Sea
+Start,Start,Start,00:00.0,00:00.0,0,0,0,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+Barge,Barge Collection,Barge Location,00:00.0,00:00.0,83,6.916666667,12,main_point,2,9500,"b28,b29,b30,b31,b32",54.79299565,6.446234782,8.5,1/22/2025 18:30,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b28,00:00.0,15:00.0,83,6.916666667,12,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b29,15:00.0,45:00.0,0,0,0,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b30,45:00.0,15:00.0,0,0,0,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b31,15:00.0,00:00.0,92,9.313087491,9.878571429,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b32,00:00.0,30:00.0,0,0,0,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+o3,Start Order,carrier3,30:00.0,45:00.0,54.79299565,,8.5,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr5 - b32,30:00.0,38:34.3,0,,420,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr4 - b31,30:00.0,45:00.0,0,,400,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr1 - b28,30:00.0,48:56.8,0,,380,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr6 - b29,30:00.0,48:56.8,0,,380,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+o3,Crane-Carrier,cr2 - b30,30:00.0,55:42.9,0,,350,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,15:00.0,64.46761922,,7.1,main_point,2,9500,"b28,b29,b30,b31,b32",,,,,tbs1,o3,Sea
+Start,Start,Start,00:00.0,00:00.0,0,0,0,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+Barge,Barge Collection,Barge Location,00:00.0,00:00.0,83,6.916666667,12,main_point,1,12000,"b6,b7,b8,b9,b10",5.240876641,0.612336102,8.558823529,1/19/2025 11:45,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b6,00:00.0,15:00.0,83,6.916666667,12,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b7,15:00.0,45:00.0,0,0,0,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b8,45:00.0,45:00.0,142.6564286,13.44996742,10.60645161,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b9,45:00.0,15:00.0,0,0,0,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b10,15:00.0,45:00.0,0,0,0,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+o3,Start Order,carrier3,45:00.0,45:00.0,5.240876641,,8.558823529,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr3 - b8,45:00.0,45:00.0,0,,300,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr5 - b10,56:25.7,05:00.0,0,,420,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr4 - b9,00:00.0,15:00.0,0,,400,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr1 - b6,03:56.8,22:53.7,0,,380,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr6 - b7,03:56.8,22:53.7,0,,380,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,30:00.0,64.46761922,,6.882352941,main_point,1,12000,"b6,b7,b8,b9,b10",,,,,tbs2,o3,Sea
+Start,Start,Start,30:00.0,30:00.0,0,0,0,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+Barge,Barge Collection,Barge Location,15:00.0,00:00.0,9,0.75,12,main_point,2,14000,"b33,b34,b35,b36,b40",150.7929956,17.61842561,8.558823529,1/24/2025 5:45,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b33,15:00.0,30:00.0,9,0.75,12,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b34,30:00.0,00:00.0,0,0,0,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b35,00:00.0,30:00.0,0,0,0,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b36,30:00.0,00:00.0,0,0,0,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b40,00:00.0,45:00.0,96,10.39370079,9.236363636,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+o3,Start Order,carrier3,45:00.0,15:00.0,150.7929956,,8.558823529,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr5 - b34,45:00.0,53:34.3,0,,420,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr4 - b36,45:00.0,15:00.0,0,,400,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr1 - b33,45:00.0,19:44.2,0,,380,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr6 - b35,45:00.0,19:44.2,0,,380,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+o3,Crane-Carrier,cr2 - b40,45:00.0,10:42.9,0,,350,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,00:00.0,45:00.0,64.46761922,,6.529411765,main_point,2,14000,"b33,b34,b35,b36,b40",,,,,tbs2,o3,Sea
+Start,Start,Start,00:00.0,00:00.0,0,0,0,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+Barge,Barge Collection,Barge Location,30:00.0,00:00.0,50.43107239,4.584642944,11,main_point,1,9500,"b11,b12,b13",54.79299565,6.050892834,9.055357143,1/19/2025 0:15,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b11,30:00.0,30:00.0,50.43107239,4.584642944,11,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b12,30:00.0,00:00.0,0,0,0,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b13,00:00.0,30:00.0,0,0,0,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+o3,Start Order,carrier3,15:00.0,45:00.0,54.79299565,,9.055357143,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr2 - b12,15:00.0,49:17.1,0,,350,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr1 - b11,27:10.8,01:55.0,0,,380,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr6 - b13,27:10.8,01:55.0,0,,380,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,00:00.0,64.46761922,,7.483928571,main_point,1,9500,"b11,b12,b13",,,,,tbs3,o3,Sea
+Start,Start,Start,00:20.8,00:20.8,0,0,0,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+Barge,Barge Collection,Barge Location,30:00.0,45:00.0,83,7.545454545,11,main_point,2,4000,"b41,b42,b43,b44",150.7929956,17.90744011,8.420689655,1/22/2025 21:45,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b41,30:00.0,30:00.0,83,7.545454545,11,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b42,30:00.0,00:00.0,0,0,0,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b43,00:00.0,45:00.0,4,0.412528648,9.696296296,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b44,45:00.0,15:00.0,0,0,0,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+o3,Start Order,carrier3,45:00.0,15:00.0,150.7929956,,8.420689655,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr2 - b41,10:42.9,36:25.7,0,,350,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr3 - b42,45:00.0,25:00.0,0,,300,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr2 - b43,36:25.7,02:08.6,0,,350,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+o3,Crane-Carrier,cr5 - b44,53:34.3,05:00.0,0,,420,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,45:00.0,64.46761922,,8.04137931,main_point,2,4000,"b41,b42,b43,b44",,,,,tbs3,o3,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+Barge,Barge Collection,Barge Location,00:00.0,45:00.0,9,0.818181818,11,main_point,1,12000,"b14,b15,b16,b21,b22",146.7929956,18.71025999,7.845588235,1/19/2025 12:30,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b14,00:00.0,15:00.0,9,0.818181818,11,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b15,15:00.0,45:00.0,0,0,0,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b16,45:00.0,15:00.0,0,0,0,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b21,15:00.0,45:00.0,92,10.11857708,9.0921875,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b22,45:00.0,15:00.0,0,0,0,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+o3,Start Order,carrier3,30:00.0,45:00.0,146.7929956,,7.845588235,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr4 - b14,30:00.0,00:00.0,0,,400,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr5 - b16,20:00.0,28:34.3,0,,420,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr1 - b15,12:37.9,47:22.1,0,,380,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr6 - b21,12:37.9,31:34.7,0,,380,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+o3,Crane-Carrier,cr2 - b22,00:00.0,25:42.9,0,,350,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,15:00.0,64.46761922,,6.308823529,main_point,1,12000,"b14,b15,b16,b21,b22",,,,,tbs4,o3,Sea
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+Barge,Barge Collection,Barge Location,45:00.0,00:00.0,83,7.545454545,11,main_point,1,5000,"b23,b24,b25,b26,b27",146.7929956,18.71025999,7.845588235,1/19/2025 15:45,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b23,45:00.0,45:00.0,83,7.545454545,11,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b24,45:00.0,15:00.0,0,0,0,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b25,15:00.0,45:00.0,0,0,0,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b26,45:00.0,15:00.0,0,0,0,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+Barge,Barge Step Collection,Collecting Barge - b27,15:00.0,45:00.0,0,0,0,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+o3,Start Order,carrier3,45:00.0,15:00.0,146.7929956,,7.845588235,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr3 - b23,45:00.0,25:00.0,0,,300,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr6 - b24,16:34.7,35:31.6,0,,380,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr2 - b25,10:42.9,36:25.7,0,,350,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr6 - b26,35:31.6,54:28.4,0,,380,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+o3,Crane-Carrier,cr3 - b27,25:00.0,05:00.0,0,,300,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+s2,Appointment,3-Bang Hua Suea Pier,45:00.0,30:00.0,64.46761922,,7.441176471,main_point,1,5000,"b23,b24,b25,b26,b27",,,,,tbs5,o3,Sea
+Start,Start,River Start,1/20/25 3:45,1/20/25 3:45,0,0,0,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,1/20/25 5:15,1/20/25 6:45,146.6564286,14.66564286,10,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b1,1/20/25 5:15,1/20/25 5:35,146.6564286,14.66564286,10,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b2,1/20/25 5:35,1/20/25 5:55,0,0,0,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b3,1/20/25 5:55,1/20/25 6:15,0,0,0,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b4,1/20/25 6:15,1/20/25 6:35,0,0,0,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+s12,Customer Station,Wat Chang Yai,1/20/25 21:45,1/20/25 22:45,100,,6.666666667,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b1,1/20/25 21:45,1/20/25 22:00,0,,,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b2,1/20/25 22:00,1/20/25 22:15,0,,,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b3,1/20/25 22:15,1/20/25 22:30,0,,,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b4,1/20/25 22:30,1/20/25 22:45,0,,,main_point,1,4000,"b1,b2,b3,b4",,,,,tbr1,o3,River
+Start,Start,River Start,1/23/25 2:45,1/23/25 2:45,0,0,0,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,1/23/25 10:45,1/23/25 18:45,159.6564286,15.96564286,10,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b28,1/23/25 10:45,1/23/25 11:05,159.6564286,15.96564286,10,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b29,1/23/25 11:05,1/23/25 11:25,0,0,0,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b30,1/23/25 11:25,1/23/25 11:45,0,0,0,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+Barge,Barge Change Collection,Change Barge - b31,1/23/25 11:45,1/23/25 12:05,50.43107239,6.466423219,7.798913043,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+s12,Customer Station,Wat Chang Yai,1/24/25 10:45,1/24/25 12:45,100,,6.25,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b31,1/24/25 10:45,1/24/25 12:00,0,,,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b28,1/24/25 12:00,1/24/25 12:15,0,,,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b29,1/24/25 12:15,1/24/25 12:30,0,,,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+o3,Loader-Customer,ld1 - b30,1/24/25 12:30,1/24/25 12:45,0,,,main_point,2,6000,"b28,b29,b30,b31",,,,,tbr1,o3,River
+Start,Start,River Start,00:00.0,00:00.0,0,0,0,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,00:00.0,146.6564286,14.66564286,10,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b5,00:00.0,20:00.0,146.6564286,14.66564286,10,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b11,20:00.0,40:00.0,50.43107239,5.44241485,9.266304348,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b12,40:00.0,00:00.0,0,0,0,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b13,00:00.0,20:00.0,0,0,0,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+s12,Customer Station,Wat Chang Yai,14:44.2,30:00.0,100,,5.480769231,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b12,15:00.0,45:00.0,0,,,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b11,45:00.0,00:00.0,0,,,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b13,00:00.0,15:00.0,0,,,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b5,15:00.0,30:00.0,0,,,main_point,1,10500,"b5,b11,b12,b13",,,,,tbr2,o3,River
+Start,Start,River Start,15:00.0,15:00.0,0,0,0,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,15:00.0,15:00.0,109,10.9,10,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b32,15:00.0,35:00.0,109,10.9,10,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b41,35:00.0,55:00.0,50.65642859,5.466734816,9.266304348,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b42,55:00.0,15:00.0,0,0,0,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+Barge,Barge Change Collection,Change Barge - b43,15:00.0,35:00.0,0,0,0,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+s12,Customer Station,Wat Chang Yai,15:00.0,30:00.0,100,,6.25,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b32,15:00.0,45:00.0,0,,,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b41,45:00.0,00:00.0,0,,,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b42,00:00.0,15:00.0,0,,,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+o3,Loader-Customer,ld1 - b43,15:00.0,30:00.0,0,,,main_point,2,6500,"b32,b41,b42,b43",,,,,tbr2,o3,River
+Start,Start,River Start,00:00.0,00:00.0,0,0,0,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,00:00.0,146.6564286,15.4375188,9.5,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b6,30:00.0,50:00.0,146.6564286,15.4375188,9.5,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b7,50:00.0,10:00.0,0,0,0,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b8,10:00.0,30:00.0,0,0,0,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b9,30:00.0,50:00.0,0,0,0,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+s12,Customer Station,Wat Chang Yai,22:23.5,00:00.0,100,,5.442708333,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b8,45:00.0,15:00.0,0,,,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b9,15:00.0,30:00.0,0,,,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b6,30:00.0,45:00.0,0,,,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b7,45:00.0,00:00.0,0,,,main_point,1,8500,"b6,b7,b8,b9",,,,,tbr3,o3,River
+Start,Start,River Start,15:53.0,15:53.0,0,0,0,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,45:00.0,159.6564286,16.80593985,9.5,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b44,00:00.0,20:00.0,159.6564286,16.80593985,9.5,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b33,20:00.0,40:00.0,50.43107239,5.735264959,8.793154762,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+Barge,Barge Change Collection,Change Barge - b34,40:00.0,00:00.0,0,0,0,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+s12,Customer Station,Wat Chang Yai,57:28.4,15:00.0,100,,6.169836957,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b34,15:00.0,45:00.0,0,,,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b33,45:00.0,00:00.0,0,,,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+o3,Loader-Customer,ld1 - b44,00:00.0,15:00.0,0,,,main_point,2,7500,"b44,b33,b34",,,,,tbr3,o3,River
+Start,Start,River Start,30:00.0,30:00.0,0,0,0,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,30:00.0,146.6564286,15.27671131,9.6,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b10,00:00.0,20:00.0,146.6564286,15.27671131,9.6,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b23,20:00.0,40:00.0,0,0,0,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b24,40:00.0,00:00.0,0,0,0,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b25,00:00.0,20:00.0,0,0,0,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+s12,Customer Station,Wat Chang Yai,10:00.0,00:00.0,100,,6,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b10,45:00.0,15:00.0,0,,,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b23,15:00.0,30:00.0,0,,,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b24,30:00.0,45:00.0,0,,,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b25,45:00.0,00:00.0,0,,,main_point,1,6500,"b10,b23,b24,b25",,,,,tbr4,o3,River
+Start,Start,River Start,30:00.0,30:00.0,0,0,0,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,00:00.0,30:00.0,109,11.35416667,9.6,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b35,00:00.0,20:00.0,109,11.35416667,9.6,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b36,20:00.0,40:00.0,0,0,0,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+Barge,Barge Change Collection,Change Barge - b40,40:00.0,00:00.0,11,1.341463415,8.2,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+s12,Customer Station,Wat Chang Yai,13:23.8,30:00.0,100,,6.36,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b36,30:00.0,00:00.0,0,,,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b35,00:00.0,15:00.0,0,,,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+o3,Loader-Customer,ld1 - b40,15:00.0,30:00.0,0,,,main_point,2,7500,"b35,b36,b40",,,,,tbr4,o3,River
+Start,Start,River Start,15:00.0,15:00.0,0,0,0,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,15:00.0,142.6564286,14.70684831,9.7,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+Barge,Barge Change Collection,Change Barge - b26,45:00.0,05:00.0,142.6564286,14.70684831,9.7,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+Barge,Barge Change Collection,Change Barge - b27,05:00.0,25:00.0,0,0,0,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+Barge,Barge Change Collection,Change Barge - b14,25:00.0,45:00.0,50.43107239,6.10025343,8.267045455,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+Barge,Barge Change Collection,Change Barge - b15,45:00.0,05:00.0,0,0,0,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+s12,Customer Station,Wat Chang Yai,14:39.8,15:00.0,100,,5.557291667,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+o3,Loader-Customer,ld1 - b14,00:00.0,30:00.0,0,,,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+o3,Loader-Customer,ld1 - b15,30:00.0,45:00.0,0,,,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+o3,Loader-Customer,ld1 - b26,45:00.0,00:00.0,0,,,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+o3,Loader-Customer,ld1 - b27,00:00.0,15:00.0,0,,,main_point,1,8500,"b26,b27,b14,b15",,,,,tbr5,o3,River
+Start,Start,River Start,00:00.0,00:00.0,0,0,0,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+s2,Barge Change,3-Bang Hua Suea Pier,45:00.0,30:00.0,9,0.918367347,9.8,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+Barge,Barge Change Collection,Change Barge - b16,45:00.0,05:00.0,9,0.918367347,9.8,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+Barge,Barge Change Collection,Change Barge - b21,05:00.0,25:00.0,50.65642859,5.578300833,9.080978261,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+Barge,Barge Change Collection,Change Barge - b22,25:00.0,45:00.0,0,0,0,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+s12,Customer Station,Wat Chang Yai,01:31.4,15:00.0,100,,6.8845,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+o3,Loader-Customer,ld1 - b16,15:00.0,45:00.0,0,,,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+o3,Loader-Customer,ld1 - b21,45:00.0,00:00.0,0,,,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+o3,Loader-Customer,ld1 - b22,00:00.0,15:00.0,0,,,main_point,1,5500,"b16,b21,b22",,,,,tbr6,o3,River
+Start,Start,Start,15:00.0,15:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+Barge,Barge Collection,Barge Location,30:00.0,30:00.0,100,8.333333333,12,main_point,1,5000,"b1,b2,b3,b4,b5",163.7929956,19.26976419,8.5,1/26/2025 19:00,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b1,30:00.0,15:00.0,100,8.333333333,12,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b2,15:00.0,45:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b3,45:00.0,15:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b4,15:00.0,45:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b5,45:00.0,15:00.0,0,0,0,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+o4,Start Order,carrier1,00:00.0,30:00.0,163.7929956,,8.5,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr5 - b1,00:00.0,11:25.7,0,,420,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr4 - b2,00:00.0,15:00.0,0,,400,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr5 - b3,11:25.7,22:51.4,0,,420,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr1 - b4,00:00.0,18:56.8,0,,380,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+o4,Crane-Carrier,cr6 - b5,00:00.0,18:56.8,0,,380,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+s2,Appointment,3-Bang Hua Suea Pier,30:00.0,30:00.0,64.46761922,,8,main_point,1,5000,"b1,b2,b3,b4,b5",,,,,tbs1,o4,Sea
+Start,Start,Start,45:00.0,45:00.0,0,0,0,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+Barge,Barge Collection,Barge Location,00:00.0,15:00.0,100,8.333333333,12,main_point,1,3000,"b11,b12,b13",163.7929956,16.51347152,9.91875,1/26/2025 16:00,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b11,00:00.0,45:00.0,100,8.333333333,12,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b12,45:00.0,15:00.0,0,0,0,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+Barge,Barge Step Collection,Collecting Barge - b13,15:00.0,45:00.0,0,0,0,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+o4,Start Order,carrier1,00:00.0,45:00.0,163.7929956,,9.91875,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr4 - b11,15:00.0,30:00.0,0,,400,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr5 - b12,22:51.4,34:17.1,0,,420,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+o4,Crane-Carrier,cr2 - b13,00:00.0,25:42.9,0,,350,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+s2,Appointment,3-Bang Hua Suea Pier,15:00.0,30:00.0,64.46761922,,9.6375,main_point,1,3000,"b11,b12,b13",,,,,tbs2,o4,Sea
+Start,Start,River Start,1/26/25 21:30,1/26/25 21:30,0,0,0,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+s2,Barge Change,3-Bang Hua Suea Pier,1/27/25 5:30,1/27/25 13:30,109,10.9,10,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+Barge,Barge Change Collection,Change Barge - b11,1/27/25 5:30,1/27/25 5:50,109,10.9,10,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+Barge,Barge Change Collection,Change Barge - b12,1/27/25 5:50,1/27/25 6:10,0,0,0,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+Barge,Barge Change Collection,Change Barge - b13,1/27/25 6:10,1/27/25 6:30,0,0,0,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+Barge,Barge Change Collection,Change Barge - b1,1/27/25 6:30,1/27/25 6:50,50.65642859,6.495319067,7.798913043,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+s13,Customer Station,Bang Pa-In (District),1/28/25 6:27,1/28/25 11:30,113,,6.666666667,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+o4,Loader-Customer,ld1 - b11,1/28/25 6:30,1/28/25 7:45,0,,,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+o4,Loader-Customer,ld1 - b12,1/28/25 7:45,1/28/25 9:00,0,,,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+o4,Loader-Customer,ld1 - b13,1/28/25 9:00,1/28/25 10:15,0,,,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+o4,Loader-Customer,ld1 - b1,1/28/25 10:15,1/28/25 11:30,0,,,main_point,1,4000,"b11,b12,b13,b1",,,,,tbr1,o4,River
+Start,Start,River Start,00:00.0,00:00.0,0,0,0,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+s2,Barge Change,3-Bang Hua Suea Pier,30:00.0,00:00.0,159.6564286,15.96564286,10,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+Barge,Barge Change Collection,Change Barge - b2,30:00.0,50:00.0,159.6564286,15.96564286,10,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+Barge,Barge Change Collection,Change Barge - b3,50:00.0,10:00.0,0,0,0,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+Barge,Barge Change Collection,Change Barge - b4,10:00.0,30:00.0,0,0,0,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+Barge,Barge Change Collection,Change Barge - b5,30:00.0,50:00.0,0,0,0,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+s13,Customer Station,Bang Pa-In (District),47:18.9,00:00.0,113,,6.730769231,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+o4,Loader-Customer,ld1 - b2,00:00.0,15:00.0,0,,,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+o4,Loader-Customer,ld1 - b3,15:00.0,30:00.0,0,,,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+o4,Loader-Customer,ld1 - b4,30:00.0,45:00.0,0,,,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River
+o4,Loader-Customer,ld1 - b5,45:00.0,00:00.0,0,,,main_point,1,4000,"b2,b3,b4,b5",,,,,tbr2,o4,River

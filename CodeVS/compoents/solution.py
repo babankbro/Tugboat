@@ -1,5 +1,12 @@
 from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.transport_order import *
+import config_problem 
+from CodeVS.utility.helpers import *
+import string
+import pandas as pd
+import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class Solution:
@@ -10,6 +17,7 @@ class Solution:
         self.tugboat_travel_results = {}
         
         for tugboat_id, tugboat in data['tugboats'].items():
+            closeset_station = TravelHelper._instance.get_next_river_station(TransportType.EXPORT, tugboat._km)
             info = {
                 'tugboat_id': tugboat.tugboat_id,
                 'order_id': None,
@@ -18,7 +26,7 @@ class Solution:
                 'river_km': tugboat._km,
                 'water_status': tugboat._status , 
                 'location': (tugboat._lat, tugboat._lng),
-                'station_id': None,
+                'station_id':  closeset_station.station_id if closeset_station != None  else None,
                 'barge_infos': [],
                  
             }
@@ -89,22 +97,23 @@ class Solution:
         # Filter available barges that are free during order time window and ready
         available_barges = [
             b for b in barges.values() 
-            if (self.get_ready_barge(b)is None or self.get_ready_barge(b) < order_start) 
+            #if (self.get_ready_barge(b)is None or self.get_ready_barge(b) < order_end - timedelta(days=4) ) 
+            if (self.get_ready_barge(b)is None or self.get_ready_barge(b) < order_start + timedelta(days=2)) 
         ]
         
         # sum the capacity of available barges
         total_capacity = sum(b.capacity for b in available_barges)
-        print(f"AS  Total capacity: {total_capacity}")
+        #print(f"AS  Total capacity: {total_capacity}")
         
         # For import orders, sort by distance to carrier
         if order.order_type == TransportType.IMPORT:
             carrier_location = (order.start_object.lat, order.start_object.lng)
             available_barges.sort(key=lambda b: 
-             
+                (0) + 
                 ((self.get_location_barge(b)[0] - carrier_location[0])**2 + 
                 (self.get_location_barge(b)[1] - carrier_location[1])**2)**0.5)
         
-        print(f"Remaining: {remaining_demand} | Available: {len(available_barges)}")
+        #print(f"Remaining: {remaining_demand} | Available: {len(available_barges)}")
         
         # Assign barges until demand is met
         for barge in available_barges:
@@ -118,7 +127,7 @@ class Solution:
             # Update barge status and time usage
             #barge.assinged_status = 'assigned'
             barge.current_order = order
-            barge.load = assign_amount
+            barge.set_load(assign_amount)
             barge.used_start = order_start
             barge.used_end = order_end
             
@@ -139,7 +148,7 @@ class Solution:
             tugboat = tugboats[tugboat_id]
             tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
             if order.due_datetime < tugboat_ready_time:
-                print("Tugboat is not ready",order.order_id, order.due_datetime, tugboat_ready_time)  
+                print("Tugboat is not ready",tugboat_id, order.order_id, order.due_datetime, tugboat_ready_time)  
                 continue
             assign_barges_to_tugboat(tugboat, order_assigned_barges)
             if len(tugboat.assigned_barges) != 0:
@@ -150,7 +159,6 @@ class Solution:
         return assigned_tugboats
     
     
-
     def update_barge_infos(self, lookup_order_barges, lookup_river_tugboat_results):
         data = self.data
         #for order_id, order_barge_info in lookup_order_barges.items():
@@ -180,6 +188,7 @@ class Solution:
             
             first_barge_location = collection_time_info['barge_collect_infos'][0]
             tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
+            #print("Check ready time CC", tugboat.tugboat_id, tugboat_ready_time)
             start_location = {
                 "ID": "Start",
                 'type': "Start",
@@ -188,60 +197,80 @@ class Solution:
                 'exit_datetime': tugboat_ready_time,
                 'distance': 0,
                 'time': 0,
-                'speed': 0
+                'speed': 0,
+                'type_point': 'main_point',
             }
             
             barge_ready_time = tugboat_ready_time + timedelta(minutes=first_barge_location['travel_time']*60)
+            barge_ready_time = get_next_quarter_hour(barge_ready_time)
             barge_location ={
                 "ID": "Barge",
-                'type': "Barge",
+                'type': "Barge Collection",
                 'name': "Barge Location",
                 'enter_datetime': barge_ready_time,
                 'exit_datetime': barge_ready_time + timedelta(minutes=collection_time_info['total_time']*60),
                 'distance': first_barge_location['travel_distance'],
                 'speed': tugboat.max_speed,
                 'time': first_barge_location['travel_time'],
+                'type_point': 'main_point',
             }
+            
+            
             
             #if travel_info['travel_distance'] > 50:
                 #raise Exception('Not on the sea')
             
             tugboat_order_results = {'tugboat_id': tugboat.tugboat_id, 
                                     "data_points" : [start_location, barge_location]}
+            #tugboat_order_results["data_points"].extend(barge_steps)
             
             tugboat_results.append(tugboat_order_results)
             
-            travel_total_time = collection_time_info['total_time'] + travel_info['travel_time']
+            travel_total_time = collection_time_info['total_time'] + travel_info['travel_time'] + first_barge_location['travel_time']
         # print(total_time, travel_info)
-            
-            start_time_needed = order.start_datetime - timedelta(minutes=travel_total_time*60)
-            start_time_needed = get_previous_quarter_hour(start_time_needed)
-            arrival_time_needed = order.start_datetime
-            time_lated_start = 0
+     
             tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
-            if tugboat_ready_time > start_time_needed:
-                arrival_time = tugboat_ready_time + timedelta(minutes=travel_total_time*60)
-                print("arrival_time TT", arrival_time, start_time_needed, (tugboat_ready_time - start_time_needed))
-                time_lated_start = (tugboat_ready_time - start_time_needed).total_seconds() / 3600
-                start_time_needed = tugboat_ready_time
+            arrival_time = tugboat_ready_time + timedelta(minutes=travel_total_time*60)
+            arrival_time = get_next_quarter_hour(arrival_time)
+            time_lated_start = 0
+            if arrival_time < order.start_datetime:
+                arrival_time = order.start_datetime
+            
             else:
-                arrival_time = arrival_time_needed
+                time_lated_start = (arrival_time - order.start_datetime).total_seconds() / 3600
+                
+            new_barge_location_exit_time = arrival_time - timedelta(minutes=travel_info['travel_time']*60)
+            new_barge_location_exit_time = get_previous_quarter_hour(new_barge_location_exit_time)
+            new_barge_location_enter_time = arrival_time - timedelta(minutes=(collection_time_info['total_time'] + travel_info['travel_time'])*60)
+            new_barge_location_enter_time = get_previous_quarter_hour(new_barge_location_enter_time)
+            new_start_location_exit_time = arrival_time - timedelta(minutes=travel_total_time*60)
+            new_start_location_exit_time = get_previous_quarter_hour(new_start_location_exit_time)
+            
+            
+            # start_time_needed = get_previous_quarter_hour(start_time_needed)
+            # arrival_time_needed = temp_start_target
+            # time_lated_start = 0
+            # if tugboat_ready_time > start_time_needed:
+            #     arrival_time = tugboat_ready_time + timedelta(minutes=travel_total_time*60)
+            #     print("arrival_time TT", arrival_time, start_time_needed, (tugboat_ready_time - start_time_needed))
+            #     time_lated_start = (tugboat_ready_time - start_time_needed).total_seconds() / 3600
+            #     start_time_needed = tugboat_ready_time
+            # else:
+            #     arrival_time = arrival_time_needed
             
             time_boat_lates.append(time_lated_start)
             arrival_times.append(arrival_time)
             
             # process time backward from arraive time to new start time
             
-            new_barge_location_exit_time = arrival_time - timedelta(minutes=travel_info['travel_time']*60)
-            new_barge_location_exit_time = get_previous_quarter_hour(new_barge_location_exit_time)
-            new_barge_location_enter_time = new_barge_location_exit_time - timedelta(minutes=collection_time_info['total_time']*60)
-            new_barge_location_enter_time = get_previous_quarter_hour(new_barge_location_enter_time)
-            new_start_location_exit_time = new_barge_location_enter_time - timedelta(minutes=first_barge_location['travel_time']*60)
-            new_start_location_exit_time = get_previous_quarter_hour(new_start_location_exit_time)
             
             
             barge_location['enter_datetime'] = new_barge_location_enter_time
             barge_location['exit_datetime'] = new_barge_location_exit_time
+            
+            # print("arrival_time CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", tugboat.tugboat_id, 
+            #       tugboat_ready_time, arrival_time, start_location['enter_datetime'], 
+            #       new_start_location_exit_time, travel_total_time)
             start_location['enter_datetime'] = new_start_location_exit_time
             start_location['exit_datetime'] = new_start_location_exit_time
             barge_location['order_distance'] = travel_info['travel_distance']
@@ -249,12 +278,35 @@ class Solution:
             barge_location['barge_speed'] = travel_info['speed']
             barge_location['order_arrival_time'] = arrival_time
             
+            #print("Barge collection infomations vvvvvvvvvvvvv")
+            barge_steps = []
+            start_travel_barge = barge_location['enter_datetime']
+            for collection_info in collection_time_info['barge_collect_infos'][:]:
+                finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['travel_time'] + collection_info['setup_time'])*60)
+                #print(collection_info)
+                #finish_barge_time = get_next_quarter_hour(finish_barge_time)
+                barge_step ={
+                    "ID": "Barge",
+                    'type': "Barge Step Collection",
+                    'name': "Collecting Barge - " + collection_info['barge_id'],
+                    'enter_datetime': start_travel_barge,
+                    'exit_datetime': finish_barge_time,
+                    'distance': collection_info['travel_distance'],
+                    'speed': 0 if collection_info['travel_time'] == 0 else collection_info['travel_distance']/collection_info['travel_time'],
+                    'time': collection_info['travel_time'],
+                    'type_point': 'travel_point',
+                }
+                start_travel_barge = finish_barge_time
+                #print(barge_step)
+                barge_steps.append(barge_step)
+            
+            tugboat_order_results["data_points"].extend(barge_steps)
         #print("Time late start:", time_boat_lates)
         #print("Arrival times:", arrival_times)
         
         return tugboat_results, time_boat_lates
 
-    def arrival_step_river_transport(self ,river_tugboats, lookup_barge_infos):
+    def arrival_step_river_transport(self, order, river_tugboats, lookup_barge_infos):
         """
         Calculate timing for river tugboats collecting barges from sea tugboats
         
@@ -272,12 +324,28 @@ class Solution:
         
         for tugboat in river_tugboats:
             tugboat_info = self.tugboat_scheule[tugboat.tugboat_id][-1]
-            
+            #if order.order_id == 'o1':
+            #    print("Tugboat Riverrrrrrr ##########################################################")
+            #    print(tugboat_info)
+                
+            for barge in tugboat.assigned_barges:
+                info = {
+                    'barge_id': barge.barge_id,
+                    'order_id': None,
+                    'start_datetime': barge._ready_time,
+                    'end_datetime': barge._ready_time,
+                    'river_km': barge._river_km,
+                    'water_status': barge._water_status, 
+                    'location': (barge._lat, barge._lng),
+                    'station_id': barge._station_id,
+                        
+                }
+                
+                
+                self.barge_scheule[barge.barge_id].append(info)
+                
             collection_time_info = tugboat.calculate_collection_barge_time(tugboat_info, self.barge_scheule)
             tugboat_info = self.tugboat_scheule[tugboat.tugboat_id][-1]
-
-            
-            
             
             tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
             
@@ -285,12 +353,13 @@ class Solution:
             start_location = {
                 "ID": "Start",
                 'type': "Start",
-                'name': "Start",
+                'name': "River Start",
                 'enter_datetime': tugboat_ready_time,
                 'exit_datetime': tugboat_ready_time,
                 'distance': 0,
                 'time': 0,
-                'speed': 0
+                'speed': 0,
+                'type_point': 'main_point',
             }
             #print(collection_time_info)
             #print(  collection_time_info['barge_collect_infos'])
@@ -305,19 +374,20 @@ class Solution:
             barge_ready_time = tugboat_ready_time + timedelta(minutes=first_barge_location['travel_time']*60)
             barge_id = first_barge_location['barge_id']
             barge_info = lookup_barge_infos[barge_id]
-            appointment_station =Travel_Helper.data['stations'][  barge_info['appointment_station']]
+            appointment_station =TravelHelper._instance.data['stations'][  barge_info['appointment_station']]
             barge_location = {
                 "ID": appointment_station.station_id,
                 'type': "Barge Change",
                 'name': appointment_station.name,
                 'enter_datetime': barge_ready_time,
-                'exit_datetime': barge_ready_time + timedelta(minutes=collection_time_info['total_time']*60),
+                'exit_datetime': (barge_ready_time +
+                 timedelta(minutes=collection_time_info['total_time']*60)),
                 'distance': first_barge_location['travel_distance'],
                 'speed': tugboat.max_speed,
                 'time': first_barge_location['travel_time'],
+                'type_point': 'main_point',
             }
-            
-            
+
             
             # Create result structure
             tugboat_result = {
@@ -388,8 +458,143 @@ class Solution:
         
         #print("River Tugboat Time Lates:", time_boat_lates)
         #print("River Tugboat Arrival Times:", arrival_times)
+            barge_steps = []
+            start_travel_barge = barge_location['enter_datetime']
+            for collection_info in collection_time_info['barge_collect_infos'][:]:
+                finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['setup_time'])*60)
+                #print(collection_info)
+                barge_step ={
+                    "ID": "Barge",
+                    'type': "Barge Change Collection",
+                    'name': "Change Barge - " + collection_info['barge_id'],
+                    'enter_datetime': start_travel_barge,
+                    'exit_datetime': finish_barge_time,
+                    'distance': collection_info['travel_distance'],
+                    'speed': 0 if collection_info['travel_time'] == 0 else collection_info['travel_distance']/collection_info['travel_time'],
+                    'time': collection_info['travel_time'],
+                    'type_point': 'travel_point',
+                }
+                start_travel_barge = finish_barge_time
+                #print(barge_step)
+                barge_steps.append(barge_step)
+            
+            tugboat_result["data_points"].extend(barge_steps)
+            
         
         return tugboat_results, time_boat_lates
+    
+    def arrival_step_travel_empty_barges(self, order, river_tugboats, appointment_infos):
+        time_boat_lates = []
+        tugboat_results = []
+        arrival_times = []
+        data = self.data
+        for tugboat in river_tugboats:
+            tugboat_info = self.tugboat_scheule[tugboat.tugboat_id][-1]
+            
+            collection_time_info = tugboat.calculate_collection_barge_time(tugboat_info, self.barge_scheule)
+            
+            #location = self.get_location_tugboat(tugboat)
+            appointment_info = appointment_infos[tugboat.tugboat_id]
+            
+            river_station = TravelHelper.get_next_river_station(self, TransportType.EXPORT, tugboat_info['river_km'])
+            end_station = data['stations'][appointment_info['appointment_station']]
+            
+            
+            
+            
+            first_barge_location = collection_time_info['barge_collect_infos'][0]
+            tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
+            #print("Check ready time CC", tugboat.tugboat_id, tugboat_ready_time)
+            start_location = {
+                "ID": "Start",
+                'type': "Start",
+                'name': "Start Collect Barge River Down",
+                'enter_datetime': tugboat_ready_time,
+                'exit_datetime': tugboat_ready_time,
+                'distance': 0,
+                'time': 0,
+                'speed': 0,
+                'type_point': 'main_point',
+            }
+            
+            barge_ready_time = get_next_quarter_hour( tugboat_ready_time +
+                                                     timedelta(minutes=first_barge_location['travel_time']*60))
+            exit_barge_time = get_next_quarter_hour(barge_ready_time + timedelta(minutes=collection_time_info['total_time']*60))
+            barge_location ={
+                "ID": "Barge",
+                'type': "Barge Collection",
+                'name': "Barge Location",
+                'enter_datetime': barge_ready_time,
+                'exit_datetime': exit_barge_time,
+                'distance': first_barge_location['travel_distance'],
+                'speed': tugboat.max_speed,
+                'time': first_barge_location['travel_time'],
+                'type_point': 'main_point',
+            }
+            
+            
+   
+            tugboat_order_results = {'tugboat_id': tugboat.tugboat_id, 
+                                    "data_points" : [start_location, barge_location]}
+     
+            
+            tugboat_results.append(tugboat_order_results)
+            
+            
+            #print("Barge collection infomations vvvvvvvvvvvvv")
+            barge_steps = []
+            start_travel_barge = barge_location['enter_datetime']
+            for collection_info in collection_time_info['barge_collect_infos'][:]:
+                finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['travel_time'] + collection_info['setup_time'])*60)
+                #print(collection_info)
+                barge_step ={
+                    "ID": "Barge",
+                    'type': "Barge Step Collection",
+                    'name': "Collecting Barge - " + collection_info['barge_id'],
+                    'enter_datetime': start_travel_barge,
+                    'exit_datetime': finish_barge_time,
+                    'distance': collection_info['travel_distance'],
+                    'speed': 0 if collection_info['travel_time'] == 0 else collection_info['travel_distance']/collection_info['travel_time'],
+                    'time': collection_info['travel_time'],
+                    'type_point': 'travel_point',
+                }
+                start_travel_barge = finish_barge_time
+                #print(collection_info)
+                barge_steps.append(barge_step)
+            
+            tugboat_order_results["data_points"].extend(barge_steps)
+            
+            start_info = {'station':river_station, 'location': (river_station.lat, river_station.lng)}
+            end_info = {'station':data['stations'][appointment_info['appointment_station']], 'location': (end_station.lat, end_station.lng)}
+            
+            
+            travel_river_info =  tugboat.calculate_travel_start_to_end_river_location(start_info, end_info, start_status=WaterBody.RIVER, end_status= WaterBody.RIVER)
+            #print("River info", river_station.km, travel_river_info)
+            
+    
+            arrival_datetime = get_next_quarter_hour( exit_barge_time + timedelta(minutes=travel_river_info['travel_time']*60))
+            exit_appointment_time = get_next_quarter_hour(arrival_datetime + 
+                                                          timedelta(minutes=len(tugboat.assigned_barges)*config_problem.BARGE_SETUP_MINUTES))
+            
+            appoinment_location ={
+                "ID": order.start_object.order_id,
+                'type': "Destination Barge",
+                'name': order.start_object.name,
+                'enter_datetime': arrival_datetime,
+                'exit_datetime':arrival_datetime,
+                'distance': travel_river_info['travel_distance'],
+                'speed': travel_river_info['speed'],
+                'type_point': 'main_point'
+            }
+            tugboat_order_results['data_points'].append(appoinment_location) # add result data points
+            
+            
+            
+        #print("Time late start:", time_boat_lates)
+        print("Arrival times:", arrival_times)
+        
+        return tugboat_results, time_boat_lates
+    
     
     def get_max_datetime(self, tugboat, lookup_barge_infos):
         max_ready_barge_datetime = self.get_ready_time_tugboat(tugboat)
@@ -419,13 +624,24 @@ class Solution:
         data = self.data
         for tugboat_id, tugboat_result in lookup_tugboat_results.items():
             tugboat = data['tugboats'][tugboat_id]
-            end_point = tugboat_result['data_points'][-1]
+            #end_point = tugboat_result['data_points'][-1]
+            end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
+            
             station_last = data['stations'][end_point['ID']]
+            # Ensure schedule continuity by using previous end time as new start
+            prev_end = self.tugboat_scheule[tugboat_id][-1]['end_datetime']
+            print("DEGUGGGGGGGGGGGGGGGGGGGG")
+           
+            for point in tugboat_result['data_points']:
+                print(point)
+            print(tugboat_id, prev_end, end_point['enter_datetime'], end_point['exit_datetime'])
+            new_start = max(end_point['enter_datetime'], prev_end)
+            
             info = {
                 'tugboat_id': tugboat.tugboat_id,
                 'order_id': order.order_id,
-                'start_datetime':end_point['enter_datetime'],
-                'end_datetime': end_point['exit_datetime'],
+                'start_datetime': new_start,
+                'end_datetime': max(end_point['exit_datetime'], new_start),
                 'barge_infos': [],
                 'river_km': station_last.km,
                 'water_status': station_last.water_type , 
@@ -445,8 +661,8 @@ class Solution:
                 })
             
             self.tugboat_scheule[tugboat_id].append(info)
-            if tugboat_id== 'tbs1' :
-                print(order.order_id, info['barge_infos'])
+            #if tugboat_id== 'tbs1' :
+                #print(order.order_id, info['barge_infos'])
             #print("tugboat_scheule result",tugboat_id,  len( self.tugboat_scheule[tugboat_id]))
     
     def update_shedule(self, order, lookup_order_barges, 
@@ -460,14 +676,20 @@ class Solution:
             end_tugboat_result = self._find_tugboat_result(barge_id, lookup_river_tugboat_results)
             
             data_point_start = start_tugboat_result['data_points'][1]
-            data_point_end = end_tugboat_result['data_points'][-1]
+            data_point_end = next((point for point in reversed(end_tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
+                
+            #data_point_end = end_tugboat_result['data_points'][-1]
             station_last = data['stations'][data_point_end['ID']]
+            
+            # Ensure barge schedule continuity by using max of previous end time and new start
+            prev_barge_end = self.barge_scheule[barge_id][-1]['end_datetime']
+            new_barge_start = max(prev_barge_end, data_point_start['enter_datetime'])
             
             info = {
                 'barge_id': barge_id,
                 'order_id': order.order_id,
-                'start_datetime': data_point_start['enter_datetime'],
-                'end_datetime': data_point_end['exit_datetime'],
+                'start_datetime': new_barge_start,
+                'end_datetime': max(data_point_end['exit_datetime'], new_barge_start),
                 'river_km': station_last.km,
                 'water_status': station_last.water_type, 
                 'location': (station_last.lat, station_last.lng),
@@ -488,33 +710,71 @@ class Solution:
         tugboats = self.data['tugboats']
         for tugboat in tugboats.values():
             tugboat.reset()
-            
-    
-    def _extend_update_tugboat_results(self, temp_tugboat_results, tugboat_results, order_trip):
+              
+    def _extend_update_tugboat_results(self, tugboat_results, order_trip):
         for tugboat_result in tugboat_results:
             for data_point in tugboat_result['data_points']:
                 tugboat_id = tugboat_result['tugboat_id']
                 data_point['order_trip'] = order_trip
-                data_point['total_load'] = sum([barge.get_load() for barge in self.data['tugboats'][tugboat_id].assigned_barges])
+                
+                data_point['total_load'] = sum([barge.get_load(True) for barge in self.data['tugboats'][tugboat_id].assigned_barges])
                 data_point['barge_ids'] = [barge.barge_id for barge in self.data['tugboats'][tugboat_id].assigned_barges]
                 data_point['barge_ids'] = ','.join([str(barge_id) for barge_id in data_point['barge_ids']])
                 
+                if 'type_point' in data_point:
+                    if data_point['type_point'] == 'loading_point':
+                        barge_id = data_point['name'].split(' - ')[1]
+                        search_barge = next((barge for barge in self.data['tugboats'][tugboat_id].assigned_barges if barge.barge_id == barge_id), None)
+                 
+                        data_point['barge_ids'] = barge_id
+                        data_point['total_load'] = search_barge.get_load(True)
+                        
+                        
+                    continue
+                else:
+                    raise Exception("DONOT Have type point")
                 
-        if len(temp_tugboat_results) == 0:
-            temp_tugboat_results.extend(tugboat_results)
-        else:
-            for tugboat_result in tugboat_results:
-                isFound = False
-                tugboat_result['order_trip'] = order_trip
-                for temp_tugboat_result in temp_tugboat_results:
-                    if temp_tugboat_result['tugboat_id'] == tugboat_result['tugboat_id']:
-                        isFound = True
-                        temp_tugboat_result['data_points'].extend(tugboat_result['data_points'])
-                        break
-                if not isFound:
-                    temp_tugboat_results.append(tugboat_result)
+                
+                
+                
+                
+        # if len(temp_tugboat_results) == 0:
+        #     temp_tugboat_results.extend(tugboat_results)
+        # else:
+        #     for tugboat_result in tugboat_results:
+        #         isFound = False
+        #         tugboat_result['order_trip'] = order_trip
+        #         for temp_tugboat_result in temp_tugboat_results:
+        #             if temp_tugboat_result['tugboat_id'] == tugboat_result['tugboat_id']:
+        #                 isFound = True
+        #                 temp_tugboat_result['data_points'].extend(tugboat_result['data_points']) # add result data points
+        #                 break
+        #         if not isFound:
+        #             temp_tugboat_results.append(tugboat_result)
                     
-     
+    def _bring_barge_travel_import(self, order, bring_down_river_barges):
+        river_tugboats =  self.data['river_tugboats'] 
+        print("BRING_DOWN -------------------------------")
+        
+        while len(bring_down_river_barges) > 0:
+            print("Bring down barge remain:", len(bring_down_river_barges))
+            assigned_tugboats = self.assign_barges_to_tugboats(order, river_tugboats, bring_down_river_barges)
+            appointment_info = {}
+            for i in range(len(assigned_tugboats)):
+                tugboat = assigned_tugboats[i]
+                tugboat_id = tugboat.tugboat_id
+                appointment_info[tugboat_id] = {
+                    'sea_tugboat': assigned_tugboats[i],
+                    'tugboat_id': tugboat_id,
+                    'appointment_station': 's2',
+                    'meeting_time': None
+                }
+            
+            [print(tugboat.tugboat_id, [barge.barge_id for barge in tugboat.assigned_barges]) for tugboat in assigned_tugboats]
+            self.arrival_step_travel_empty_barges(order, assigned_tugboats, appointment_info)
+            self._reset_all_tugboats()
+        print("END_DOWN -------------------------------")
+   
     def travel_import(self, order):
         data = self.data
         orders = data['orders']
@@ -522,10 +782,11 @@ class Solution:
         stations = data['stations']
         
         assigned_barge_infos = self.assign_barges_to_single_order( order, barges)
-        print("Assignment assigned_barge_infos:", len(assigned_barge_infos))
-        assigned_barges_print = [(barge_info['barge'].barge_id, barge_info['barge'].load) for barge_info in assigned_barge_infos]
-        total_load = sum(barge_info['barge'].load for barge_info in assigned_barge_infos)
+        based_brage_ids = [barge_info['barge'].barge_id for barge_info in assigned_barge_infos]
+        assigned_barges_print = [(barge_info['barge'].barge_id, barge_info['barge'].get_load(is_only_load=True)) for barge_info in assigned_barge_infos]
+        total_load = sum(barge_info['barge'].get_load(is_only_load=True) for barge_info in assigned_barge_infos)
         #print(assigned_barges_print)
+        print("Assignment assigned_barge_infos GGGGGGGGGGGGGGGG:", len(assigned_barge_infos))
         print('Total load: ', total_load, order.demand)
         
         sea_tugboats =  data['sea_tugboats'] 
@@ -535,28 +796,71 @@ class Solution:
         temp_river_tugboat_results = []
         temp_sea_tugboat_results = []
         round_trip_order = 1
+        
+        
+        debug_barges = {}
+        for barge in all_assigned_barges:
+            debug_barges[barge.barge_id] = {'barge_id': barge.barge_id, 'before_km': self.get_river_km_barge(barge)}
+            
+        # travel barge from top river to bottom river
+        # filter barges to bring down river
+        bring_down_river_barges = []
+        save_load = {}
+        for barge in all_assigned_barges:
+            if self.get_river_km_barge(barge) > config_problem.RIVER_KM:
+                save_load[barge.barge_id] = barge.get_load(is_only_load=True)
+                barge.set_load(500)
+                bring_down_river_barges.append(barge)
+                continue
+            
+        print("DEBUG_BARGE", order.order_id, len(all_assigned_barges), len(bring_down_river_barges))
+        
+        self._bring_barge_travel_import(order, bring_down_river_barges)
+        
+        for barge in all_assigned_barges:
+            if barge.barge_id in save_load.keys():
+                barge.set_load(save_load[barge.barge_id])
+            
+        
         while len(all_assigned_barges) > 0:
             print("Rotation barge remain:", len(all_assigned_barges))
-            for tugboat_id, tugboat in sea_tugboats.items():
-                print(tugboat_id, self.get_ready_time_tugboat(tugboat))
+            # for tugboat_id, tugboat in sea_tugboats.items():
+            #     print(tugboat_id, self.get_ready_time_tugboat(tugboat))
             assigned_tugboats = self.assign_barges_to_tugboats(order, sea_tugboats, all_assigned_barges)
-            print("Assignment results:", len(assigned_tugboats))
             
             
+            if len(assigned_tugboats) == 0:
+                raise Exception("No tugboat found for order: " + str(order.order_id), len(all_assigned_barges), len(temp_sea_tugboat_results))
+                #print("Order: {} No tugboat found".format(order.order_id))
+                break
+            
+            Total_load_barges = 0
+            boat_brage_ids= []
+            boat_load_weights = []
+            #total_load = sum(barge_info['barge'].get_load(is_only_load=True) for barge_info in assigned_barge_infos)
+            for tugboat in assigned_tugboats:
+                load_barges = [b.get_load(is_only_load=True) for b in tugboat.assigned_barges]
+                boat_load_weights.extend(load_barges)
+                boat_brage_ids.extend([b.barge_id for b in tugboat.assigned_barges])
+                #print(f"Assigning barges to Tugboat XX {tugboat.tugboat_id}... {load_barges} barges: {sum(load_barges)}")
+                Total_load_barges += sum(load_barges)
+            
+            print("Before", based_brage_ids)
+            print("After", boat_brage_ids)
+            print("After", boat_load_weights)
             tugboat_results, late_time = self.arrival_step_transport_order(order, assigned_tugboats)
-            
-            
+            print('XXXXXXXXXXXXXXX Len sea Tugbaots' , round_trip_order, len(assigned_tugboats), len(all_assigned_barges), Total_load_barges)
             total_load = 0
             barge_ids = []
             for tugboat in assigned_tugboats:
-                load_barges = [b.load for b in tugboat.assigned_barges]
+                load_barges = [b.get_load(is_only_load=True) for b in tugboat.assigned_barges]
                 barge_ids.extend([b.barge_id for b in tugboat.assigned_barges])
-                print(f"Assigning barges to Tugboat XX {tugboat.tugboat_id}... {load_barges} barges: {sum(load_barges)}")
+                #print(f"Assigning barges to Tugboat XX {tugboat.tugboat_id}... {load_barges} barges: {sum(load_barges)}")
                 total_load += sum(load_barges) 
                 
             
-            print('MM Total load: ', total_load, order.demand)
-            print("barge_ids", barge_ids)
+            #print('MM Total load: ', total_load, order.demand)
+            #print("barge_ids", barge_ids)
             
             schedule_results = schedule_carrier_order_tugboats(order, assigned_tugboats, late_time)
             
@@ -600,7 +904,7 @@ class Solution:
             
             #for 
             
-            river_tugboat_results, river_time_lates = self.arrival_step_river_transport(river_assigned_tugboats, lookup_order_barges)
+            river_tugboat_results, river_time_lates = self.arrival_step_river_transport(order, river_assigned_tugboats, lookup_order_barges)
             
             
             
@@ -611,11 +915,9 @@ class Solution:
             self.update_barge_infos( lookup_order_barges, lookup_river_tugboat_results)
             customer_river_time_lates = travel_trought_river_import_to_customer(order, lookup_river_tugboat_results)
             
-            
             list_lates = []
             for river_tugboat in river_assigned_tugboats:
                 list_lates.append(customer_river_time_lates[river_tugboat.tugboat_id])
-            
             
             river_schedule_results = shecdule_customer_order_tugboats(order, river_assigned_tugboats, list_lates)
             lookup_river_schedule_results = {result['tugboat_schedule']['tugboat_id']: result for result in river_schedule_results}
@@ -627,17 +929,35 @@ class Solution:
             self.update_shedule(order, lookup_order_barges, lookup_sea_tugboat_results, lookup_river_tugboat_results)
           
             temp_river_assigned_tugboats.extend(river_assigned_tugboats)
+            temp_sea_tugboat_results.extend(tugboat_results)
+            temp_river_tugboat_results.extend(river_tugboat_results)
             
             
-            
-            self._extend_update_tugboat_results(temp_sea_tugboat_results, tugboat_results, round_trip_order)
-            self._extend_update_tugboat_results(temp_river_tugboat_results, river_tugboat_results,  round_trip_order)
+            self._extend_update_tugboat_results(tugboat_results, round_trip_order)
+            self._extend_update_tugboat_results(river_tugboat_results,  round_trip_order)
             round_trip_order += 1            
                         
+            # Keep tugboat state between trips to maintain schedule continuity
             self._reset_all_tugboats()  
             
+        # print("Check before round trip EE")
+        # for tugboat_result in temp_sea_tugboat_results:
+        #     #print(tugboat_id)
+        #     tugboat_id = tugboat_result['tugboat_id']
+        #     tugboat = data['tugboats'][tugboat_id]
             
+        #     end_datetimes = [item['end_datetime'] for item in self.tugboat_scheule[tugboat_id]]
             
+        #     print(tugboat_id, end_datetimes, self.get_ready_time_tugboat(tugboat))
+        
+        #DEBUG
+        # for barge_id in debug_barges:
+        #     barge = self.data['barges'][barge_id]
+        #     debug_barges[barge.barge_id]['after_km'] = self.get_river_km_barge(barge)
+
+        #df = pd.DataFrame(debug_barges.values())
+        #print(df)
+        
         
            
                 
@@ -657,14 +977,18 @@ class Solution:
    
         all_dfs = []
         barge_dfs = []
+        
+        total_tugboat_weight = 0
+        
         for order_id, order in orders.items():
             if order.order_type != TransportType.IMPORT:
                 continue
+            
         
             #print(order)
-            print("Tugboat available time for order {}".format(order.order_id))
-            for tugboat_id, single_tugboat_schedule in self.tugboat_scheule.items():
-                 print(tugboat_id, single_tugboat_schedule[-1]['end_datetime'])
+            print("Tugboat available time for order {}".format(order.order_id), " ###################################################")
+            #for tugboat_id, single_tugboat_schedule in self.tugboat_scheule.items():
+                 #print(tugboat_id, single_tugboat_schedule[-1]['end_datetime'])
             
             # print("Barge available time for order {}".format(order.order_id))
             # for barge_id, single_barge_schedule in barges.items():
@@ -672,10 +996,11 @@ class Solution:
             #     if barge_ready_time < order.start_datetime:
             #         print(barge_id, barge_ready_time)
             
-            total_weight = sum(barge.capacity for barge_id, barge in barges.items() if self.get_ready_barge(barge) < order.start_datetime)
-            print(order.order_id, "order start time: {}".format(order.start_datetime))
-            print("########### Total weight for available barges: {}".format(total_weight))
-            
+            total_weight = sum(barge.capacity for barge_id, barge in barges.items() 
+                               if self.get_ready_barge(barge) < order.due_datetime - timedelta(days=4))
+            #print(order.order_id, "order start time: {}".format(order.start_datetime))
+            #print("########### Total weight for available barges: {}".format(total_weight))
+            total_load_tugboat_order = 0
             
             
             
@@ -687,6 +1012,10 @@ class Solution:
             schedule_results = result_order1['schedule_results']
             #assigned_river_barge_infos = result_order1['assign_river_barges']
             
+            
+            
+            
+            
             #break
             
             # Assume sea_tugboat_results is a list of tugboat dictionaries
@@ -697,6 +1026,9 @@ class Solution:
                 df['order_id'] = order.order_id
                 df['water_type']= 'Sea'
                 all_dfs.append(df)
+                total_load_tugboat_order += tugboat['data_points'][0]['total_load']
+                print("      single tugboat", tugboat['tugboat_id'],tugboat.keys(), len(sea_tugboat_results))
+        
                 
             for tugboat in river_tugboat_results:
                 df = pd.DataFrame(tugboat['data_points'])
@@ -734,7 +1066,7 @@ class Solution:
                     if entry['barge_id'] in barge_ids:
                         entry['tugboat_sea_id'] = tugboat['tugboat_id']
             
-               
+            print("############## Order: {}, Total Load: {}".format(order.order_id, total_load_tugboat_order))
                 
             df = pd.DataFrame(assigned_barge_infos)
             barge_dfs.append(df)
@@ -746,59 +1078,163 @@ class Solution:
         combined_df = pd.concat(all_dfs, ignore_index=True)
             # Show the final merged DataFrame
         #print(combined_df)
-        combined_df.to_csv('tugboat_schedule_v2.csv', index=False)
-        combined_df = pd.concat(barge_dfs, ignore_index=True)
-        #print(combined_df)
-        combined_df.to_csv('barges.csv', index=False)
+        return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
+
+    def save_schedule_to_csv(self, tugboat_df, barge_df, 
+                           tugboat_path='tugboat_schedule_v2.xlsx',
+                           barge_path='barges.xlsx'):
+        """Saves schedule DataFrames to CSV files"""
+        tugboat_df["enter_datetime"] = pd.to_datetime(tugboat_df["enter_datetime"])
+        tugboat_df["exit_datetime"] = pd.to_datetime(tugboat_df["exit_datetime"])
+        early_start_time = min(tugboat_df["enter_datetime"])
+        late_finish_time = max(tugboat_df["exit_datetime"])
+        start_date = early_start_time.date()
+        end_date = late_finish_time.date()
+        start_datetime = pd.to_datetime(start_date)
+        end_datetime = pd.to_datetime(end_date)
+        hourly_range = pd.date_range(start=start_datetime, end=end_datetime, freq='H')
+
+        # Insert an empty row at the beginning
+        df = tugboat_df.copy()
+        df.loc[-1] = np.nan  # Add a row of NaNs at the top
+        df.index = df.index + 1  # Shift index to make room for the new row
+        df = df.sort_index()     # Sort by index to put the new row at the top
+
+        # Create a row with dates
+        date_row = pd.Series(index=df.columns)
+        for i, col in enumerate(df.columns):
+            if pd.api.types.is_datetime64_any_dtype(df[col]) and i > 2: # Assuming the first few columns are not dates
+                date_row[col] = df[col].iloc[1].date() # Get date from the first actual row
+            else:
+                date_row[col] = ''
+
+        # Assign the date_row to the first row of the DataFrame
+        df.iloc[0] = date_row
+
+        # Now, the data processing logic needs to be adjusted to handle the header row.
+        # You would likely skip the first row when iterating through the data rows for processing.
+
+        # For example, when creating the 'data' list, you would iterate from the second row:
+        data = []
+        for index, row in df.iloc[1:].iterrows(): # Start from the second row
+
+            # Filter out unwanted row
+            if row['type'] in ['Barge Collection', 'Barge Change', 'Start Order Carrier', 'Customer Station']:
+                continue
+            order_id_val = row['order_id']
+            activity_val = row['name']
+            if 'cr' in row['name']:
+                machine_val = row['name'].split(' - ')[0]
+            else:
+                machine_val = row['tugboat_id']
+            if row['type'] in ['Barge Step Collection', 'Barge Change Collection']:
+                barge_val = row['name'].split(' - ')[1]
+            else:
+                barge_val = row['barge_ids']
+            row_data = {"order_id": order_id_val,
+                        "activity": activity_val,
+                        "machine": machine_val,
+                        "barge": barge_val}
+
+            enter_time = row['enter_datetime']
+            exit_time = row['exit_datetime']
+
+
+            for hour in hourly_range:
+
+                # Check if the activity time range overlaps with the current hour\
+
+                if (enter_time <= hour) and (exit_time + pd.Timedelta(1,'h') >= hour):
+                    row_data[hour] = 'x'
+                else:
+                    row_data[hour] = '' # Or leave as NaN if preferred
+
+            data.append(row_data)
+
+        # When creating the output DataFrame, you will need to manually create the header
+        # including the date row and the original column names.
+        # A simpler approach for merging the date would be to create a MultiIndex header
+        # on the output_df after it's created.
+
+        output_df_data = pd.DataFrame(data)
+
+        # Create a list for the date header
+        date_header = [''] * 4 # Placeholders for the first 3 columns
+
+
+        for hour in hourly_range:
+            date_header.append(hour.date())
+
+        # Create a list for the column name header
+        column_name_header = []
+        for col in output_df_data.columns:
+            if col == 'order_id':
+                column_name_header.append('Order ID')
+            elif col == 'activity':
+                column_name_header.append('Activity')
+            elif col == 'machine':
+                column_name_header.append('Machine')
+            elif col == 'barge':
+                column_name_header.append('Barge')
+            else:
+                column_name_header.append(col.hour)
+
+        # Create a MultiIndex from the two header rows
+        multiindex = pd.MultiIndex.from_arrays([date_header, column_name_header])
+
+        # Assign the MultiIndex to the output DataFrame
+        output_df_data.columns = multiindex
+
+        # output_df_data
+
+        # Create a Pandas Excel writer using XlsxWriter as the engine.
+        writer = pd.ExcelWriter('tugboat_schedule_v3.xlsx', engine='xlsxwriter')
+
+        # Convert the dataframe to an XlsxWriter Excel object.
+        tugboat_df.to_excel(writer, sheet_name='Summary', index=False)
+        tugboat_df_rows, tugboat_df_cols = tugboat_df.shape
+        # Get the xlsxwriter objects from the dataframe writer object.
+        workbook  = writer.book
+        worksheet_summary = writer.sheets['Summary']
+        max_char_tugboat = string.ascii_uppercase[(tugboat_df_cols%26) - 1]
+        cell_range = f"A1:{max_char_tugboat}1"
+        worksheet_summary.autofilter(cell_range)
+        worksheet_summary.freeze_panes(1, 0)
+        worksheet_summary.autofit()
+
+        output_df_data.to_excel(writer, sheet_name='Timeline')
+        worksheet_timeline = writer.sheets['Timeline']
+
+        (max_row, max_col) = output_df_data.shape
+        main_char = string.ascii_uppercase[(max_col // 26)-1] if max_col // 26 > 0 else ""
+        max_char = main_char + string.ascii_uppercase[max_col%26]
+        cell_range = f"A1:{max_char}{max_row+4}"
+
+        worksheet_timeline.conditional_format(cell_range,
+        {
+            'type': 'text',
+            'criteria': 'containing',
+            'value': 'x',
+            'format': workbook.add_format({'bg_color': '#0f5c3c',
+                                        'font_color': '#0f5c3c'})
+        }
+                                    )
+        worksheet_timeline.autofit(25)
+        worksheet_timeline.autofilter(f'A3:E3')
+        worksheet_timeline.freeze_panes(3, 5)
+        writer.close()
+        # output_df_data.to_excel('tugboat_timeline_analysis.xlsx')
+        barge_df.to_excel(barge_path, index=False)
         
         
-            # break
-            # print('Order 1------------------------------------------------------------:')
-            # for barge_info in assigned_barge_infos:
-            #     print(barge_info['barge'].barge_id, barge_info)
-            
-            # print()
-            
-            
-            
-            # print('Sea Travel Order1')
-            # for result in sea_tugboat_results:
-            #     #print(result)
-            #     print("Travel for Tugboat", result['tugboat_id'], "------------------------------------")
-            #     # if 'tbs1' != result['tugboat_id']:
-            #     #     continue
-            #     for data_point in result['data_points']:
-            #         print(data_point)
-            #         print()
-            # """"""       
-            # for result in schedule_results:
-            #     print(result)
-                
-            
-            
-            
-            # print('River Travel Order1')
-            # for result in river_tugboat_results:
-            #     #print(result)
-            #     print("Travel for Tugboat", result['tugboat_id'], "------------------------------------")
-            #     # if 'tbs1' != result['tugboat_id']:
-            #     #     continue
-            #     for data_point in result['data_points']:
-            #         print(data_point)
             #         print()
             
-            
-            # for tugboat_id in self.tugboat_scheule:
-            #     tugboat_schedule = self.tugboat_scheule[tugboat_id]
-            #     if len(tugboat_schedule) <= 1:
-            #         continue
-            #     print("Tugboat", tugboat_id, "schedule: ")
-            #     for schedule in tugboat_schedule:
-                
-            #         print(schedule)
-            #         print()
-        # total barge capacity
-        print("Total barge capacity: ", sum(barge.capacity for barge in data['barges'].values()))
-        print("Tugboat available time for order {}".format(order.order_id))
-        for tugboat_id, single_tugboat_schedule in self.tugboat_scheule.items():
-                print(tugboat_id, single_tugboat_schedule[-1]['end_datetime'])
+        # data = self.data
+        # orders = data['orders']
+        # barges = data['barges']
+        # tugboats = data['tugboats']
+        # # total barge capacity
+        # print("Total barge capacity: ", sum(barge.capacity for barge in data['barges'].values()))
+        # print("Tugboat available time for order {}".format(order.order_id))
+        # for tugboat_id, single_tugboat_schedule in self.tugboat_scheule.items():
+        #         print(tugboat_id, single_tugboat_schedule[-1]['end_datetime'])

@@ -80,18 +80,18 @@ def assign_barges_to_river_tugboats(solution, appointment_location, order, data,
             ((solution.get_location_tugboat(t)[0] - appointment_location[0])**2 + 
             (solution.get_location_tugboat(t)[1] - appointment_location[1])**2)**0.5)
     
-    print(f" Available Tugboats: {len(avaliable_river_tugboats)}")
+    #print(f" Available Tugboats: {len(avaliable_river_tugboats)}")
     
     
     
     tugboat_ids = [tugboat.tugboat_id for tugboat in avaliable_river_tugboats]
-    print(f"Tugboat IDs: {tugboat_ids}")
+    #print(f"Tugboat IDs: {tugboat_ids}")
     
     for tugboat in avaliable_river_tugboats:
         assign_barges_to_tugboat( tugboat, assigned_barges)
         
         if len(assigned_barges) == 0:
-            print("Commpleted all barges assignment VV")
+            #print("Commpleted all barges assignment VV")
             if len(tugboat.assigned_barges) != 0:
                 assigned_tugboats.append(tugboat)
             break

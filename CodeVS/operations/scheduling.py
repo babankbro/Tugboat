@@ -37,10 +37,10 @@ def schedule_carrier_order_single_tugboat(order: Order, tugboat: Tugboat,
             crane['time_ready'] = max(tugboat_ready_time, crane['time_ready'])
     
     # Calculate total product for this tugboat
-    total_demand = sum([b.load for b in tugboat.assigned_barges])
+    total_demand = sum([b.get_load(is_only_load=True) for b in tugboat.assigned_barges])
     
     # Sort barges by load (largest first)
-    sorted_barges = sorted(tugboat.assigned_barges, key=lambda b: b.load, reverse=True)
+    sorted_barges = sorted(tugboat.assigned_barges, key=lambda b: b.get_load(is_only_load=True), reverse=True)
     
     # Initialize schedules
     crane_schedule = []
@@ -59,7 +59,7 @@ def schedule_carrier_order_single_tugboat(order: Order, tugboat: Tugboat,
         next_crane = max(active_cranes, key=crane_score)
         
         # Assign barge load to crane
-        assign_amount = sorted_barges[barge_index].load
+        assign_amount = sorted_barges[barge_index].get_load(is_only_load=True)
         next_crane['assigned_product'] += assign_amount
         remaining_product -= assign_amount
         time_consumed = assign_amount / next_crane['rate']
@@ -169,10 +169,10 @@ def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat,
             crane['time_ready'] = max(tugboat_ready_time, crane['time_ready'])
     
     # Calculate total product for this tugboat
-    total_demand = sum([b.load for b in tugboat.assigned_barges])
+    total_demand = sum([b.get_load(is_only_load=True) for b in tugboat.assigned_barges])
     
     # Sort barges by load (largest first)
-    sorted_barges = sorted(tugboat.assigned_barges, key=lambda b: b.load, reverse=True)
+    sorted_barges = sorted(tugboat.assigned_barges, key=lambda b: b.get_load(is_only_load=True), reverse=True)
     
     # Initialize schedules
     loader_schedule = []
@@ -191,7 +191,7 @@ def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat,
         next_crane = max(active_cranes, key=loader_score)
         
         # Assign barge load to crane
-        assign_amount = sorted_barges[barge_index].load
+        assign_amount = sorted_barges[barge_index].get_load(is_only_load=True)
         next_crane['assigned_product'] += assign_amount
         remaining_product -= assign_amount
         time_consumed = assign_amount / next_crane['rate']
@@ -245,6 +245,7 @@ def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat,
 
 def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat],  tugboat_ready_times: List[float] = None) -> List[Dict]:
    
+    
     schedules = []
     
     active_loadings = []

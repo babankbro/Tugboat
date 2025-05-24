@@ -14,6 +14,7 @@ import pandas as pd
 from CodeVS.operations.assigned_barge import * 
 from CodeVS.compoents.station import * 
 
+
 def initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df):
     # Create dictionaries of objects with 'ID' as the key
     carriers = {
