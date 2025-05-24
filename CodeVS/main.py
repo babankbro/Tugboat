@@ -220,7 +220,9 @@ def test_transport_order(data):
     # for tugboat_id, results in lookup_river_tugboat_results.items( ):
     #     print(tugboat_id, results['data_points'][1]['exit_datetime'])
 
-    solution.save_schedule_to_csv(tugboat_df, barge_df)
+    solution.save_schedule_to_csv(tugboat_df, barge_df,
+                                  tugboat_path='CodeVS/data/output/tugboat_schedule.xlsx',
+                                  barge_path='CodeVS/data/output/barge_schedule.xlsx')
     return tugboat_df
     
 def main():

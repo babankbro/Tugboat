@@ -1081,8 +1081,8 @@ class Solution:
         return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
 
     def save_schedule_to_csv(self, tugboat_df, barge_df, 
-                           tugboat_path='tugboat_schedule_v2.xlsx',
-                           barge_path='barges.xlsx'):
+                           tugboat_path='data/output/tugboat_schedule_v2.xlsx',
+                           barge_path='data/output/barges.xlsx'):
         """Saves schedule DataFrames to CSV files"""
         tugboat_df["enter_datetime"] = pd.to_datetime(tugboat_df["enter_datetime"])
         tugboat_df["exit_datetime"] = pd.to_datetime(tugboat_df["exit_datetime"])
