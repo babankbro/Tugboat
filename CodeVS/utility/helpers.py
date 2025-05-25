@@ -17,7 +17,9 @@ def sort_barges_by_distance(tugboat_lat, tugboat_lng, barges, barges_infos):
     # คำนวณระยะทางและเก็บในรูปแบบ tuple (barge, distance)
     barges_with_distance = []
     for barge in barges:
-        blocation = barges_infos[barge.barge_id][-1]['location']
+        binfo = barges_infos[barge.barge_id][-1]
+        blocation = binfo['location']
+
         distance = haversine(tugboat_lat, tugboat_lng, blocation[0], blocation[1])
         barges_with_distance.append((barge, distance))
 

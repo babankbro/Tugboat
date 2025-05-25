@@ -145,12 +145,13 @@ def test_transport_order(data):
     
     filtered_df = tugboat_df[
                             ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
-                            &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
-                            & (tugboat_df['order_trip'] == 1)
+                           # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                            &  ((tugboat_df['order_id'] == 'o1') )
+                           # & (tugboat_df['order_trip'] == 1)
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
                             ]
-    temp_df = filtered_df[['ID', 'type', 'name', #'enter_datetime', 'exit_datetime', 
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 
                            'tugboat_id','distance', 'time', 'speed','order_trip',
                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
                       'total_load', 'barge_ids',
@@ -158,18 +159,18 @@ def test_transport_order(data):
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     
-    #print(temp_df.head(20))
+    print(temp_df)
 
     
     filtered_df = tugboat_df[
-                            #((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) &
+                            ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
                             #((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
                             #& (tugboat_df['order_trip'] == 1) 
                             #& ((tugboat_df['type'] == 'Loader-Customer') | (tugboat_df['type'] == 'Crane-Carrier') | 
                             #   (tugboat_df['type'] == 'Customer Station')| (tugboat_df['type'] == 'Start Order Carrier'))
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
-                            (tugboat_df['name'].str.contains('ld1', case=False, na=False))
+                            #(tugboat_df['name'].str.contains('ld1', case=False, na=False))
     ]
     
     
@@ -198,7 +199,7 @@ def test_transport_order(data):
        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
        #'tugboat_id', 'order_id', 'water_type'
        ]]
-    print(temp_df)
+    #print(temp_df)
     #demand_load = sum(order_df['DEMAND'])
     #print("Total Load",  sum(temp_df['total_load']), demand_load)
     
@@ -242,5 +243,6 @@ def main():
     # print(Travel_Helper.get_next_station(TransportType.IMPORT, 15))
     # print(Travel_Helper.get_next_station(TransportType.EXPORT, 15))
     return result_df
+
 if __name__ == "__main__":
     result_df = main()

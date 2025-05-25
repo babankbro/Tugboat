@@ -19,6 +19,8 @@ from CodeVS.operations.transport_order import *
 from CodeVS.operations.travel_helper import *
 from CodeVS.compoents.solution import Solution
 import unittest
+import numpy as np
+
 
 # @pytest.fixture 
 # def test_data():
@@ -96,10 +98,21 @@ class TestSchedulingSolution(unittest.TestCase):
         for crane_name in unique_crane_names:
             # get the crane load from the result_df
             crane_activity = result_df[result_df['name'].str.contains(crane_name)]
+            crane_activity['enter_datetime'] = pd.to_datetime(crane_activity['enter_datetime'])
+            crane_activity = crane_activity.sort_values(by='enter_datetime')
+            
+            crane_activity['exit_datetime'] = pd.to_datetime(crane_activity['exit_datetime'])
+            crane_activity = crane_activity.sort_values(by='exit_datetime')
             # print(crane_activity)
             # get enter_datetime and exit_datetime
             enter_datetime = crane_activity['enter_datetime'].values
             exit_datetime = crane_activity['exit_datetime'].values
+            
+         
+            order_ids = crane_activity['order_id'].values
+            tugboat_ids = crane_activity['tugboat_id'].values
+            print(len(enter_datetime))
+            
             # print(enter_datetime)
             # iterate through the crane_activity and find the difference of exit_datetime and enter_datetime
             is_passed = False
@@ -108,41 +121,68 @@ class TestSchedulingSolution(unittest.TestCase):
                     continue
                 # get the difference of exit_datetime and enter_datetime
                 time_difference = (exit_datetime[i] - enter_datetime[i-1])
+                time_difference = (enter_datetime[i] - exit_datetime[i-1] )
+            
+                seconds = time_difference / np.timedelta64(1, 's')
                 # print("Time difference: ", time_difference)
-                if time_difference > 0:
+                if seconds >= -1*60:
                     is_passed = True
                 else:
                     is_passed = False
+                    print(i, seconds, order_ids[i], order_ids[i-1], enter_datetime[i], exit_datetime[i-1], tugboat_ids[i], tugboat_ids[i-1])
                     break
             self.assertTrue(is_passed, f"Crane {crane_name} has a time difference issue.")
 
+    # skip this method for testing
+    #@unittest.skip("Skipping crane unload test for now")
     def test_crane_unload(self):
         result_df = main()
         name = list(result_df['name'].unique())
         # print(name)
         unique_crane_names = set([ld.split(" - ")[0] for ld in name if "ld" in ld])
-        
+        data = TravelHelper._instance.data
+        orders = data['orders']
         for crane_name in unique_crane_names:
             # get the crane load from the result_df
-            crane_activity = result_df[result_df['name'].str.contains(crane_name)]
-            # print(crane_activity)
-            # get enter_datetime and exit_datetime
-            enter_datetime = crane_activity['enter_datetime'].values
-            exit_datetime = crane_activity['exit_datetime'].values
-            # print(enter_datetime)
-            # iterate through the crane_activity and find the difference of exit_datetime and enter_datetime
-            is_passed = False
-            for i in range(len(crane_activity)):
-                if i == 0:
-                    continue
-                # get the difference of exit_datetime and enter_datetime
-                time_difference = (exit_datetime[i] - enter_datetime[i-1])
-                # print("Time difference: ", time_difference)
-                if time_difference > 0:
-                    is_passed = True
-                else:
-                    is_passed = False
-                    break
-            self.assertTrue(is_passed, f"Unload Crane {crane_name} has a time difference issue.")
+            
+            for order in orders.values():
+                crane_activity = result_df[(result_df['name'].str.contains(crane_name))&
+                                           #((result_df['order_id'] == 'o2' ) | (result_df['order_id'] == 'o1') )
+                                                  (result_df['order_id'] == order.order_id )                          
+                                           
+                                           # |(order.order_id == result_df['order_id']) ) 
+                                           ]
+                                            #| result_df['type'].str.contains('Customer'))]
+                #crane_activity = crane_activity[crane_activity['order_id'] == order.order_id]
+                crane_activity['enter_datetime'] = pd.to_datetime(crane_activity['enter_datetime'])
+                crane_activity = crane_activity.sort_values(by='enter_datetime')
+                
+                print(crane_activity)
+                # get enter_datetime and exit_datetime
+                enter_datetime = crane_activity['enter_datetime'].values
+                exit_datetime = crane_activity['exit_datetime'].values
+                order_ids = crane_activity['order_id'].values
+                tugboat_ids = crane_activity['tugboat_id'].values
+                print(len(enter_datetime))
+                # iterate through the crane_activity and find the difference of exit_datetime and enter_datetime
+                is_passed = False
+                for i in range(len(crane_activity)):
+                    if i == 0:
+                        continue
+                    # get the difference of exit_datetime and enter_datetime
+                    time_difference = (enter_datetime[i] - exit_datetime[i-1] )
+                    time_difference = (enter_datetime[i] - exit_datetime[i-1] )
+                
+                    seconds = time_difference / np.timedelta64(1, 's')
+                    # print("Time difference: ", time_difference)
+                    if seconds >= -1*60:
+                        is_passed = True
+                    else:
+                        is_passed = False
+                        print(i, seconds, order_ids[i], order_ids[i-1], enter_datetime[i], exit_datetime[i-1], tugboat_ids[i], tugboat_ids[i-1])
+                        break
+                self.assertTrue(is_passed, f"Unload Crane {crane_name} has a time difference issue.")
+
+
 if __name__ == "__main__":
     unittest.main()

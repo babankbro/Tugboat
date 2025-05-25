@@ -1,0 +1,402 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugboat Operations Timeline</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        
+        .timeline-container {
+            position: relative;
+            overflow-x: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .timeline {
+            position: relative;
+            min-width: 1200px;
+            height: 600px;
+        }
+        
+        .timeline-axis {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            border-top: 2px solid #34495e;
+        }
+        
+        .axis-label {
+            position: absolute;
+            bottom: -30px;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+        
+        .task-bar {
+            position: absolute;
+            height: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .task-bar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        
+        .task-bar.start { background: linear-gradient(45deg, #27ae60, #229954); }
+        .task-bar.barge { background: linear-gradient(45deg, #3498db, #2980b9); }
+        .task-bar.crane { background: linear-gradient(45deg, #e67e22, #d35400); }
+        .task-bar.travel { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+        .task-bar.appointment { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚢 Tugboat Operations Timeline</h1>
+        
+        <div class="controls">
+            <button class="filter-btn active" onclick="filterTasks('all')">All Tasks</button>
+            <button class="filter-btn" onclick="filterTasks('trip-1')">Trip 1</button>
+            <button class="filter-btn" onclick="filterTasks('trip-2')">Trip 2</button>
+            <button class="filter-btn" onclick="filterTasks('barge')">Barge Operations</button>
+            <button class="filter-btn" onclick="filterTasks('travel')">Travel</button>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline" id="timeline">
+                <div class="timeline-axis" id="axis"></div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #27ae60, #229954);"></div>
+                <span>Start</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #3498db, #2980b9);"></div>
+                <span>Barge Operations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #e67e22, #d35400);"></div>
+                <span>Crane Operations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #9b59b6, #8e44ad);"></div>
+                <span>Travel</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #e74c3c, #c0392b);"></div>
+                <span>Appointments</span>
+            </div>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDuration">0</div>
+                <div class="stat-label">Total Duration (hours)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDistance">0</div>
+                <div class="stat-label">Total Distance (km)</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const rawData = `DATA_PLACEHOLDER`;
+        
+        let data = [];
+        let currentFilter = 'all';
+        
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\\n');
+            const headers = lines[0].split(',');
+            
+            return lines.slice(1).map(line => {
+                const values = line.split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = values[index];
+                });
+                return obj;
+            });
+        }
+        
+        function getTaskType(type, name) {
+            if (type === 'Start') return 'start';
+            if (type === 'Barge Collection' || type === 'Barge Step Collection') return 'barge';
+            if (type === 'Crane-Carrier') return 'crane';
+            if (type === 'Sea-River') return 'travel';
+            if (type === 'Appointment') return 'appointment';
+            return 'other';
+        }
+        
+        function createTimeline() {
+            data = parseCSV(rawData);
+            
+            let minDate = new Date('2030-01-01');
+            let maxDate = new Date('2020-01-01');
+            
+            data.forEach(item => {
+                item.startDate = new Date(item.enter_datetime);
+                item.endDate = new Date(item.exit_datetime);
+                item.taskType = getTaskType(item.type, item.name);
+                
+                if (item.startDate < minDate) minDate = item.startDate;
+                if (item.endDate > maxDate) maxDate = item.endDate;
+            });
+            
+            const timeline = document.getElementById('timeline');
+            const axis = document.getElementById('axis');
+            
+            timeline.innerHTML = '<div class="timeline-axis" id="axis"></div>';
+            
+            const totalDuration = maxDate - minDate;
+            
+            const numLabels = 8;
+            for (let i = 0; i <= numLabels; i++) {
+                const time = new Date(minDate.getTime() + (totalDuration * i / numLabels));
+                const label = document.createElement('div');
+                label.className = 'axis-label';
+                label.style.left = `${(i / numLabels) * 100}%`;
+                label.textContent = time.toLocaleDateString() + ' ' + time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                axis.appendChild(label);
+            }
+            
+            data.forEach((item, index) => {
+                if (shouldShowTask(item)) {
+                    const bar = createTaskBar(item, minDate, totalDuration, index);
+                    timeline.appendChild(bar);
+                }
+            });
+            
+            updateStats();
+        }
+        
+        function createTaskBar(item, minDate, totalDuration, index) {
+            const bar = document.createElement('div');
+            bar.className = `task-bar ${item.taskType}`;
+            
+            const startOffset = (item.startDate - minDate) / totalDuration;
+            const duration = (item.endDate - item.startDate) / totalDuration;
+            
+            bar.style.left = `${startOffset * 100}%`;
+            bar.style.width = `${Math.max(duration * 100, 0.5)}%`;
+            bar.style.top = `${(index % 15) * 35 + 10}px`;
+            
+            const taskName = item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name;
+            bar.textContent = taskName;
+            
+            bar.addEventListener('mouseenter', (e) => showTooltip(e, item));
+            bar.addEventListener('mouseleave', hideTooltip);
+            
+            return bar;
+        }
+        
+        function shouldShowTask(item) {
+            if (currentFilter === 'all') return true;
+            if (currentFilter === 'trip-1') return item.order_trip === '1';
+            if (currentFilter === 'trip-2') return item.order_trip === '2';
+            if (currentFilter === 'barge') return item.taskType === 'barge';
+            if (currentFilter === 'travel') return item.taskType === 'travel';
+            return true;
+        }
+        
+        function showTooltip(e, item) {
+            const tooltip = document.getElementById('tooltip');
+            const duration = (item.endDate - item.startDate) / (1000 * 60 * 60);
+            
+            tooltip.innerHTML = `
+                <strong>${item.name}</strong><br>
+                <strong>Type:</strong> ${item.type}<br>
+                <strong>Start:</strong> ${item.startDate.toLocaleString()}<br>
+                <strong>End:</strong> ${item.endDate.toLocaleString()}<br>
+                <strong>Duration:</strong> ${duration.toFixed(2)} hours<br>
+                <strong>Trip:</strong> ${item.order_trip}<br>
+                <strong>Distance:</strong> ${parseFloat(item.distance || 0).toFixed(2)} km<br>
+                <strong>Load:</strong> ${item.total_load} units<br>
+                <strong>Barges:</strong> ${item.barge_ids}
+            `;
+            
+            tooltip.style.display = 'block';
+            tooltip.style.left = e.pageX + 10 + 'px';
+            tooltip.style.top = e.pageY - 10 + 'px';
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+        
+        function filterTasks(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            createTimeline();
+        }
+        
+        function updateStats() {
+            const visibleTasks = data.filter(shouldShowTask);
+            const totalTasks = visibleTasks.length;
+            const totalDuration = visibleTasks.reduce((sum, item) => {
+                return sum + (item.endDate - item.startDate) / (1000 * 60 * 60);
+            }, 0);
+            const totalDistance = visibleTasks.reduce((sum, item) => {
+                return sum + parseFloat(item.distance || 0);
+            }, 0);
+            
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('totalDuration').textContent = totalDuration.toFixed(1);
+            document.getElementById('totalDistance').textContent = totalDistance.toFixed(1);
+        }
+        
+        createTimeline();
+    </script>
+</body>
+</html>

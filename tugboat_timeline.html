@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Tugboat Operations Timeline</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        
+        .timeline-container {
+            position: relative;
+            overflow-x: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 40px 20px 60px 20px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .timeline {
+            position: relative;
+            min-width: 1400px;
+            height: 800px;
+        }
+        
+        .timeline-axis {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            border-top: 2px solid #34495e;
+        }
+        
+        .axis-label {
+            position: absolute;
+            bottom: -35px;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #7f8c8d;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .task-bar {
+            position: absolute;
+            height: 28px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            overflow: hidden;
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .task-bar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 10;
+            height: 32px;
+            margin-top: -2px;
+        }
+        
+        /* Task Type Colors */
+        .task-bar.start { background: linear-gradient(45deg, #27ae60, #229954); }
+        .task-bar.barge { background: linear-gradient(45deg, #3498db, #2980b9); }
+        .task-bar.crane { background: linear-gradient(45deg, #e67e22, #d35400); }
+        .task-bar.travel { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+        .task-bar.appointment { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+        .task-bar.loader { background: linear-gradient(45deg, #f39c12, #e67e22); }
+        .task-bar.customer { background: linear-gradient(45deg, #1abc9c, #16a085); }
+        .task-bar.change { background: linear-gradient(45deg, #34495e, #2c3e50); }
+        .task-bar.carrier { background: linear-gradient(45deg, #8e44ad, #732d91); }
+        
+        /* Tugboat-specific styling */
+        .task-bar.tbs1 { border-left: 4px solid #ff6b6b; }
+        .task-bar.tbr1 { border-left: 4px solid #4ecdc4; }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            flex-shrink: 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.8em;
+        }
+        
+        .tugboat-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tugboat-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .tugboat-badge.tbs1 { border-left: 4px solid #ff6b6b; }
+        .tugboat-badge.tbr1 { border-left: 4px solid #4ecdc4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚢 Enhanced Tugboat Operations Timeline</h1>
+        
+        <div class="tugboat-info">
+            <div class="tugboat-badge tbs1">🚢 TBS1 - Sea Tugboat</div>
+            <div class="tugboat-badge tbr1">🛥️ TBR1 - River Tugboat</div>
+        </div>
+        
+        <div class="controls">
+            <button class="filter-btn active" onclick="filterTasks('all')">All Operations</button>
+            <button class="filter-btn" onclick="filterTasks('tbs1')">TBS1 Only</button>
+            <button class="filter-btn" onclick="filterTasks('tbr1')">TBR1 Only</button>
+            <button class="filter-btn" onclick="filterTasks('trip-1')">Trip 1</button>
+            <button class="filter-btn" onclick="filterTasks('trip-2')">Trip 2</button>
+            <button class="filter-btn" onclick="filterTasks('barge')">Barge Ops</button>
+            <button class="filter-btn" onclick="filterTasks('crane')">Crane Ops</button>
+            <button class="filter-btn" onclick="filterTasks('travel')">Travel</button>
+            <button class="filter-btn" onclick="filterTasks('customer')">Customer</button>
+        </div>
+        
+        <div class="timeline-container">
+            <div class="timeline" id="timeline">
+                <div class="timeline-axis" id="axis"></div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #27ae60, #229954);"></div>
+                <span>Start Operations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #3498db, #2980b9);"></div>
+                <span>Barge Operations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #e67e22, #d35400);"></div>
+                <span>Crane Operations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #9b59b6, #8e44ad);"></div>
+                <span>Travel & Transport</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #e74c3c, #c0392b);"></div>
+                <span>Appointments</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #f39c12, #e67e22);"></div>
+                <span>Loading Operations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #1abc9c, #16a085);"></div>
+                <span>Customer Stations</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #34495e, #2c3e50);"></div>
+                <span>Barge Changes</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(45deg, #8e44ad, #732d91);"></div>
+                <span>Carrier Operations</span>
+            </div>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDuration">0</div>
+                <div class="stat-label">Duration (hours)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDistance">0</div>
+                <div class="stat-label">Distance (km)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalLoad">0</div>
+                <div class="stat-label">Total Load</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="tugboatCount">0</div>
+                <div class="stat-label">Tugboats</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="tripCount">0</div>
+                <div class="stat-label">Trips</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const rawData = `ID,type,name,enter_datetime,exit_datetime,tugboat_id,distance,time,speed,order_trip,total_load,barge_ids\nStart,Start,Start,2025-01-12 06:30:00.000000,2025-01-12 06:30:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Collection,Barge Location,2025-01-12 06:30:00.000000,2025-01-12 07:30:00.000000,tbs1,0.0,0.0,12.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b1 - (s0 to c1),2025-01-12 06:30:00.000000,2025-01-12 06:50:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b2 - (c1 to c1),2025-01-12 06:50:00.000000,2025-01-12 07:10:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b3 - (c1 to c1),2025-01-12 07:10:00.000000,2025-01-12 07:30:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\no1,Start Order Carrier,carrier1,2025-01-12 07:49:54.739965,2025-01-12 16:45:00.000000,tbs1,3.2784233567617305,0.3318722125427637,9.87857142857143,1,8000,"b1,b2,b3"\no1,Crane-Carrier,cr2 - b2,2025-01-12 08:00:00.000000,2025-01-12 15:08:34.285714,tbs1,0.0,7.142857142857143,420.0,1,3000,b2\no1,Crane-Carrier,cr1 - b1,2025-01-12 08:00:00.000000,2025-01-12 14:15:00.000000,tbs1,0.0,6.25,400.0,1,2500,b1\no1,Crane-Carrier,cr3 - b3,2025-01-12 10:00:00.000000,2025-01-12 16:34:44.210526,tbs1,0.0,6.578947368421052,380.0,1,2500,b3\nTravel,Sea-River,c1 to s0,2025-01-13 00:15:00.000000,2025-01-13 05:28:38.421057,tbs1,42.67749061125805,5.227339182481301,8.164285714285715,1,8000,"b1,b2,b3"\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-13 00:15:00.000000,2025-01-13 07:45:00.000000,tbs1,62.67749061125805,,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s0 to s1,2025-01-13 05:28:38.421057,2025-01-13 06:49:28.814758,tbs1,11.0,1.3473315835520558,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s1 to s2,2025-01-13 06:49:28.814758,2025-01-13 07:55:37.318695,tbs1,9.0,1.1023622047244095,8.164285714285715,1,8000,"b1,b2,b3"\nStart,Start,Start,2025-01-13 07:45:00.000000,2025-01-13 07:45:00.000000,tbs1,0.0,0.0,0.0,2,8000,"b29,b30,b41"\nBarge,Barge Collection,Barge Location,2025-01-13 12:45:00.000000,2025-01-13 18:45:00.000000,tbs1,59.656428592526716,4.971369049377226,12.0,2,8000,"b29,b30,b41"\nBarge,Barge Step Collection,Collecting Barge - b29 - (s2 to c1),2025-01-13 12:45:00.000000,2025-01-13 18:03:16.928578,tbs1,59.656428592526716,4.971369049377226,12.0,2,8000,"b29,b30,b41"\nBarge,Barge Step Collection,Collecting Barge - b30 - (c1 to c1),2025-01-13 18:03:16.928578,2025-01-13 18:23:16.928578,tbs1,0.0,0.0,0.0,2,8000,"b29,b30,b41"\nBarge,Barge Step Collection,Collecting Barge - b41 - (c1 to c1),2025-01-13 18:23:16.928578,2025-01-13 18:43:16.928578,tbs1,0.0,0.0,0.0,2,8000,"b29,b30,b41"\no1,Start Order Carrier,carrier1,2025-01-13 19:04:54.739965,2025-01-14 02:30:00.000000,tbs1,3.2784233567617305,0.3318722125427637,9.87857142857143,2,8000,"b29,b30,b41"\no1,Crane-Carrier,cr1 - b29,2025-01-13 19:15:00.000000,2025-01-14 01:30:00.000000,tbs1,0.0,6.25,400.0,2,2500,b29\no1,Crane-Carrier,cr2 - b30,2025-01-13 19:15:00.000000,2025-01-14 02:23:34.285714,tbs1,0.0,7.142857142857143,420.0,2,3000,b30\no1,Crane-Carrier,cr3 - b41,2025-01-13 19:15:00.000000,2025-01-14 01:49:44.210526,tbs1,0.0,6.578947368421052,380.0,2,2500,b41\nTravel,Sea-River,c1 to s0,2025-01-14 10:00:00.000000,2025-01-14 15:13:38.421057,tbs1,42.67749061125805,5.227339182481301,8.164285714285715,2,8000,"b29,b30,b41"\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-14 10:00:00.000000,2025-01-15 07:30:00.000000,tbs1,62.67749061125805,,8.164285714285715,2,8000,"b29,b30,b41"\nTravel,Sea-River,s0 to s1,2025-01-14 15:13:38.421057,2025-01-14 16:34:28.814758,tbs1,11.0,1.3473315835520558,8.164285714285715,2,8000,"b29,b30,b41"\nTravel,Sea-River,s1 to s2,2025-01-14 16:34:28.814758,2025-01-14 17:40:37.318695,tbs1,9.0,1.1023622047244095,8.164285714285715,2,8000,"b29,b30,b41"\nStart,Start,Start,2025-01-15 07:30:00.000000,2025-01-15 07:30:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Collection,Barge Location,2025-01-15 14:15:00.000000,2025-01-15 22:15:00.000000,tbs1,83.0,6.916666666666665,12.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b1 - (s2 to s10),2025-01-15 14:15:00.000000,2025-01-15 21:30:00.000000,tbs1,83.0,6.916666666666665,12.000000000000002,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b2 - (s10 to s10),2025-01-15 21:30:00.000000,2025-01-15 21:50:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b3 - (s10 to s10),2025-01-15 21:50:00.000000,2025-01-15 22:10:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\no2,Start Order Carrier,carrier2,2025-01-16 13:06:35.093849,2025-01-16 21:15:00.000000,tbs1,146.79308490655745,14.859748291336254,9.87857142857143,1,8000,"b1,b2,b3"\no2,Crane-Carrier,cr2 - b3,2025-01-16 13:15:00.000000,2025-01-16 20:23:34.285714,tbs1,0.0,7.142857142857143,350.0,1,2500,b3\no2,Crane-Carrier,cr4 - b1,2025-01-16 13:15:00.000000,2025-01-16 19:49:44.210526,tbs1,0.0,6.578947368421052,380.0,1,2500,b1\no2,Crane-Carrier,cr1 - b2,2025-01-16 13:15:00.000000,2025-01-16 21:08:41.052632,tbs1,0.0,7.894736842105263,380.0,1,3000,b2\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-17 05:00:00.000000,2025-01-17 12:45:00.000000,tbs1,64.46773860591682,,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,c1 to s0,2025-01-17 05:00:00.000000,2025-01-17 10:26:47.821747,tbs1,44.467738605916814,5.446617152080799,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s0 to s1,2025-01-17 10:26:47.821747,2025-01-17 11:47:38.215448,tbs1,11.0,1.3473315835520558,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s1 to s2,2025-01-17 11:47:38.215448,2025-01-17 12:53:46.719385,tbs1,9.0,1.1023622047244095,8.164285714285715,1,8000,"b1,b2,b3"\nStart,Start,Start,2025-01-17 12:45:00.000000,2025-01-17 12:45:00.000000,tbs1,0.0,0.0,0.0,2,9000,"b17,b18,b19,b20"\nBarge,Barge Collection,Barge Location,2025-01-17 14:30:59.487134,2025-01-17 18:45:00.000000,tbs1,20.0,1.6666666666666665,12.0,2,9000,"b17,b18,b19,b20"\nBarge,Barge Step Collection,Collecting Barge - b17 - (s2 to nan),2025-01-17 14:30:59.487134,2025-01-17 16:30:59.487134,tbs1,20.0,1.6666666666666665,12.000000000000002,2,9000,"b17,b18,b19,b20"\nBarge,Barge Step Collection,Collecting Barge - b18 - (nan to nan),2025-01-17 16:30:59.487134,2025-01-17 17:17:34.579159,tbs1,5.0,0.4430811179277437,11.284615384615385,2,9000,"b17,b18,b19,b20"\nBarge,Barge Step Collection,Collecting Barge - b19 - (nan to nan),2025-01-17 17:17:34.579159,2025-01-17 18:05:56.259831,tbs1,5.0,0.4726890756302521,10.577777777777778,2,9000,"b17,b18,b19,b20"\nBarge,Barge Step Collection,Collecting Barge - b20 - (nan to nan),2025-01-17 18:05:56.259831,2025-01-17 18:56:18.385644,tbs1,5.0,0.5061460592913954,9.87857142857143,2,9000,"b17,b18,b19,b20"\no2,Start Order Carrier,carrier2,2025-01-18 00:03:41.614355,2025-01-18 09:45:00.000000,tbs1,48.79308490655744,5.311559543131253,9.186206896551724,2,9000,"b17,b18,b19,b20"\no2,Crane-Carrier,cr5 - b17,2025-01-18 01:02:08.571429,2025-01-18 08:10:42.857143,tbs1,0.0,7.142857142857143,350.0,2,2500,b17\no2,Crane-Carrier,cr2 - b18,2025-01-18 01:02:08.571429,2025-01-18 09:36:25.714286,tbs1,0.0,8.571428571428571,350.0,2,3000,b18\no2,Crane-Carrier,cr1 - b19,2025-01-18 02:32:22.105263,2025-01-18 09:07:06.315789,tbs1,0.0,6.578947368421052,380.0,2,2500,b19\no2,Crane-Carrier,cr4 - b20,2025-01-18 02:32:22.105263,2025-01-18 05:10:15.789474,tbs1,0.0,2.6315789473684212,380.0,2,1000,b20\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-18 18:30:00.000000,2025-01-19 04:15:00.000000,tbs1,64.46773860591682,,7.324137931034483,2,9000,"b17,b18,b19,b20"\nTravel,Sea-River,c1 to s0,2025-01-18 18:30:00.000000,2025-01-19 00:34:17.024061,tbs1,44.467738605916814,6.07139557237094,7.324137931034483,2,9000,"b17,b18,b19,b20"\nTravel,Sea-River,s0 to s1,2025-01-19 00:34:17.024061,2025-01-19 02:04:23.803722,tbs1,11.0,1.5018832391713748,7.324137931034483,2,9000,"b17,b18,b19,b20"\nTravel,Sea-River,s1 to s2,2025-01-19 02:04:23.803722,2025-01-19 03:18:07.532536,tbs1,9.0,1.228813559322034,7.324137931034483,2,9000,"b17,b18,b19,b20"\nStart,Start,Start,2025-01-19 04:15:00.000000,2025-01-19 04:15:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Collection,Barge Location,2025-01-19 11:30:00.000000,2025-01-19 19:45:00.000000,tbs1,87.0,7.249999999999998,12.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b1 - (s2 to s11),2025-01-19 11:30:00.000000,2025-01-19 19:05:00.000000,tbs1,87.0,7.249999999999998,12.000000000000004,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b2 - (s11 to s11),2025-01-19 19:05:00.000000,2025-01-19 19:25:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b3 - (s11 to s11),2025-01-19 19:25:00.000000,2025-01-19 19:45:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\no3,Start Order Carrier,carrier3,2025-01-20 11:00:52.761972,2025-01-20 18:30:00.000000,tbs1,150.7929956492242,15.264656103319874,9.87857142857143,1,8000,"b1,b2,b3"\no3,Crane-Carrier,cr5 - b2,2025-01-20 11:15:00.000000,2025-01-20 18:23:34.285714,tbs1,0.0,7.142857142857143,420.0,1,3000,b2\no3,Crane-Carrier,cr4 - b1,2025-01-20 11:15:00.000000,2025-01-20 17:30:00.000000,tbs1,0.0,6.25,400.0,1,2500,b1\no3,Crane-Carrier,cr1 - b3,2025-01-20 11:15:00.000000,2025-01-20 17:49:44.210526,tbs1,0.0,6.578947368421052,380.0,1,2500,b3\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-21 02:15:00.000000,2025-01-21 10:00:00.000000,tbs1,64.46761922303374,,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,c1 to s0,2025-01-21 02:15:00.000000,2025-01-21 07:41:47.769106,tbs1,44.467619223033736,5.446602529505444,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s0 to s1,2025-01-21 07:41:47.769106,2025-01-21 09:02:38.162807,tbs1,11.0,1.3473315835520558,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s1 to s2,2025-01-21 09:02:38.162807,2025-01-21 10:08:46.666744,tbs1,9.0,1.1023622047244095,8.164285714285715,1,8000,"b1,b2,b3"\nStart,Start,Start,2025-01-21 10:00:00.000000,2025-01-21 10:00:00.000000,tbs1,0.0,0.0,0.0,2,8500,"b24,b25,b26"\nBarge,Barge Collection,Barge Location,2025-01-21 16:45:00.000000,2025-01-22 00:45:00.000000,tbs1,83.0,6.916666666666665,12.0,2,8500,"b24,b25,b26"\nBarge,Barge Step Collection,Collecting Barge - b24 - (s2 to s10),2025-01-21 16:45:00.000000,2025-01-22 00:00:00.000000,tbs1,83.0,6.916666666666665,12.000000000000002,2,8500,"b24,b25,b26"\nBarge,Barge Step Collection,Collecting Barge - b25 - (s10 to s10),2025-01-22 00:00:00.000000,2025-01-22 00:20:00.000000,tbs1,0.0,0.0,0.0,2,8500,"b24,b25,b26"\nBarge,Barge Step Collection,Collecting Barge - b26 - (s10 to s10),2025-01-22 00:20:00.000000,2025-01-22 00:40:00.000000,tbs1,0.0,0.0,0.0,2,8500,"b24,b25,b26"\no3,Start Order Carrier,carrier3,2025-01-22 15:36:35.061321,2025-01-22 23:15:00.000000,tbs1,146.7929956492242,14.859739255886756,9.87857142857143,2,8500,"b24,b25,b26"\no3,Crane-Carrier,cr5 - b24,2025-01-22 15:45:00.000000,2025-01-22 22:53:34.285714,tbs1,0.0,7.142857142857143,420.0,2,3000,b24\no3,Crane-Carrier,cr4 - b26,2025-01-22 15:45:00.000000,2025-01-22 23:15:00.000000,tbs1,0.0,7.5,400.0,2,3000,b26\no3,Crane-Carrier,cr1 - b25,2025-01-22 15:45:00.000000,2025-01-22 22:19:44.210526,tbs1,0.0,6.578947368421052,380.0,2,2500,b25\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-23 07:15:04.680929,2025-01-23 15:00:00.000000,tbs1,64.46761922303374,,8.057142857142857,2,8500,"b24,b25,b26"\nTravel,Sea-River,c1 to s0,2025-01-23 07:15:04.680929,2025-01-23 12:46:13.191646,tbs1,44.467619223033736,5.519030754631847,8.057142857142857,2,8500,"b24,b25,b26"\nTravel,Sea-River,s0 to s1,2025-01-23 12:46:13.191646,2025-01-23 14:08:08.085263,tbs1,11.0,1.3652482269503547,8.057142857142857,2,8500,"b24,b25,b26"\nTravel,Sea-River,s1 to s2,2025-01-23 14:08:08.085263,2025-01-23 15:15:09.361859,tbs1,9.0,1.1170212765957448,8.057142857142857,2,8500,"b24,b25,b26"\nStart,Start,Start,2025-01-23 15:00:09.710913,2025-01-23 15:00:09.710913,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b1 - (s2 to s12),2025-01-23 23:15:00.000000,2025-01-24 07:55:00.000000,tbs1,100.0,8.333333333333332,12.000000000000002,1,8000,"b1,b2,b3"\nBarge,Barge Collection,Barge Location,2025-01-23 23:15:00.000000,2025-01-24 08:30:00.000000,tbs1,100.0,8.333333333333332,12.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b2 - (s12 to s12),2025-01-24 07:55:00.000000,2025-01-24 08:15:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\nBarge,Barge Step Collection,Collecting Barge - b3 - (s12 to s12),2025-01-24 08:15:00.000000,2025-01-24 08:35:00.000000,tbs1,0.0,0.0,0.0,1,8000,"b1,b2,b3"\no4,Start Order Carrier,carrier1,2025-01-25 01:04:50.289087,2025-01-25 08:30:00.000000,tbs1,163.7929956492242,16.5806358574775,9.87857142857143,1,8000,"b1,b2,b3"\no4,Crane-Carrier,cr5 - b2,2025-01-25 01:15:00.000000,2025-01-25 08:23:34.285714,tbs1,0.0,7.142857142857143,420.0,1,3000,b2\no4,Crane-Carrier,cr4 - b1,2025-01-25 01:15:00.000000,2025-01-25 07:30:00.000000,tbs1,0.0,6.25,400.0,1,2500,b1\no4,Crane-Carrier,cr1 - b3,2025-01-25 01:15:00.000000,2025-01-25 07:49:44.210526,tbs1,0.0,6.578947368421052,380.0,1,2500,b3\ns2,Appointment,3-Bang Hua Suea Pier,2025-01-25 16:15:00.000000,2025-01-26 00:00:00.000000,tbs1,64.46761922303374,,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,c1 to s0,2025-01-25 16:15:00.000000,2025-01-25 21:41:47.769106,tbs1,44.467619223033736,5.446602529505444,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s0 to s1,2025-01-25 21:41:47.769106,2025-01-25 23:02:38.162807,tbs1,11.0,1.3473315835520558,8.164285714285715,1,8000,"b1,b2,b3"\nTravel,Sea-River,s1 to s2,2025-01-25 23:02:38.162807,2025-01-26 00:08:46.666744,tbs1,9.0,1.1023622047244095,8.164285714285715,1,8000,"b1,b2,b3"\n`;
+        
+        let data = [];
+        let currentFilter = 'all';
+        
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',');
+            
+            return lines.slice(1).map(line => {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim());
+                
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header.trim()] = values[index] || '';
+                });
+                return obj;
+            });
+        }
+        
+        function getTaskType(type, name, id) {
+            const typeStr = type.toLowerCase();
+            const nameStr = name.toLowerCase();
+            const idStr = id.toLowerCase();
+            
+            if (typeStr === 'start') return 'start';
+            if (typeStr.includes('barge') || nameStr.includes('barge')) {
+                if (typeStr.includes('change') || nameStr.includes('change')) return 'change';
+                return 'barge';
+            }
+            if (typeStr.includes('crane') || nameStr.includes('crane')) return 'crane';
+            if (typeStr.includes('loader') || nameStr.includes('loader')) return 'loader';
+            if (typeStr.includes('customer') || nameStr.includes('customer') || nameStr.includes('station')) return 'customer';
+            if (typeStr.includes('carrier') || nameStr.includes('carrier')) return 'carrier';
+            if (typeStr.includes('sea-river') || typeStr.includes('travel') || nameStr.includes('travel')) return 'travel';
+            if (typeStr.includes('appointment') || nameStr.includes('appointment') || nameStr.includes('pier')) return 'appointment';
+            
+            return 'other';
+        }
+        
+        function createTimeline() {
+            data = parseCSV(rawData);
+            
+            let minDate = new Date('2030-01-01');
+            let maxDate = new Date('2020-01-01');
+            
+            data.forEach(item => {
+                item.startDate = new Date(item.enter_datetime);
+                item.endDate = new Date(item.exit_datetime);
+                item.taskType = getTaskType(item.type, item.name, item.ID);
+                item.tugboatClass = item.tugboat_id || 'unknown';
+                
+                if (item.startDate < minDate) minDate = item.startDate;
+                if (item.endDate > maxDate) maxDate = item.endDate;
+            });
+            
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '<div class="timeline-axis" id="axis"></div>';
+            
+            const totalDuration = maxDate - minDate;
+            
+            // Create more axis labels for better precision
+            const numLabels = 12;
+            for (let i = 0; i <= numLabels; i++) {
+                const time = new Date(minDate.getTime() + (totalDuration * i / numLabels));
+                const label = document.createElement('div');
+                label.className = 'axis-label';
+                label.style.left = `${(i / numLabels) * 100}%`;
+                const dateStr = time.toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+                const timeStr = time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                label.textContent = `${dateStr} ${timeStr}`;
+                document.getElementById('axis').appendChild(label);
+            }
+            
+            // Group tasks by tugboat and trip for better positioning
+            const taskGroups = {};
+            data.forEach((item, index) => {
+                if (shouldShowTask(item)) {
+                    const groupKey = `1`;
+                    if (!taskGroups[groupKey]) taskGroups[groupKey] = [];
+                    taskGroups[groupKey].push({...item, originalIndex: index});
+                }
+            });
+            
+            // Create task bars with better positioning
+            let rowOffset = 0;
+            Object.keys(taskGroups).forEach((groupKey, groupIndex) => {
+                taskGroups[groupKey].forEach((item, itemIndex) => {
+                    const bar = createTaskBar(item, minDate, totalDuration, rowOffset + itemIndex);
+                    timeline.appendChild(bar);
+                });
+                rowOffset += taskGroups[groupKey].length + 1; // Add spacing between groups
+            });
+            
+            updateStats();
+        }
+        
+        function createTaskBar(item, minDate, totalDuration, rowIndex) {
+            const bar = document.createElement('div');
+            bar.className = `task-bar ${item.taskType} ${item.tugboatClass}`;
+            
+            const startOffset = (item.startDate - minDate) / totalDuration;
+            const duration = Math.max((item.endDate - item.startDate) / totalDuration, 0.001);
+            
+            bar.style.left = `${startOffset * 100}%`;
+            bar.style.width = `${Math.max(duration * 100, 0.3)}%`;
+            bar.style.top = `${rowIndex * 32 + 20}px`;
+            
+            const taskName = item.name.length > 25 ? item.name.substring(0, 25) + '...' : item.name;
+            bar.textContent = taskName;
+            
+            bar.addEventListener('mouseenter', (e) => showTooltip(e, item));
+            bar.addEventListener('mouseleave', hideTooltip);
+            
+            return bar;
+        }
+        
+        function shouldShowTask(item) {
+            if (currentFilter === 'all') return true;
+            if (currentFilter === 'tbs1') return item.tugboat_id === 'tbs1';
+            if (currentFilter === 'tbr1') return item.tugboat_id === 'tbr1';
+            if (currentFilter === 'trip-1') return item.order_trip === '1';
+            if (currentFilter === 'trip-2') return item.order_trip === '2';
+            if (currentFilter === 'barge') return item.taskType === 'barge' || item.taskType === 'change';
+            if (currentFilter === 'crane') return item.taskType === 'crane';
+            if (currentFilter === 'travel') return item.taskType === 'travel';
+            if (currentFilter === 'customer') return item.taskType === 'customer' || item.taskType === 'loader';
+            return true;
+        }
+        
+        function showTooltip(e, item) {
+            const tooltip = document.getElementById('tooltip');
+            const duration = (item.endDate - item.startDate) / (1000 * 60 * 60);
+            
+            tooltip.innerHTML = `
+                <strong>🚢 ${item.name}</strong><br>
+                <strong>Type:</strong> ${item.type}<br>
+                <strong>Tugboat:</strong> ${item.tugboat_id}<br>
+                <strong>Start:</strong> ${item.startDate.toLocaleString()}<br>
+                <strong>End:</strong> ${item.endDate.toLocaleString()}<br>
+                <strong>Duration:</strong> ${duration.toFixed(2)} hours<br>
+                <strong>Trip:</strong> ${item.order_trip}<br>
+                <strong>Distance:</strong> ${parseFloat(item.distance || 0).toFixed(2)} km<br>
+                <strong>Speed:</strong> ${parseFloat(item.speed || 0).toFixed(1)} km/h<br>
+                <strong>Load:</strong> ${item.total_load} units<br>
+                <strong>Barges:</strong> ${item.barge_ids}<br>
+                <strong>ID:</strong> ${item.ID}
+            `;
+            
+            tooltip.style.display = 'block';
+            tooltip.style.left = e.pageX + 15 + 'px';
+            tooltip.style.top = e.pageY - 10 + 'px';
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+        
+        function filterTasks(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            createTimeline();
+        }
+        
+        function updateStats() {
+            const visibleTasks = data.filter(shouldShowTask);
+            const totalTasks = visibleTasks.length;
+            const totalDuration = visibleTasks.reduce((sum, item) => {
+                return sum + (item.endDate - item.startDate) / (1000 * 60 * 60);
+            }, 0);
+            const totalDistance = visibleTasks.reduce((sum, item) => {
+                return sum + parseFloat(item.distance || 0);
+            }, 0);
+            const totalLoad = visibleTasks.reduce((sum, item) => {
+                return sum + parseFloat(item.total_load || 0);
+            }, 0);
+            const tugboats = [...new Set(visibleTasks.map(item => item.tugboat_id))];
+            const trips = [...new Set(visibleTasks.map(item => item.order_trip))];
+            
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('totalDuration').textContent = totalDuration.toFixed(1);
+            document.getElementById('totalDistance').textContent = totalDistance.toFixed(1);
+            document.getElementById('totalLoad').textContent = totalLoad.toLocaleString();
+            document.getElementById('tugboatCount').textContent = tugboats.length;
+            document.getElementById('tripCount').textContent = trips.length;
+        }
+        
+        createTimeline();
+    </script>
+</body>
+</html>          <strong>End:</strong> ${item.endDate.toLocaleString()}<br>
+                <strong>Duration:</strong> ${duration.toFixed(2)} hours<br>
+                <strong>Trip:</strong> ${item.order_trip}<br>
+                <strong>Distance:</strong> ${parseFloat(item.distance || 0).toFixed(2)} km<br>
+                <strong>Load:</strong> ${item.total_load} units<br>
+                <strong>Barges:</strong> ${item.barge_ids}
+            `;
+            
+            tooltip.style.display = 'block';
+            tooltip.style.left = e.pageX + 10 + 'px';
+            tooltip.style.top = e.pageY - 10 + 'px';
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+        
+        function filterTasks(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            createTimeline();
+        }
+        
+        function updateStats() {
+            const visibleTasks = data.filter(shouldShowTask);
+            const totalTasks = visibleTasks.length;
+            const totalDuration = visibleTasks.reduce((sum, item) => {
+                return sum + (item.endDate - item.startDate) / (1000 * 60 * 60);
+            }, 0);
+            const totalDistance = visibleTasks.reduce((sum, item) => {
+                return sum + parseFloat(item.distance || 0);
+            }, 0);
+            
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('totalDuration').textContent = totalDuration.toFixed(1);
+            document.getElementById('totalDistance').textContent = totalDistance.toFixed(1);
+        }
+        
+        createTimeline();
+    </script>
+</body>
+</html>     const tooltip = document.getElementById('tooltip');
+            const duration = (item.endDate - item.startDate) / (1000 * 60 * 60);
+            
+            tooltip.innerHTML = `
+                <strong>${item.name}</strong><br>
+                <strong>Type:</strong> ${item.type}<br>
+                <strong>Start:</strong> ${item.startDate.toLocaleString()}<br>
+      

@@ -12,13 +12,13 @@ class TravelHelper:
     _instance = None
     
     def __new__(cls, *args, **kwargs):
-        print("TravelHelper new")
+        #print("TravelHelper new")
         if cls._instance is None:
             cls._instance = super(TravelHelper, cls).__new__(cls)
         return cls._instance
 
     def __init__(self, data=None):
-        print("TravelHelper initialized")
+        #print("TravelHelper initialized")
         if not hasattr(self, 'initialized'):  # Ensure __init__ is only called once
             self.data = data
             self.initialized = True
@@ -134,7 +134,7 @@ class TravelHelper:
         total_time = 0
         order_stations = None
         first_point = None
-        if type_end_location == WaterBody.SEA and type_start_location == WaterBody.SEA:
+        if type_start_location == WaterBody.SEA and type_end_location == WaterBody.SEA:
             distance = self.get_distance_location(info_start_ends['start_location'], info_start_ends['end_location'])
             travel_time = distance/ info_start_ends['speed'] # t = d / v
             start_sea_station = self.get_sea_station(info_start_ends['start_location'])
@@ -259,11 +259,12 @@ class TravelHelper:
                     'start_location': info_start_ends['start_location'],
                     'end_location': start_station.km,
                     'start_id': closest_station.station_id if closest_station is not None else '-',
-                    'end_id': end_station.station_id if end_station is not None else '-',
+                    'end_id': order_stations[0],
                     'distance': distance,
                     'travel_time': travel_time,
                     'speed': info_start_ends['speed']
                 }    
+            #print("Debugging SEA - RIVER Step", order_stations)
             steps.append(first_point)
             total_distance += distance
             total_time += travel_time
