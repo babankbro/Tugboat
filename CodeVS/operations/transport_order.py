@@ -1,6 +1,10 @@
 import sys
 import os
 
+from pandas._config import config
+
+from CodeVS import config_problem
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -34,7 +38,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         crane_shedule = schedule_result['crane_schedule'] 
         min_start_crane = 10000000000000000000000000000000
         for crane in crane_shedule:
-            print("\t", 'BBBBBBBBBBBBBBBBBB',crane) if tugboat_id == 'tbs1' else None
+            #print("\t", 'BBBBBBBBBBBBBBBBBB',crane) if tugboat_id == 'tbs1' else None
             min_start_crane = min(min_start_crane, crane['start_time'])
         
         tugboat_result = lookup_tugboat_results[tugboat_schedule['tugboat_id']]
@@ -42,7 +46,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
       
         #last_point = tugboat_result['data_points'][-1]
         last_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
-        print("last_point", tugboat_id, last_point) if (tugboat_id == 'tbs1' or tugboat_id == 'tbs2') and order.order_id == 'o1' else None
+        #print("last_point", tugboat_id, last_point) if (tugboat_id == 'tbs1' or tugboat_id == 'tbs2') and order.order_id == 'o1' else None
         #order_arrival_time = last_point['order_arrival_time'] 
         last_point_exit_datetime = last_point['exit_datetime']
         
@@ -67,7 +71,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
             crane_start_time = order.start_datetime + timedelta(minutes=(crane['start_time'])*60)
             
             #print("Crane Info:", min_start_crane, arrival_datetime, crane_arrival, (crane['start_time'] - min_start_crane)*60) if tugboat_id == 'tbs1' and order.order_id == 'o1'   else None
-            print("Crane Info:", tugboat_id, crane_start_time, arrival_datetime) if (tugboat_id == 'tbs1' or tugboat_id == 'tbs2') and order.order_id == 'o1'  and crane['crane_id'] == 'cr1' else None
+            #print("Crane Info:", tugboat_id, crane_start_time, arrival_datetime) if (tugboat_id == 'tbs1' or tugboat_id == 'tbs2') and order.order_id == 'o1'  and crane['crane_id'] == 'cr1' else None
             
             if arrival_datetime > crane_start_time:
                 crane_start_time = arrival_datetime
@@ -102,7 +106,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
        
         # print("Travel Info:", travel_info) if tugboat_id == 'tbs1' and order.order_id == 'o1' else None
         # for step in travel_info['steps']:
-        #     print(step)  if tugboat_id == 'tbs1' and order.order_id == 'o1' else None
+        #      print(step)  if tugboat_id == 'tbs1' and order.order_id == 'o1' else None
         #print(travel_info)
        #print()
         
@@ -126,13 +130,28 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         trave_steps = generate_travel_steps(arrival_datetime, travel_info)
         
         tugboat_result["data_points"].extend(trave_steps)
+        
+        time_release_barges = config_problem.BARGE_RELEASE_MINUTES*len(tugboat.assigned_barges)
+        barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
+        release_barges_location ={
+                "ID": appointment_station.station_id,
+                'name': appointment_station.name,
+                'type': "Release Barges (" + " - ".join(barge_ids) + ")",
+                'enter_datetime': arrival_datetime,
+                'exit_datetime':arrival_datetime + timedelta(minutes=time_release_barges),
+                'distance': 0,
+                'speed': 0,
+                'time': time_release_barges,
+                'type_point': 'main_point'
+            }
+        tugboat_result['data_points'].append(release_barges_location)
 
 def generate_travel_steps(arrival_datetime, travel_info):
     trave_steps = []
     start_travel_time = arrival_datetime
     for step in travel_info['steps']:
         finish_travel_time = start_travel_time + timedelta(minutes=(step['travel_time'])*60)
-            #print(collection_info)
+        
         travel_step ={
                 "ID": "Travel",
                 'type': "Sea-River",
@@ -195,7 +214,7 @@ def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results)
             late_times[tugboat_id] = (order.due_datetime - arrival_datetime).total_seconds()/60
     return late_times
         
-def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tugboat_results):
+def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_schedule_results, lookup_river_tugboat_results):
     
     for tugboat_id, tugboat_result in lookup_river_tugboat_results.items():
         tugboat_result = lookup_river_tugboat_results[tugboat_id]
@@ -221,11 +240,23 @@ def update_river_travel_tugboats(order, river_schedule_results, lookup_river_tug
         end_date_last = arrival_customer_time
         for loader in loading_schedule:
 
-            loader_start = arrival_customer_time + timedelta(minutes=(int(loader['start_time']*60)))
+            loader_start = first_arrival_customer_datetime + timedelta(minutes=(int(loader['start_time']*60)))
+            old_loader_start = arrival_customer_time + timedelta(minutes=(int(loader['start_time']*60)))
             #loader_start = get_next_quarter_hour(loader_start)
-            loader_end = arrival_customer_time + timedelta(minutes=int(loader['loader_schedule']*60))
+            
             #loader_end = get_next_quarter_hour(loader_end)
             #print("Loader Info:", loader) if tugboat_id == 'tbr1' and order.order_id == 'o1'   else None
+            #if arrival_customer_time > loader_start:
+            #    loader_start = arrival_customer_time
+            #if loader_start < old_loader_start:
+                #loader_start = first_arrival_customer_datetime
+            
+            loader_end = first_arrival_customer_datetime + timedelta(minutes=int(loader['loader_schedule']*60))
+            
+            #print("Loader Start:", first_arrival_customer_datetime, loader_start, old_loader_start, loader_end) if order.order_id == 'o1' else None
+            
+            
+            
             crane_location = {
                 "ID": order.start_object.order_id,
                 'type': "Loader-Customer",
@@ -281,8 +312,10 @@ def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, look
         #            tugboat_result['data_points'][-1]['exit_datetime'], max_datetime)
         #if tugboat_id == "tsb1" or tugboat_id == "tsr1":
         
-        end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
-        end_point['exit_datetime']  = max_datetime
+        
+        #Replace last exit datetime with max datetime
+        #end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
+        #end_point['exit_datetime']  = max_datetime
         #print(tugboat_result['data_points'][-1]['exit_datetime'] )
         
         

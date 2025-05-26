@@ -113,7 +113,7 @@ def schedule_carrier_order_single_tugboat(order: Order, tugboat: Tugboat,
         }
     }
 
-def schedule_carrier_order_tugboats(order: Order, tugboats: List[Tugboat],  tugboat_ready_times: List[float] = None) -> List[Dict]:
+def schedule_carrier_order_tugboats(order: Order, tugboats: List[Tugboat],  active_cranes, tugboat_ready_times: List[float] = None) -> List[Dict]:
     """
     Schedule an order across multiple tugboats, updating crane ready times between assignments.
     
@@ -130,16 +130,7 @@ def schedule_carrier_order_tugboats(order: Order, tugboats: List[Tugboat],  tugb
         tugboat_ready_times = [0]*len(tugboats)
      
     # Initialize crane states
-    active_cranes = []
-    for i in range(7):
-        rate = order.get_crane_rate(f'cr{i+1}')
-        if rate > 0:
-            active_cranes.append({
-                'crane_id': f'cr{i+1}',
-                'rate': rate,
-                'time_ready':  order.get_crane_ready_time(f'cr{i+1}'),
-                'assigned_product': 0
-            })
+    
     
     for i, tugboat in enumerate(tugboats):
         schedule = schedule_carrier_order_single_tugboat(order, tugboat, 
@@ -157,16 +148,6 @@ def schedule_carrier_order_tugboats(order: Order, tugboats: List[Tugboat],  tugb
 def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat, 
                                  active_cranes: List[Dict] = None,
                                  tugboat_ready_time: int = 0) -> Dict:
-    if active_cranes is None:
-        active_cranes = [{
-            'loader_id': f'ld1',
-            'rate': order.loading_rate,
-            'time_ready': max(tugboat_ready_time, 0),
-            'assigned_product': 0
-        } for i in range(1)]
-    else:
-        for crane in active_cranes:
-            crane['time_ready'] = max(tugboat_ready_time, crane['time_ready'])
     
     # Calculate total product for this tugboat
     total_demand = sum([b.get_load(is_only_load=True) for b in tugboat.assigned_barges])
@@ -238,26 +219,17 @@ def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat,
             'total_time': total_time,
             'start_time': start_time,
             'end_time': start_time + max_time_barge_shedule,
-            'start_datetime': get_next_quarter_hour( order.due_datetime + timedelta(minutes=60*start_time)),
-            'end_datetime': get_next_quarter_hour( order.due_datetime + timedelta(minutes=60*max_time_barge_shedule))
+            #'start_datetime': get_next_quarter_hour( order.due_datetime + timedelta(minutes=60*start_time)),
+            #'end_datetime': get_next_quarter_hour( order.due_datetime + timedelta(minutes=60*max_time_barge_shedule))
         }
     }
 
-def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat],  tugboat_ready_times: List[float] = None) -> List[Dict]:
+def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat], active_loadings, tugboat_ready_times: List[float] = None) -> List[Dict]:
    
     
     schedules = []
     
-    active_loadings = []
-    for i in range(1):
-        rate = order.loading_rate
-        if rate > 0:
-            active_loadings.append({
-                'loader_id': f'ld{i+1}',
-                'rate': rate,
-                'time_ready':  0,
-                'assigned_product': 0
-            })
+    
     
     for i, tugboat in enumerate(tugboats):
         schedule = schedule_customer_order_single_tugboat(order, tugboat, 

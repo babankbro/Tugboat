@@ -181,7 +181,9 @@ class Tugboat:
             }
             water_status = barge_info['water_status']
             #print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", TravelHelper._instance)
-            distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(current_status, water_status, travel_infos)
+            distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(current_status, 
+                                                                                              water_status, 
+                                                                                              travel_infos)
             setup_time = barge.setup_time / 60.0  # แปลงเวลาเชื่อมต่อจากนาทีเป็นชั่วโมง
             total_time += travel_time + setup_time  # รวมเวลาเดิน
             total_weight_barge += barge.weight_barge
@@ -249,7 +251,6 @@ class Tugboat:
                 'travel_distance': distance,
                 'steps': travel_steps}
     
-    
     def calculate_travel_start_to_end_river_location(self, start_info, end_info, 
                                                      start_status=WaterBody.RIVER, end_status= WaterBody.RIVER):
         data = TravelHelper._instance.data
@@ -275,7 +276,9 @@ class Tugboat:
                 'end_km': end_station.km
             }
 
-        distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(start_status, end_status, travel_infos)
+        distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(start_status,
+                                                                                          end_status, 
+                                                                                          travel_infos)
         #print("Speed Tugboat", speed_tug, base_weight_barges)
         travel_time = distance / speed_tug
         return {"travel_time":travel_time, 
@@ -284,7 +287,6 @@ class Tugboat:
                 "start_location": start_location,
                 'travel_distance': distance,
                 'steps': travel_steps}
-    
         
     def calculate_travel_to_appointment(self, appointment_info):
         data = TravelHelper._instance.data
@@ -306,8 +308,6 @@ class Tugboat:
                 "start_location": result['start_location'],
                 'travel_distance': result['travel_distance'],
                 'steps': result['steps']}
-        
-        
         
     def calculate_river_to_customer(self, input_travel_info):
         order = self.assigned_barges[0].current_order
@@ -333,7 +333,6 @@ class Tugboat:
                 "start_object": start_station,
                 'travel_distance': distance,
                 'steps': travel_steps}
-        
         
     def calculate_collection_product_time_with_crane_rate(self, last_lat):
         # travel to carriers
@@ -373,7 +372,6 @@ class Tugboat:
                 max_time_grab = time_crane
         print("Max Time Grab", max_time_grab)
         return {'total_time': max_time_grab + travel_time, 'time_grab': max_time_grab, 'travel_time': travel_time}
-
 
     def calculate_travel_to_estuary_river():
 
