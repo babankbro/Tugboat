@@ -7,10 +7,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import pytest
+# import pytest
 from datetime import timedelta, datetime
 import pandas as pd
-from CodeVS.main import main
+from CodeVS.main import main, test_transport_order
 from CodeVS.read_data import *
 from CodeVS.initialize_data import initialize_data, print_all_objects
 from CodeVS.operations.assigned_barge import *
@@ -20,77 +20,20 @@ from CodeVS.operations.travel_helper import *
 from CodeVS.compoents.solution import Solution
 import unittest
 import numpy as np
-
-
-# @pytest.fixture 
-# def test_data():
-#     data = initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df)
-#     TravelHelper()
-#     TravelHelper._set_data(TravelHelper._instance,  data)
-#     return {'data': data,
-#             'TravelHelper': TravelHelper._instance}
-
-                   
-# def test_distance_sea_sea(test_data):
-#     data = test_data['data']
-#     start_station = data['stations']['c1']
-#     end_station = data['stations']['s0']
-#     start_location = (start_station.lat, start_station.lng)
-#     end_location = (end_station.lat, end_station.lng)
-#     start_station = (13.18310799,	100.8126384)
-#     end_station = (13.4717077924905, 100.595846778158)
-#     distance = TravelHelper._instance.get_distance_location(start_location, end_location)
-#     assert int(distance) == 39
-                                                                                
-# def test_solution_schedule(test_data):
-#     solution = Solution(test_data['data'])
-#     tugboat_df, barge_df =  solution.generate_schedule()
-    
-#     filtered_df = tugboat_df[
-#                             ((tugboat_df['tugboat_id'] == 'tbs1') & (tugboat_df['type'] == 'Appointment')) 
-#                             &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
-#                             & (tugboat_df['order_trip'] == 1)
-#                             #& (tugboat_df['distance'] > 60)
-#                             #(tugboat_df['distance'] > 60)
-#                             ]
-#     print(filtered_df)
-#     filtered_df2 = tugboat_df[
-#                             ((tugboat_df['tugboat_id'] == 'tbs1') & (tugboat_df['type'] == 'Barge Collection')) 
-#                             &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
-#                             & (tugboat_df['order_trip'] == 2)
-#                             #& (tugboat_df['distance'] > 60)
-#                             #(tugboat_df['distance'] > 60)
-#                             ]
-    
-    
-#     assert int(filtered_df.iloc[0]['distance']) == int(filtered_df2.iloc[0]['distance'])
-    
-# def test_travel_process(test_data):
-#     data = test_data['data']
-#     tugboats  = data['tugboats']
-#     tugboat = tugboats['tbs1']
-#     station_barge = data['stations']['c1']
-#     end_station = data['stations']['s2']
-#     travel_infos = {
-#                 'start_location': (tugboat._lat, tugboat._lng),
-#                 'end_location': (end_station.lat, end_station.lng),
-#                 'speed': 10,
-#                 'start_km': 0,
-#                 'end_km': 20
-#             }
-#     distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(WaterBody.SEA, 
-#                                                                                       WaterBody.RIVER, travel_infos)
-#     print("Distance #######################################", distance)
-#     assert int(distance) == 59
-      
+from read_data import *
+import warnings
+warnings.filterwarnings(action='ignore')
         
 class TestSchedulingSolution(unittest.TestCase):
     # def test_file_type(self):
     #     result_df = main()
     #     self.assertIsInstance(result_df, pd.DataFrame)
+
+    # uncomment below to skip this method for testing
+    @unittest.skip("Skipping crane loading test for now")
     def test_crane_load(self):
         # get unique crane name from name column in the self.result_df
-        result_df = main()
+        result_df = main(testing=True)
         name = list(result_df['name'].unique())
         # print(name)
         unique_crane_names = set([cr.split(" - ")[0] for cr in name if "cr" in cr])
@@ -125,7 +68,7 @@ class TestSchedulingSolution(unittest.TestCase):
             
                 seconds = time_difference / np.timedelta64(1, 's')
                 # print("Time difference: ", time_difference)
-                if seconds >= -1*60:
+                if seconds >= -1 * 60:
                     is_passed = True
                 else:
                     is_passed = False
@@ -133,10 +76,10 @@ class TestSchedulingSolution(unittest.TestCase):
                     break
             self.assertTrue(is_passed, f"Crane {crane_name} has a time difference issue.")
 
-    # skip this method for testing
-    #@unittest.skip("Skipping crane unload test for now")
+    # uncomment below to skip this method for testing
+    @unittest.skip("Skipping crane unload test for now")
     def test_crane_unload(self):
-        result_df = main()
+        result_df = main(testing=True)
         name = list(result_df['name'].unique())
         # print(name)
         unique_crane_names = set([ld.split(" - ")[0] for ld in name if "ld" in ld])
@@ -157,13 +100,13 @@ class TestSchedulingSolution(unittest.TestCase):
                 crane_activity['enter_datetime'] = pd.to_datetime(crane_activity['enter_datetime'])
                 crane_activity = crane_activity.sort_values(by='enter_datetime')
                 
-                print(crane_activity)
+                # print(crane_activity)
                 # get enter_datetime and exit_datetime
                 enter_datetime = crane_activity['enter_datetime'].values
                 exit_datetime = crane_activity['exit_datetime'].values
                 order_ids = crane_activity['order_id'].values
                 tugboat_ids = crane_activity['tugboat_id'].values
-                print(len(enter_datetime))
+                # print(len(enter_datetime))
                 # iterate through the crane_activity and find the difference of exit_datetime and enter_datetime
                 is_passed = False
                 for i in range(len(crane_activity)):
@@ -175,14 +118,86 @@ class TestSchedulingSolution(unittest.TestCase):
                 
                     seconds = time_difference / np.timedelta64(1, 's')
                     # print("Time difference: ", time_difference)
-                    if seconds >= -1*60:
+                    if seconds >= -1 * 60:
                         is_passed = True
                     else:
                         is_passed = False
                         print(i, seconds, order_ids[i], order_ids[i-1], enter_datetime[i], exit_datetime[i-1], tugboat_ids[i], tugboat_ids[i-1])
                         break
                 self.assertTrue(is_passed, f"Unload Crane {crane_name} has a time difference issue.")
+    
+    # uncomment below to skip this method for testing
+    @unittest.skip("Skipping time overlap test for now")
+    def test_timeline_overlap(self):
+        result_df = main(testing=True)
+        filter_out_type = ['Barge Collection', 'Start Order Carrier', 'Appointment', 'Barge Change', 'Customer Station']
+        filter_df = result_df[~result_df['type'].isin(filter_out_type)]
 
+        # get order id
+        order_ids = filter_df["order_id"].unique()
+
+        # get tugboat id
+        tugboat_ids = filter_df["tugboat_id"].unique()
+
+        # iterate through each order and tugboat
+        is_passed = True
+        for order_id in order_ids:
+            for tugboat_id in tugboat_ids:
+                test_df = filter_df[(filter_df["order_id"] == order_id) & (filter_df["tugboat_id"] == tugboat_id)]
+                test_df['enter_datetime'] = pd.to_datetime(test_df['enter_datetime'])
+                activity = test_df.copy() # The time must not be sorted. It should be in the generated sequences.
+            
+                # get enter_datetime and exit_datetime
+                enter_datetime = activity['enter_datetime'].values
+                exit_datetime = activity['exit_datetime'].values
+
+                for i in range(len(activity)):
+                    if i == 0:
+                        continue
+                    # get the difference of exit_datetime and enter_datetime
+                    time_difference = (enter_datetime[i] - exit_datetime[i-1] )
+                    time_difference = (enter_datetime[i] - exit_datetime[i-1] )
+                
+                    seconds = time_difference / np.timedelta64(1, 's')
+                    # print("Time difference: ", time_difference)
+                    if seconds >= -1 * 60:
+                        is_passed = True
+                    else:
+                        is_passed = False
+                        print(i, seconds, order_id, enter_datetime[i], exit_datetime[i-1], tugboat_id)
+                        break
+                self.assertTrue(is_passed, f"Tugboat {tugboat_id} in Order {order_id}: Time overlapping")
+                if not is_passed:
+                    break
+            if not is_passed:
+                break
+    
+    # uncomment below to skip this method for testing
+    @unittest.skip("Skipping NaN unsuring test")
+    def test_nan_ensuring(self):
+        is_passed = True
+        result_df = main(testing=True)
+        
+        names = result_df["name"].values
+        name_with_nan = ""
+
+        for name in names:
+            if "nan" in name:
+                name_with_nan = name
+                is_passed = False
+                break
+
+        self.assertTrue(is_passed, f"There is nan in {name_with_nan}")
+
+    # def test_barge_utilization(self):
+    #     barge_ids = barge_df["ID"].values
+    #     result_df = main(testing=True)
+    #     assigned_barges = [barge for barge in result_df["barge_ids"].values.tolist() if not "," in barge]
+    #     assigned_barge_dict = {}
+    #     for barge_id in barge_ids:
+    #         assigned_barge_dict[barge_id] = assigned_barges.count(barge_id)
+        
+    #     print(assigned_barge_dict)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1196,7 +1196,7 @@ class Solution:
         return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
 
     def save_schedule_to_csv(self, tugboat_df, barge_df, 
-                           tugboat_path='data/output/tugboat_schedule_v2.xlsx',
+                           tugboat_path='data/output/tugboat_schedule_v4.xlsx',
                            barge_path='data/output/barges.xlsx'):
         """Saves schedule DataFrames to CSV files"""
         tugboat_df["enter_datetime"] = pd.to_datetime(tugboat_df["enter_datetime"])
@@ -1234,7 +1234,7 @@ class Solution:
         for index, row in df.iloc[1:].iterrows(): # Start from the second row
 
             # Filter out unwanted row
-            if row['type'] in ['Barge Collection', 'Barge Change', 'Start Order Carrier', 'Customer Station']:
+            if row['type'] in ['Barge Collection', 'Start Order Carrier', 'Appointment', 'Barge Change', 'Customer Station']:
                 continue
             order_id_val = row['order_id']
             activity_val = row['name']
@@ -1317,8 +1317,8 @@ class Solution:
         worksheet_summary.freeze_panes(1, 0)
         worksheet_summary.autofit()
 
-        output_df_data.to_excel(writer, sheet_name='Timeline')
-        worksheet_timeline = writer.sheets['Timeline']
+        output_df_data.to_excel(writer, sheet_name='Timeline Detail')
+        worksheet_timeline = writer.sheets['Timeline Detail']
 
         (max_row, max_col) = output_df_data.shape
         main_char = string.ascii_uppercase[(max_col // 26)-1] if max_col // 26 > 0 else ""
@@ -1340,16 +1340,4 @@ class Solution:
         writer.close()
         # output_df_data.to_excel('tugboat_timeline_analysis.xlsx')
         barge_df.to_excel(barge_path, index=False)
-        
-        
-            #         print()
-            
-        # data = self.data
-        # orders = data['orders']
-        # barges = data['barges']
-        # tugboats = data['tugboats']
-        # # total barge capacity
-        # print("Total barge capacity: ", sum(barge.capacity for barge in data['barges'].values()))
-        # print("Tugboat available time for order {}".format(order.order_id))
-        # for tugboat_id, single_tugboat_schedule in self.tugboat_scheule.items():
-        #         print(tugboat_id, single_tugboat_schedule[-1]['end_datetime'])
+
