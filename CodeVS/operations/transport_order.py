@@ -144,7 +144,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
                 'time': time_release_barges,
                 'type_point': 'main_point'
             }
-        tugboat_result['data_points'].append(release_barges_location)
+        #tugboat_result['data_points'].append(release_barges_location)
 
 def generate_travel_steps(arrival_datetime, travel_info):
     trave_steps = []
@@ -314,8 +314,8 @@ def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, look
         
         
         #Replace last exit datetime with max datetime
-        #end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
-        #end_point['exit_datetime']  = max_datetime
+        end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
+        end_point['exit_datetime']  = max_datetime
         #print(tugboat_result['data_points'][-1]['exit_datetime'] )
         
         

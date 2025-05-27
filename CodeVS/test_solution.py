@@ -125,7 +125,7 @@ class TestSchedulingSolution(unittest.TestCase):
             
                 seconds = time_difference / np.timedelta64(1, 's')
                 # print("Time difference: ", time_difference)
-                if seconds >= -1*60:
+                if seconds >= 0:
                     is_passed = True
                 else:
                     is_passed = False
