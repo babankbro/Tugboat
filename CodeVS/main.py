@@ -15,13 +15,16 @@ from CodeVS.operations.travel_helper import *
 from CodeVS.compoents.solution import Solution
 import warnings
 warnings.filterwarnings(action='ignore')
+import numpy as np
+
 
 from enum import Enum
 class TestingResult(Enum):
     CRANE = 1
     ORDER = 2
     TUGBOAT = 3
-    OTHER = 4
+    BARGE = 4
+    OTHER = 5
 
 
 
@@ -203,6 +206,19 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
                             'total_load', 'barge_ids',
                             ]]
             print(temp_df.head(55))
+        
+        if testing_result == TestingResult.BARGE:
+            #check barge_id not contains ','
+            filtered_df = tugboat_df[~tugboat_df['barge_ids'].str.contains(',')]
+           
+            temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 
+                                'tugboat_id','distance', 'time', 'speed','order_trip',
+                            # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+                            'total_load', 'barge_ids',
+                            ]]
+            print(np.unique(temp_df['barge_ids']))
+            print("Number of used barges", len(np.unique(temp_df['barge_ids'])))
+            print("Number of all barges", len(data['barges']))
    
     
 #     filtered_df = tugboat_df[
@@ -292,4 +308,4 @@ def main(testing=False, testing_result=TestingResult.CRANE):
     return result_df
 
 if __name__ == "__main__":
-    result_df = main(True, TestingResult.TUGBOAT)
+    result_df = main(True, TestingResult.BARGE)

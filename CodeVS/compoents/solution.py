@@ -105,15 +105,22 @@ class Solution:
         total_capacity = sum(b.capacity for b in available_barges)
         #print(f"AS  Total capacity: {total_capacity}")
         
+        stations = TravelHelper._instance.data['stations']
+        station_s0 = stations['s0']
+        
         # For import orders, sort by distance to carrier
         if order.order_type == TransportType.IMPORT:
             carrier_location = (order.start_object.lat, order.start_object.lng)
-            available_barges.sort(key=lambda b: 
-                (0) + 
-                ((self.get_location_barge(b)[0] - carrier_location[0])**2 + 
-                (self.get_location_barge(b)[1] - carrier_location[1])**2)**0.5)
+            available_barges.sort(key=lambda b:
+                 (self.get_river_km_barge(b)  if self.get_water_status_barge(b) == WaterBody.RIVER 
+                 else TravelHelper._instance.get_distance_location(carrier_location, self.get_location_barge(b)))
+            )
         
         #print(f"Remaining: {remaining_demand} | Available: {len(available_barges)}")
+        barges_ids = [b.barge_id for b in available_barges]
+        print("Barges ids", barges_ids)
+        
+        
         
         # Assign barges until demand is met
         for barge in available_barges:
@@ -908,6 +915,7 @@ class Solution:
         debug_barges = {}
         for barge in all_assigned_barges:
             debug_barges[barge.barge_id] = {'barge_id': barge.barge_id, 'before_km': self.get_river_km_barge(barge)}
+            print(barge.barge_id, self.get_river_km_barge(barge))
             
         # travel barge from top river to bottom river
         # filter barges to bring down river
