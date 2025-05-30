@@ -24,7 +24,8 @@ class TugboatTravelStatus:
         self.is_move_down = True
 
 
-def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_results, appointment_infos):
+def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_results, appointment_infos, order_trip):
+    last_point_exit_lookup = {}
     for tugboat_id, result in lookup_schedule_results.items():
         #print("\nSchedule for Tugboat TT", result['tugboat_schedule']['tugboat_id'])
         tugboat_schedule = result['tugboat_schedule']
@@ -76,6 +77,26 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
             if arrival_datetime > crane_start_time:
                 crane_start_time = arrival_datetime
             
+            crane_id = crane['crane_id']
+            if order_trip > 1:
+                #filter from tugboat_result['data_points'] of 'name' contain crane_id from all lookup_tugboat_results
+                max_time_exit = order.start_datetime
+                
+                for tugboat_result_temp in lookup_tugboat_results.values():
+                    crane_data_points = [point for point in tugboat_result_temp['data_points'] if crane_id in point['name']]
+                    if len(crane_data_points) == 0:
+                        continue
+                    last_point_crane_finish = crane_data_points[-1]
+                    #print("######################################### Finish Crane info points:", last_point_crane_finish, crane_start_time, max_time_exit)
+                    max_time_exit = max(max_time_exit, last_point_crane_finish['exit_datetime'])
+                
+                
+                if crane_start_time < max_time_exit:
+                    #print("######################################### Crane start time is less than max time exit")
+                    crane_start_time = max_time_exit
+                
+                
+            
             crane_location = {
                 "ID": order.start_object.order_id,
                 'type': "Crane-Carrier",
@@ -88,8 +109,9 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
                 'type_point': 'loading_point'
             }
             tugboat_result['data_points'].append(crane_location) # add result data points
+            order_location['exit_datetime'] = max(order_location['exit_datetime'], crane_location['exit_datetime'])
         
-        
+        last_point_exit_lookup[tugboat_id] = order_location['exit_datetime']
         
         
     #print("----------------- Travel to Appointment -----------------")
@@ -111,7 +133,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
        #print()
         
         tugboat_schedule = schedule_result['tugboat_schedule']
-        arrival_datetime = tugboat_schedule['end_datetime'] + timedelta(minutes=travel_info['travel_time']*60)
+        arrival_datetime = last_point_exit_lookup[tugboat_id] + timedelta(minutes=travel_info['travel_time']*60)
         arrival_datetime = get_previous_quarter_hour(arrival_datetime)
         
         appointment_location ={
@@ -167,9 +189,6 @@ def generate_travel_steps(arrival_datetime, travel_info):
             #print(collection_info)
         trave_steps.append(travel_step)
     return trave_steps
-        
-        
-        
 
 
 def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results):
@@ -214,7 +233,7 @@ def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results)
             late_times[tugboat_id] = (order.due_datetime - arrival_datetime).total_seconds()/60
     return late_times
         
-def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_schedule_results, lookup_river_tugboat_results):
+def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_schedule_results, lookup_river_tugboat_results, round_order_trip):
     
     for tugboat_id, tugboat_result in lookup_river_tugboat_results.items():
         tugboat_result = lookup_river_tugboat_results[tugboat_id]
@@ -237,11 +256,18 @@ def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_s
         if customer_location['type'] != "Customer Station":
             raise Exception("Customer Station not found")
         
+        
+        
+        
         end_date_last = arrival_customer_time
         for loader in loading_schedule:
-
+            
+            
             loader_start = first_arrival_customer_datetime + timedelta(minutes=(int(loader['start_time']*60)))
-            old_loader_start = arrival_customer_time + timedelta(minutes=(int(loader['start_time']*60)))
+            if round_order_trip > 1:
+                if arrival_customer_time > loader_start:
+                   loader_start = arrival_customer_time
+           
             #loader_start = get_next_quarter_hour(loader_start)
             
             #loader_end = get_next_quarter_hour(loader_end)
@@ -251,10 +277,26 @@ def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_s
             #if loader_start < old_loader_start:
                 #loader_start = first_arrival_customer_datetime
             
-            loader_end = first_arrival_customer_datetime + timedelta(minutes=int(loader['loader_schedule']*60))
+            
             
             #print("Loader Start:", first_arrival_customer_datetime, loader_start, old_loader_start, loader_end) if order.order_id == 'o1' else None
+            if round_order_trip > 1:
+                max_time_exit = loader_start
+                loader_id = loader["loader_id"]
+                for tugboat_result_temp in lookup_river_tugboat_results.values():
+                    loader_data_points = [point for point in tugboat_result_temp['data_points'] if loader_id in point['name']]
+                    if len(loader_data_points) == 0:
+                        continue
+                    last_point_crane_finish = loader_data_points[-1]
+                    #print("######################################### Finish Crane info points:", last_point_crane_finish, crane_start_time, max_time_exit)
+                    max_time_exit = max(max_time_exit, last_point_crane_finish['exit_datetime'])
+                
+                if max_time_exit > loader_start:
+                    loader_start = max_time_exit
+
             
+            
+            loader_end = loader_start + timedelta(minutes=int((loader['loader_schedule'] - loader['start_time'])*60))
             
             
             crane_location = {
@@ -276,8 +318,24 @@ def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_s
         customer_location['exit_datetime'] = end_date_last
         
 
-        
 def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, lookup_river_tugboat_results):
+    data = solution.data
+    sea_pair_river_tugboat_lookup = {}
+    #print("DEBUG UPDATE SEA TRAVEL TUGBOAT -----------------------------------------------------------")
+    for tugboat_id, tugboat_result in lookup_sea_tugboat_results.items():
+        #print(tugboat_result)
+        tugboat_result = lookup_sea_tugboat_results[tugboat_id]
+        data_points = tugboat_result['data_points']
+        #filter type 'Sea-River'
+        data_points = [point for point in data_points if point['type'] == 'Sea-River']
+        max_datetime = max(data_points, key=lambda x: x['exit_datetime'])['exit_datetime']
+        end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
+        end_point['exit_datetime']  = max_datetime
+        #print(tugboat_result)
+        #print()
+    
+        
+def old_step_update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, lookup_river_tugboat_results):
     data = solution.data
     sea_pair_river_tugboat_lookup = {}
     #print("-----------------------------------------------------------")
@@ -296,6 +354,9 @@ def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, look
          
         sea_pair_river_tugboat_lookup[tugboat_id] = tugboat_pairs
         #print(barge_ids)
+    
+    
+    
     
     for tugboat_id, pair_tugboat in sea_pair_river_tugboat_lookup.items():
         #print(f"Tugboat {tugboat_id} has pair tugboats: {pair_tugboat}")

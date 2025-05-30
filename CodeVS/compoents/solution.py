@@ -176,7 +176,7 @@ class Solution:
                 if max_datetime > exit_datetime:
                     max_datetime = exit_datetime
     
-    def arrival_step_transport_order(self, order, assigned_tugboats):
+    def arrival_step_transport_order(self, order, assigned_tugboats, order_trip = 1):
         time_boat_lates = []
         tugboat_results = []
         arrival_times = []
@@ -201,7 +201,7 @@ class Solution:
 
             first_barge_location = collection_time_info['barge_collect_infos'][0]
             tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
-            #print("Check ready time CC", tugboat.tugboat_id, tugboat_ready_time)
+            
             start_location = {
                 "ID": "Start",
                 'type': "Start",
@@ -246,25 +246,36 @@ class Solution:
             arrival_time = tugboat_ready_time + timedelta(minutes=travel_total_time*60)
             arrival_time = get_next_quarter_hour(arrival_time)
             time_lated_start = 0
-            if arrival_time < order.start_datetime:
-                arrival_time = order.start_datetime
             
-            else:
-                time_lated_start = (arrival_time - order.start_datetime).total_seconds() / 3600
+            
+            
+            if order_trip == 1:
+                if arrival_time < order.start_datetime:
+                    arrival_time = order.start_datetime
                 
+                else:
+                    time_lated_start = (arrival_time - order.start_datetime).total_seconds() / 3600
+            
+            
+           
             new_barge_location_exit_time = arrival_time - timedelta(minutes=travel_info['travel_time']*60)
             new_barge_location_exit_time = get_previous_quarter_hour(new_barge_location_exit_time)
             new_barge_location_enter_time = arrival_time - timedelta(minutes=(collection_time_info['total_time'] + travel_info['travel_time'])*60)
             new_barge_location_enter_time = get_previous_quarter_hour(new_barge_location_enter_time)
-            new_start_location_exit_time = arrival_time - timedelta(minutes=travel_total_time*60)
-            new_start_location_exit_time = get_previous_quarter_hour(new_start_location_exit_time)
+            
+            if order_trip == 1:
+                new_start_location_exit_time = arrival_time - timedelta(minutes=travel_total_time*60)
+                new_start_location_exit_time = get_previous_quarter_hour(new_start_location_exit_time)
+            else:
+                tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
+                new_start_location_exit_time = get_next_quarter_hour(tugboat_ready_time)
             
            
             
             time_boat_lates.append(time_lated_start)
             arrival_times.append(arrival_time)
             
-            
+            print("Check ready time CCCCCC", tugboat.tugboat_id, tugboat_ready_time, arrival_time, new_start_location_exit_time) if tugboat.tugboat_id == 'tbs1' else None
             
             barge_location['enter_datetime'] = new_barge_location_enter_time
             barge_location['exit_datetime'] = new_barge_location_exit_time
@@ -283,12 +294,23 @@ class Solution:
             barge_steps = []
             start_travel_barge = barge_location['enter_datetime']
             start_station_id = station_tugboat_id
+            
             for i, collection_info in enumerate(collection_time_info['barge_collect_infos']):# collection_time_info['barge_collect_infos'][:]:
                 finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['travel_time'] + collection_info['setup_time'])*60)
                 #print(collection_info)
                 #finish_barge_time = get_next_quarter_hour(finish_barge_time)
+                #if start_station_id == station_barge_ids[i]:
+                print(collection_info)
+                start_barge_station_id = collection_info['travel_steps'][0]['start_id']
+                end_barge_station_id = collection_info['travel_steps'][-1]['end_id']
+                
                 name = "Collecting Barge - " + collection_info['barge_id'] + " - " 
-                name += f"({start_station_id} to {str(station_barge_ids[i])})"
+                name += f"({start_barge_station_id} to {str(end_barge_station_id)})"
+                if 'nan' in name and tugboat.tugboat_id == 'tbs4' and order.order_id == 'o3' and i == 1:
+                    print("##################################################### ", tugboat.tugboat_id, start_barge_station_id, end_barge_station_id)
+                    for j, collection_infov in enumerate(collection_time_info['barge_collect_infos']):
+                        print(j, collection_infov)
+                
                 #name += " - " + station_barge_ids[i]
                 barge_step ={
                     "ID": "Barge",
@@ -303,6 +325,7 @@ class Solution:
                 }
                 start_station_id = station_barge_ids[i]
                 start_travel_barge = finish_barge_time
+                barge_location['exit_datetime'] = max(barge_location['exit_datetime'], finish_barge_time)
                 #print(barge_step)
                 barge_steps.append(barge_step)
             
@@ -936,7 +959,7 @@ class Solution:
             #print("Before", based_brage_ids)
             #print("After", boat_brage_ids)
            #print("After", boat_load_weights)
-            tugboat_results, late_time = self.arrival_step_transport_order(order, assigned_tugboats)
+            tugboat_results, late_time = self.arrival_step_transport_order(order, assigned_tugboats, order_trip=round_trip_order)
             #print('XXXXXXXXXXXXXXX Len sea Tugbaots' , round_trip_order, len(assigned_tugboats), len(all_assigned_barges), Total_load_barges)
             total_load = 0
             barge_ids = []
@@ -971,7 +994,7 @@ class Solution:
                     'meeting_time': None
                 }
             travel_appointment_import(order, lookup_sea_schedule_results, 
-                                    lookup_sea_tugboat_results, appointment_info)
+                                    lookup_sea_tugboat_results, appointment_info, round_trip_order    )
             
             order_barges, lookup_order_barges = order_barges_from_arrival_tugboats(data, lookup_sea_tugboat_results)
             #print("----------------------------------------------------")
@@ -1038,7 +1061,7 @@ class Solution:
                     
                     #print("River Tugboat Result:", tugboat_id, first_arrival_customer_datetime, tugboat_result['data_points'][-1])
             
-            update_river_travel_tugboats(order, first_arrival_customer_datetime, lookup_river_schedule_results, lookup_river_tugboat_results)
+            update_river_travel_tugboats(order, first_arrival_customer_datetime, lookup_river_schedule_results, lookup_river_tugboat_results, round_trip_order)
             
             
             self.update_shedule(order, lookup_order_barges, lookup_sea_tugboat_results, lookup_river_tugboat_results)
@@ -1196,7 +1219,7 @@ class Solution:
         return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
 
     def save_schedule_to_csv(self, tugboat_df, barge_df, 
-                           tugboat_path='data/output/tugboat_schedule_v2.xlsx',
+                           tugboat_path='data/output/tugboat_schedule_v4.xlsx',
                            barge_path='data/output/barges.xlsx'):
         """Saves schedule DataFrames to CSV files"""
         tugboat_df["enter_datetime"] = pd.to_datetime(tugboat_df["enter_datetime"])
@@ -1234,7 +1257,7 @@ class Solution:
         for index, row in df.iloc[1:].iterrows(): # Start from the second row
 
             # Filter out unwanted row
-            if row['type'] in ['Barge Collection', 'Barge Change', 'Start Order Carrier', 'Customer Station']:
+            if row['type'] in ['Barge Collection', 'Start Order Carrier', 'Appointment', 'Barge Change', 'Customer Station']:
                 continue
             order_id_val = row['order_id']
             activity_val = row['name']
@@ -1317,8 +1340,8 @@ class Solution:
         worksheet_summary.freeze_panes(1, 0)
         worksheet_summary.autofit()
 
-        output_df_data.to_excel(writer, sheet_name='Timeline')
-        worksheet_timeline = writer.sheets['Timeline']
+        output_df_data.to_excel(writer, sheet_name='Timeline Detail')
+        worksheet_timeline = writer.sheets['Timeline Detail']
 
         (max_row, max_col) = output_df_data.shape
         main_char = string.ascii_uppercase[(max_col // 26)-1] if max_col // 26 > 0 else ""
@@ -1340,16 +1363,4 @@ class Solution:
         writer.close()
         # output_df_data.to_excel('tugboat_timeline_analysis.xlsx')
         barge_df.to_excel(barge_path, index=False)
-        
-        
-            #         print()
-            
-        # data = self.data
-        # orders = data['orders']
-        # barges = data['barges']
-        # tugboats = data['tugboats']
-        # # total barge capacity
-        # print("Total barge capacity: ", sum(barge.capacity for barge in data['barges'].values()))
-        # print("Tugboat available time for order {}".format(order.order_id))
-        # for tugboat_id, single_tugboat_schedule in self.tugboat_scheule.items():
-        #         print(tugboat_id, single_tugboat_schedule[-1]['end_datetime'])
+

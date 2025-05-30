@@ -13,6 +13,17 @@ from CodeVS.operations.scheduling import *
 from CodeVS.operations.transport_order import *
 from CodeVS.operations.travel_helper import *
 from CodeVS.compoents.solution import Solution
+import warnings
+warnings.filterwarnings(action='ignore')
+
+from enum import Enum
+class TestingResult(Enum):
+    CRANE = 1
+    ORDER = 2
+    TUGBOAT = 3
+    OTHER = 4
+
+
 
 def test_tugboat(data):
     tugboats = data['tugboats']
@@ -130,7 +141,7 @@ def test_assign_barge_to_order(data):
         
         print(tugboat_schedule)
 
-def test_transport_order(data):
+def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE):
     orders = data['orders']
     barges = data['barges']
     tugboats = data['tugboats']
@@ -144,7 +155,7 @@ def test_transport_order(data):
     
     
     filtered_df = tugboat_df[
-                            ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
+                            ((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr5')) 
                            # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
                             &  ((tugboat_df['order_id'] == 'o1') )
                            # & (tugboat_df['order_trip'] == 1)
@@ -159,74 +170,108 @@ def test_transport_order(data):
        #'tugboat_id', 'order_id', 'water_type'
        ]]
     
-    print(temp_df)
-
-    
-    filtered_df = tugboat_df[
-                            ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
-                            #((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
-                            #& (tugboat_df['order_trip'] == 1) 
-                            #& ((tugboat_df['type'] == 'Loader-Customer') | (tugboat_df['type'] == 'Crane-Carrier') | 
-                            #   (tugboat_df['type'] == 'Customer Station')| (tugboat_df['type'] == 'Start Order Carrier'))
+    if testing:
+        if testing_result == TestingResult.CRANE:
+            filtered_df = tugboat_df[
+                            #((tugboat_df['tugboat_id'] == 'tbs1') | (tugboat_df['tugboat_id'] == 'tbr5')) 
+                           # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                           #((tugboat_df['order_id'] == 'o1') )
+                           # & (tugboat_df['order_trip'] == 1)
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
-                            #(tugboat_df['name'].str.contains('ld1', case=False, na=False))
-    ]
-    
-    
-    
-    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime',
-                            'tugboat_id','distance', 'speed','order_trip'
-                      # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
-       #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
-       #'tugboat_id', 'order_id', 'water_type'
-       ]]
-    # print(temp_df)
-    
-    
-
-    filtered_df = tugboat_df[
-                            (
-                            #& (tugboat_df['order_trip'] == 1) 
-                            (tugboat_df['type'] == 'Customer Station'))
-                            #(tugboat_df['type'] == 'Appointment'))
+                            (tugboat_df['name'].str.contains('cr1', case=False, na=False))
+                            ]
+            temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 
+                                'tugboat_id','distance', 'time', 'speed','order_trip',
+                            # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+                            'total_load', 'barge_ids',
+                            ]]
+            print(temp_df)
+        if testing_result == TestingResult.TUGBOAT:
+            filtered_df = tugboat_df[
+                            ((tugboat_df['tugboat_id'] == 'tbs4') | (tugboat_df['tugboat_id'] == 'tbs4')) 
+                           # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
+                           #((tugboat_df['order_id'] == 'o1') )
+                           # & (tugboat_df['order_trip'] == 1)
                             #& (tugboat_df['distance'] > 60)
                             #(tugboat_df['distance'] > 60)
-    ]
-    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime',  'total_load', 'order_id',
-                           'exit_datetime', 'tugboat_id','distance', 'time', 'speed','order_trip'
-                      # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
-       #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
-       #'tugboat_id', 'order_id', 'water_type'
-       ]]
-    #print(temp_df)
-    #demand_load = sum(order_df['DEMAND'])
-    #print("Total Load",  sum(temp_df['total_load']), demand_load)
+                            #(tugboat_df['name'].str.contains('cr1', case=False, na=False))
+                            ]
+            temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 
+                                'tugboat_id','distance', 'time', 'speed','order_trip',
+                            # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+                            'total_load', 'barge_ids',
+                            ]]
+            print(temp_df.head(55))
+   
     
-    grouped_df = temp_df.groupby('order_id')['total_load'].sum().reset_index()
-# Now you can print the grouped data
-    #print(grouped_df)
-    grouped_df = order_df.groupby('ID')['DEMAND'].sum().reset_index()
-# Now you can print the grouped data
-    #print(grouped_df)
+#     filtered_df = tugboat_df[
+#                             ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
+#                             #((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
+#                             #& (tugboat_df['order_trip'] == 1) 
+#                             #& ((tugboat_df['type'] == 'Loader-Customer') | (tugboat_df['type'] == 'Crane-Carrier') | 
+#                             #   (tugboat_df['type'] == 'Customer Station')| (tugboat_df['type'] == 'Start Order Carrier'))
+#                             #& (tugboat_df['distance'] > 60)
+#                             #(tugboat_df['distance'] > 60)
+#                             #(tugboat_df['name'].str.contains('ld1', case=False, na=False))
+#     ]
+    
+    
+    
+#     temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime',
+#                             'tugboat_id','distance', 'speed','order_trip'
+#                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+#        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
+#        #'tugboat_id', 'order_id', 'water_type'
+#        ]]
+#     # print(temp_df)
+    
+    
 
-    #print("customer_river_time_lates", customer_river_time_lates, list_lates)
+#     filtered_df = tugboat_df[
+#                             (
+#                             #& (tugboat_df['order_trip'] == 1) 
+#                             (tugboat_df['type'] == 'Customer Station'))
+#                             #(tugboat_df['type'] == 'Appointment'))
+#                             #& (tugboat_df['distance'] > 60)
+#                             #(tugboat_df['distance'] > 60)
+#     ]
+#     temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime',  'total_load', 'order_id',
+#                            'exit_datetime', 'tugboat_id','distance', 'time', 'speed','order_trip'
+#                       # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+#        #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
+#        #'tugboat_id', 'order_id', 'water_type'
+#        ]]
+#     #print(temp_df)
+#     #demand_load = sum(order_df['DEMAND'])
+#     #print("Total Load",  sum(temp_df['total_load']), demand_load)
+    
+#     grouped_df = temp_df.groupby('order_id')['total_load'].sum().reset_index()
+# # Now you can print the grouped data
+#     #print(grouped_df)
+#     grouped_df = order_df.groupby('ID')['DEMAND'].sum().reset_index()
+# # Now you can print the grouped data
+#     #print(grouped_df)
+
+#     #print("customer_river_time_lates", customer_river_time_lates, list_lates)
 
 
-    # for order_id, order_barge_info in lookup_order_barges.items():
-    #     print(order_barge_info)
+#     # for order_id, order_barge_info in lookup_order_barges.items():
+#     #     print(order_barge_info)
         
         
-    # #print('-------------------------- Tugboat')
-    # for tugboat_id, results in lookup_river_tugboat_results.items( ):
-    #     print(tugboat_id, results['data_points'][1]['exit_datetime'])
+#     # #print('-------------------------- Tugboat')
+#     # for tugboat_id, results in lookup_river_tugboat_results.items( ):
+#     #     print(tugboat_id, results['data_points'][1]['exit_datetime'])
 
-    solution.save_schedule_to_csv(tugboat_df, barge_df,
-                                  tugboat_path='CodeVS/data/output/tugboat_schedule.xlsx',
-                                  barge_path='CodeVS/data/output/barge_schedule.xlsx')
+    if not testing:
+        solution.save_schedule_to_csv(tugboat_df, barge_df,
+                                    tugboat_path='CodeVS/data/output/tugboat_schedule.xlsx',
+                                    barge_path='CodeVS/data/output/barge_schedule.xlsx')
+        print("Schedule Created")
     return tugboat_df
     
-def main():
+def main(testing=False, testing_result=TestingResult.CRANE):
     # Initialize data structures
     
     data = initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df)
@@ -238,11 +283,13 @@ def main():
     
     # Run tests
     #test_assign_barge_to_order(data)
-    result_df = test_transport_order(data)
+    
+    result_df = test_transport_order(data, testing, testing_result)
     # print(Travel_Helper.get_next_station(TransportType.IMPORT, 11))
     # print(Travel_Helper.get_next_station(TransportType.IMPORT, 15))
     # print(Travel_Helper.get_next_station(TransportType.EXPORT, 15))
+    print(testing, testing_result)
     return result_df
 
 if __name__ == "__main__":
-    result_df = main()
+    result_df = main(True, TestingResult.TUGBOAT)
