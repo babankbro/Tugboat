@@ -300,16 +300,16 @@ class Solution:
                 #print(collection_info)
                 #finish_barge_time = get_next_quarter_hour(finish_barge_time)
                 #if start_station_id == station_barge_ids[i]:
-                print(collection_info)
+                #print(collection_info)
                 start_barge_station_id = collection_info['travel_steps'][0]['start_id']
                 end_barge_station_id = collection_info['travel_steps'][-1]['end_id']
                 
                 name = "Collecting Barge - " + collection_info['barge_id'] + " - " 
                 name += f"({start_barge_station_id} to {str(end_barge_station_id)})"
-                if 'nan' in name and tugboat.tugboat_id == 'tbs4' and order.order_id == 'o3' and i == 1:
-                    print("##################################################### ", tugboat.tugboat_id, start_barge_station_id, end_barge_station_id)
-                    for j, collection_infov in enumerate(collection_time_info['barge_collect_infos']):
-                        print(j, collection_infov)
+                # if 'nan' in name and tugboat.tugboat_id == 'tbs4' and order.order_id == 'o3' and i == 1:
+                #     print("##################################################### ", tugboat.tugboat_id, start_barge_station_id, end_barge_station_id)
+                #     for j, collection_infov in enumerate(collection_time_info['barge_collect_infos']):
+                #         print(j, collection_infov)
                 
                 #name += " - " + station_barge_ids[i]
                 barge_step ={
