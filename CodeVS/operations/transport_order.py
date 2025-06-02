@@ -78,7 +78,7 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
                 crane_start_time = arrival_datetime
             
             crane_id = crane['crane_id']
-            if order_trip > 1:
+            if order_trip > 0:
                 #filter from tugboat_result['data_points'] of 'name' contain crane_id from all lookup_tugboat_results
                 max_time_exit = order.start_datetime
                 
@@ -150,6 +150,9 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         
         
         trave_steps = generate_travel_steps(arrival_datetime, travel_info)
+        #loop to find max exit_datetime
+        max_exit_datetime = max(trave_steps, key=lambda x: x['exit_datetime'])['exit_datetime']
+        appointment_location['exit_datetime'] = max_exit_datetime
         
         tugboat_result["data_points"].extend(trave_steps)
         
@@ -157,16 +160,18 @@ def travel_appointment_import(order, lookup_schedule_results, lookup_tugboat_res
         barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
         release_barges_location ={
                 "ID": appointment_station.station_id,
-                'name': appointment_station.name,
-                'type': "Release Barges (" + " - ".join(barge_ids) + ")",
-                'enter_datetime': arrival_datetime,
-                'exit_datetime':arrival_datetime + timedelta(minutes=time_release_barges),
+                'type': "Barge Release",
+                'name': "Release Barges (" + " - ".join(barge_ids) + ")",
+                'enter_datetime': appointment_location['exit_datetime'],
+                'exit_datetime':appointment_location['exit_datetime'] + timedelta(minutes=time_release_barges),
                 'distance': 0,
                 'speed': 0,
                 'time': time_release_barges,
                 'type_point': 'main_point'
             }
-        #tugboat_result['data_points'].append(release_barges_location)
+        tugboat_result['data_points'].append(release_barges_location)
+        release_steps = generate_release_steps(release_barges_location['enter_datetime'], barge_ids)
+        tugboat_result['data_points'].extend(release_steps)
 
 def generate_travel_steps(arrival_datetime, travel_info):
     trave_steps = []
@@ -187,6 +192,27 @@ def generate_travel_steps(arrival_datetime, travel_info):
             }
         start_travel_time = finish_travel_time
             #print(collection_info)
+        trave_steps.append(travel_step)
+    return trave_steps
+
+def generate_release_steps(arrival_datetime, barge_ids):
+    trave_steps = []
+    start_travel_time = arrival_datetime
+    for barge_id in barge_ids:
+        finish_travel_time = start_travel_time + timedelta(minutes=(config_problem.BARGE_RELEASE_MINUTES))
+        
+        travel_step ={
+                "ID": "Travel",
+                'type': "Barge Step Release",
+                'name': "Barge Releasing (" + barge_id + ")",
+                'enter_datetime': start_travel_time,
+                'exit_datetime': finish_travel_time,
+                'distance': 0,
+                'speed': 0,
+                'time': config_problem.BARGE_RELEASE_MINUTES,
+                'type_point': 'release_point',
+            }
+        start_travel_time = finish_travel_time
         trave_steps.append(travel_step)
     return trave_steps
 
@@ -330,7 +356,7 @@ def update_sea_travel_tugboats(solution, order, lookup_sea_tugboat_results, look
         data_points = [point for point in data_points if point['type'] == 'Sea-River']
         max_datetime = max(data_points, key=lambda x: x['exit_datetime'])['exit_datetime']
         end_point = next((point for point in reversed(tugboat_result['data_points']) if point['type_point'] == "main_point"), None)
-        end_point['exit_datetime']  = max_datetime
+        #end_point['exit_datetime']  = max_datetime
         #print(tugboat_result)
         #print()
     

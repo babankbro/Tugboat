@@ -225,6 +225,7 @@ class TravelHelper:
                 total_distance += distance
                 total_time += travel_time
             else:
+                
                 first_point = {
                     'start_location': info_start_ends['start_km'],
                     'end_location': start_station.km,
@@ -234,7 +235,8 @@ class TravelHelper:
                     'travel_time': 0,
                     'speed': 0
                 }
-                steps.append(first_point)
+                if (first_point['start_id'] == first_point['end_id']):
+                    steps.append(first_point)
                 
 
             td, tt = self._append_travel_steps_for_river_stations(order_stations, steps, info_start_ends['speed'])

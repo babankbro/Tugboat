@@ -24,7 +24,9 @@ class TestingResult(Enum):
     ORDER = 2
     TUGBOAT = 3
     BARGE = 4
-    OTHER = 5
+    COST = 5
+    OTHER = 6
+    
 
 
 
@@ -153,7 +155,9 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
     
     solution = Solution(data)
     
-    tugboat_df, barge_df = solution.generate_schedule()
+    
+    cost_results, tugboat_df, barge_df = solution.calculate_cost()
+    
     
     
     
@@ -192,8 +196,8 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
             print(temp_df)
         if testing_result == TestingResult.TUGBOAT:
             filtered_df = tugboat_df[
-                            ((tugboat_df['tugboat_id'] == 'tbs4') | (tugboat_df['tugboat_id'] == 'tbs4')) 
-                           # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o2'))
+                            ((tugboat_df['tugboat_id'] == 'tbr2') | (tugboat_df['tugboat_id'] == 'tbr2')) 
+                            &  ((tugboat_df['order_id'] == 'o3') | (tugboat_df['order_id'] == 'o3'))
                            #((tugboat_df['order_id'] == 'o1') )
                            # & (tugboat_df['order_trip'] == 1)
                             #& (tugboat_df['distance'] > 60)
@@ -219,7 +223,16 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
             print(np.unique(temp_df['barge_ids']))
             print("Number of used barges", len(np.unique(temp_df['barge_ids'])))
             print("Number of all barges", len(data['barges']))
-   
+            
+            # use the regular machine exacly b4 not b41
+            
+            filtered_df = tugboat_df[tugboat_df['barge_ids'].str.contains(r'\bb11\b', regex=True)]
+            temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 
+                                'tugboat_id','distance', 'time', 'speed','order_trip',
+                            # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+                            'total_load', 'barge_ids',
+                            ]]
+            print(temp_df)
     
 #     filtered_df = tugboat_df[
 #                             ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
@@ -308,4 +321,4 @@ def main(testing=False, testing_result=TestingResult.CRANE):
     return result_df
 
 if __name__ == "__main__":
-    result_df = main(True, TestingResult.BARGE)
+    result_df = main(True, TestingResult.TUGBOAT)
