@@ -26,7 +26,7 @@ class TestingResult(Enum):
     BARGE = 4
     COST = 5
     OTHER = 6
-    
+    NOTING = 7
 
 
 
@@ -196,8 +196,8 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
             print(temp_df)
         if testing_result == TestingResult.TUGBOAT:
             filtered_df = tugboat_df[
-                            ((tugboat_df['tugboat_id'] == 'tbr2') | (tugboat_df['tugboat_id'] == 'tbr2')) 
-                            &  ((tugboat_df['order_id'] == 'o3') | (tugboat_df['order_id'] == 'o3'))
+                            ((tugboat_df['tugboat_id'] == 'tbr1') | (tugboat_df['tugboat_id'] == 'tbr1')) 
+                            &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1')| (tugboat_df['order_id'] == 'o1'))
                            #((tugboat_df['order_id'] == 'o1') )
                            # & (tugboat_df['order_trip'] == 1)
                             #& (tugboat_df['distance'] > 60)

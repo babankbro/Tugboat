@@ -112,7 +112,7 @@ class TestSchedulingSolution(unittest.TestCase):
                 crane_activity['enter_datetime'] = pd.to_datetime(crane_activity['enter_datetime'])
                 crane_activity = crane_activity.sort_values(by='enter_datetime')
                 
-                # print(crane_activity)
+                print(crane_activity)
                 # get enter_datetime and exit_datetime
                 enter_datetime = crane_activity['enter_datetime'].values
                 exit_datetime = crane_activity['exit_datetime'].values
@@ -209,10 +209,9 @@ class TestSchedulingSolution(unittest.TestCase):
         #return
         
         result_df = main(testing=True)
-        filter_out_type = ['Barge Collection', 'Start Order Carrier',  'Crane-Carrier', 'Barge Release',
-                           'Appointment', 'Barge Change', 'Customer Station']
+        filter_out_type = ['main_point']
     
-        barge_df = result_df[~result_df['type'].isin(filter_out_type)]
+        barge_df = result_df[~result_df['type_point'].isin(filter_out_type)]
         unique_barge_ids = barge_df["barge_ids"].unique()
         is_passed_overall = True
         error_messages = []
@@ -255,9 +254,9 @@ class TestSchedulingSolution(unittest.TestCase):
                     is_passed_overall = False
                     break # Optional: Stop checking this barge on first error, or collect all errors
         
-            self.assertTrue(is_passed_overall, "\n".join(["One or more barges have timeline overlapping issues:"] + error_messages))
-            if not is_passed_overall:
-                break
+                self.assertTrue(is_passed_overall, "\n".join(["One or more barges have timeline overlapping issues:"] + error_messages))
+                if not is_passed_overall:
+                    break
 
 
     # def test_barge_utilization(self):
