@@ -1,6 +1,7 @@
 from datetime import timedelta
 from CodeVS.components.transport_type import TransportType
 from CodeVS.utility.helpers import haversine
+# from CodeVS.components.solution import *
 
 def assign_barges_to_orders(orders, barges, assigned_barge_df):
     raise NotImplementedError()
@@ -30,6 +31,7 @@ def assign_barges_to_orders(orders, barges, assigned_barge_df):
 
 # Step 2: Assign barges to tugboats based on constraints
 def assign_barges_to_all_orders(orders, barges, active_cranes):
+    raise NotImplementedError
     """Assign barges to all orders considering capacity, location and time availability"""
     order_assigned_barges = {}
     

@@ -123,7 +123,7 @@ class Tugboat:
                 'end_km': end_station.km
             }
             
-            distance, travel_time, travel_steps = TraveTravelHelper._instancel_Helper.process_travel_steps(current_status, 
+            distance, travel_time, travel_steps = TravelHelper._instancel_Helper.process_travel_steps(current_status, 
                                                                 WaterBody.RIVER, travel_infos)
             setup_time = barge.setup_time / 60.0  # แปลงเวลาเชื่อมต่อจากนาทีเป็นชั่วโมง
             total_time += travel_time + setup_time  # รวมเวลาเดิน
