@@ -1465,11 +1465,12 @@ class Solution:
                 pass
             else:
                 machine_list.append(machine_val)
+
             for hour in hourly_range:
 
                 # Check if the activity time range overlaps with the current hour\
 
-                if (enter_time <= hour) and (exit_time >= hour):
+                if (enter_time <= hour) and (exit_time + pd.Timedelta(1,'hour') > hour):
                     row_data[hour] = machine_val
                 else:
                     row_data[hour] = '' # Or leave as NaN if preferred
