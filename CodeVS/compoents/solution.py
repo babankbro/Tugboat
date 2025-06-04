@@ -6,6 +6,8 @@ import string
 import pandas as pd
 import numpy as np
 import warnings
+from itertools import cycle
+import random
 warnings.filterwarnings("ignore")
 
 
@@ -1430,11 +1432,14 @@ class Solution:
 
         # For example, when creating the 'data' list, you would iterate from the second row:
         data = []
+        machine_list = []
+
         for index, row in df.iloc[1:].iterrows(): # Start from the second row
 
             # Filter out unwanted row
-            if row['type'] in ['Barge Collection', 'Start Order Carrier', 'Appointment', 'Barge Change', 'Customer Station']:
+            if row['type'] in ['Barge Collection', 'Start Order Carrier', 'Appointment', 'Barge Change', 'Customer Station','Barge Release']:
                 continue
+
             order_id_val = row['order_id']
             activity_val = row['name']
             if 'cr' in row['name']:
@@ -1453,13 +1458,16 @@ class Solution:
             enter_time = row['enter_datetime']
             exit_time = row['exit_datetime']
 
-
+            if machine_val in machine_list:
+                pass
+            else:
+                machine_list.append(machine_val)
             for hour in hourly_range:
 
                 # Check if the activity time range overlaps with the current hour\
 
-                if (enter_time <= hour) and (exit_time + pd.Timedelta(1,'h') >= hour):
-                    row_data[hour] = 'x'
+                if (enter_time <= hour) and (exit_time >= hour):
+                    row_data[hour] = machine_val
                 else:
                     row_data[hour] = '' # Or leave as NaN if preferred
 
@@ -1474,7 +1482,6 @@ class Solution:
 
         # Create a list for the date header
         date_header = [''] * 4 # Placeholders for the first 3 columns
-
 
         for hour in hourly_range:
             date_header.append(hour.date())
@@ -1522,18 +1529,34 @@ class Solution:
         (max_row, max_col) = output_df_data.shape
         main_char = string.ascii_uppercase[(max_col // 26)-1] if max_col // 26 > 0 else ""
         max_char = main_char + string.ascii_uppercase[max_col%26]
-        cell_range = f"A1:{max_char}{max_row+4}"
+        cell_range = f"F4:{max_char}{max_row+4}"
 
-        worksheet_timeline.conditional_format(cell_range,
-        {
-            'type': 'text',
-            'criteria': 'containing',
-            'value': 'x',
-            'format': workbook.add_format({'bg_color': '#0f5c3c',
-                                        'font_color': '#0f5c3c'})
-        }
-                                    )
-        worksheet_timeline.autofit(25)
+        def generate_random_colors(n):
+            """Generate a list of n random hex color codes."""
+            colors = []
+            for _ in range(n):
+                color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
+                colors.append(color)
+            return colors
+
+        # Example usage:
+        random_colors = generate_random_colors(len(machine_list))
+
+        colors = cycle(random_colors)
+
+        for i in range(len(machine_list)):
+            color = next(colors)
+
+            worksheet_timeline.conditional_format(cell_range,
+            {
+                'type': 'text',
+                'criteria': 'containing',
+                'value': machine_list[i],
+                'format': workbook.add_format({'bg_color': color,
+                                            'font_color': color})
+            }
+                                        )
+        worksheet_timeline.autofit()
         worksheet_timeline.autofilter(f'A3:E3')
         worksheet_timeline.freeze_panes(3, 5)
         writer.close()
