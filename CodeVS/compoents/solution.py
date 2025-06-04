@@ -222,7 +222,7 @@ class Solution:
             start_location = {
                 "ID": "Start",
                 'type': "Start",
-                'name': "Start " + start_pos,
+                'name': "Start at " + start_pos,
                 'enter_datetime': tugboat_ready_time,
                 'exit_datetime': tugboat_ready_time,
                 'distance': 0,
@@ -424,7 +424,7 @@ class Solution:
             start_location = {
                 "ID": "Start",
                 'type': "Start",
-                'name': "River Start " + start_station,
+                'name': "River Start at " + start_station,
                 'enter_datetime': tugboat_ready_time,
                 'exit_datetime': tugboat_ready_time,
                 'distance': 0,
@@ -449,7 +449,7 @@ class Solution:
             barge_location = {
                 "ID": appointment_station.station_id,
                 'type': "Barge Change",
-                'name': appointment_station.name,
+                'name': "Change at " + appointment_station.name,
                 'enter_datetime': barge_ready_time,
                 'exit_datetime': (barge_ready_time +
                  timedelta(minutes=collection_time_info['total_time']*60)),
@@ -603,7 +603,7 @@ class Solution:
             start_location = {
                 "ID": "Start",
                 'type': "Start",
-                'name': "Start Collect Barge River Down",
+                'name': f"Start Collect Barge River Down From {river_station.name} To {end_station.name}",
                 'enter_datetime': tugboat_ready_time,
                 'exit_datetime': tugboat_ready_time,
                 'distance': 0,
@@ -677,10 +677,12 @@ class Solution:
             exit_appointment_time = get_next_quarter_hour(arrival_datetime + 
                                                           timedelta(minutes=len(tugboat.assigned_barges)*config_problem.BARGE_SETUP_MINUTES))
             
+            # print(river_station.name)
+            # print(appointment_info['appointment_station'])
             appoinment_location ={
                 "ID": order.start_object.order_id,
                 'type': "Destination Barge",
-                'name': "Appointment " + appointment_info['appointment_station'],
+                'name': f"Appointment From {river_station.name} To {appointment_info['appointment_station']}" ,
                 'enter_datetime': arrival_datetime,
                 'exit_datetime':arrival_datetime,
                 'distance': travel_river_info['travel_distance'],
@@ -1391,7 +1393,7 @@ class Solution:
             #print(assigned_barge_infos)
 
             # Merge all into one DataFrame
-        combined_df = pd.concat(all_dfs, ignore_index=True)
+        # combined_df = pd.concat(all_dfs, ignore_index=True)
             # Show the final merged DataFrame
         #print(combined_df)
         return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
@@ -1435,7 +1437,7 @@ class Solution:
         machine_list = []
 
         for index, row in df.iloc[1:].iterrows(): # Start from the second row
-
+            # row_data['ID'] = index
             # Filter out unwanted row
             if row['type'] in ['Barge Collection', 'Start Order Carrier', 'Appointment', 'Barge Change', 'Customer Station','Barge Release']:
                 continue
@@ -1450,7 +1452,8 @@ class Solution:
                 barge_val = row['name'].split(' - ')[1]
             else:
                 barge_val = row['barge_ids']
-            row_data = {"order_id": order_id_val,
+            row_data = {'row_id': index+1,
+                        "order_id": order_id_val,
                         "activity": activity_val,
                         "machine": machine_val,
                         "barge": barge_val}
@@ -1481,15 +1484,19 @@ class Solution:
         output_df_data = pd.DataFrame(data)
 
         # Create a list for the date header
-        date_header = [''] * 4 # Placeholders for the first 3 columns
+        date_header = [''] * 5 # Placeholders for the first 3 columns
 
         for hour in hourly_range:
             date_header.append(hour.date())
 
         # Create a list for the column name header
         column_name_header = []
+        # print(output_df_data.columns)
+        # dde
         for col in output_df_data.columns:
-            if col == 'order_id':
+            if col == 'row_id':
+                column_name_header.append('Row ID')
+            elif col == 'order_id':
                 column_name_header.append('Order ID')
             elif col == 'activity':
                 column_name_header.append('Activity')
@@ -1529,7 +1536,7 @@ class Solution:
         (max_row, max_col) = output_df_data.shape
         main_char = string.ascii_uppercase[(max_col // 26)-1] if max_col // 26 > 0 else ""
         max_char = main_char + string.ascii_uppercase[max_col%26]
-        cell_range = f"F4:{max_char}{max_row+4}"
+        cell_range = f"G4:{max_char}{max_row+4}"
 
         def generate_random_colors(n):
             """Generate a list of n random hex color codes."""
@@ -1557,7 +1564,7 @@ class Solution:
             }
                                         )
         worksheet_timeline.autofit()
-        worksheet_timeline.autofilter(f'A3:E3')
+        worksheet_timeline.autofilter(f'A3:F3')
         worksheet_timeline.freeze_panes(3, 5)
         writer.close()
         # output_df_data.to_excel('tugboat_timeline_analysis.xlsx')

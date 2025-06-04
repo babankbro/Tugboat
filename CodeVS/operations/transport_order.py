@@ -136,9 +136,10 @@ def travel_appointment_import(solution,     order, lookup_schedule_results, look
         arrival_datetime = last_point_exit_lookup[tugboat_id] + timedelta(minutes=travel_info['travel_time']*60)
         arrival_datetime = get_previous_quarter_hour(arrival_datetime)
         
+
         appointment_location ={
                 "ID": appointment_station.station_id,
-                'name': appointment_station.name,
+                'name': f"From {travel_info['start_object'].name} To {appointment_station.name}",
                 'type': "Appointment",
                 'enter_datetime': arrival_datetime,
                 'exit_datetime':None,
@@ -185,7 +186,7 @@ def generate_travel_steps(arrival_datetime, travel_info):
     start_travel_time = arrival_datetime
     for step in travel_info['steps']:
         finish_travel_time = start_travel_time + timedelta(minutes=(step['travel_time'])*60)
-        
+
         travel_step ={
                 "ID": "Travel",
                 'type': "Sea-River",
@@ -245,11 +246,11 @@ def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results)
         travel_info =tugboat.calculate_river_to_customer(input_travel_info)
         #arrival_datetime = previous_location['exit_datetime'] + timedelta(minutes=travel_info['travel_time']*60)
         arrival_datetime = previous_location['exit_datetime']
-        #print(travel_info)
+
         customer_station = TravelHelper._instance.data['stations'][order.des_object.station_id]
         customer_location = {
             "ID": order.des_object.station_id,
-            'name': customer_station.name,
+            'name': f'From {travel_info["start_object"].name} To {customer_station.name}',
             'type': "Customer Station",
             'enter_datetime': arrival_datetime,
             'exit_datetime':None,

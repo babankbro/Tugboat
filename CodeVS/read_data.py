@@ -16,11 +16,6 @@ station_df = xls.parse("station")
 order_df = xls.parse("order")
 #assigned_barge_df = xls.parse("assigned_barge")
 
-
-
-
-
-
 def print_df():
     print("Carrier:")
     print(carrier_df.head())
