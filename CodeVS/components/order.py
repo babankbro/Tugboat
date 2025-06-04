@@ -1,5 +1,5 @@
 from datetime import datetime
-from CodeVS.compoents.transport_type import *
+from CodeVS.components.transport_type import *
 
 class Order:
     def __init__(self, order_id, order_type, start_point, des_point, product, demand, start_datetime,

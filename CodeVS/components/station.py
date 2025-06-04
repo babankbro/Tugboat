@@ -1,4 +1,4 @@
-from CodeVS.compoents.water_enum import WaterBody
+from CodeVS.components.water_enum import WaterBody
 
 
 class Station:

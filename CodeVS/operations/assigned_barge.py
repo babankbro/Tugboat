@@ -1,5 +1,5 @@
 from datetime import timedelta
-from CodeVS.compoents.transport_type import TransportType
+from CodeVS.components.transport_type import TransportType
 from CodeVS.utility.helpers import haversine
 
 def assign_barges_to_orders(orders, barges, assigned_barge_df):

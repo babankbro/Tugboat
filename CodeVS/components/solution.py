@@ -1566,7 +1566,7 @@ class Solution:
                                         )
         worksheet_timeline.autofit()
         worksheet_timeline.autofilter(f'A3:F3')
-        worksheet_timeline.freeze_panes(3, 5)
+        worksheet_timeline.freeze_panes(3, 6)
         writer.close()
         # output_df_data.to_excel('tugboat_timeline_analysis.xlsx')
         barge_df.to_excel(barge_path, index=False)

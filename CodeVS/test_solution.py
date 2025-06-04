@@ -17,7 +17,7 @@ from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.scheduling import *
 from CodeVS.operations.transport_order import *
 from CodeVS.operations.travel_helper import *
-from CodeVS.compoents.solution import Solution
+from CodeVS.components.solution import Solution
 import unittest
 import numpy as np
 from read_data import *

@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from CodeVS.compoents.water_enum import *
+from CodeVS.components.water_enum import *
 
 class Barge:
     def __init__(self, barge_id, name, weight_barge, capacity, lat, lng, water_type, station_id, km, setup_time, ready_time=None):

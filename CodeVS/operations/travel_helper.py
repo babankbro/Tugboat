@@ -1,11 +1,11 @@
 import sys
 import os
 
-from CodeVS.compoents.water_enum import WaterBody
-from CodeVS.compoents.transport_type import TransportType
+from CodeVS.components.water_enum import WaterBody
+from CodeVS.components.transport_type import TransportType
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from CodeVS.compoents.station import Station
+from CodeVS.components.station import Station
 from CodeVS.utility.helpers import haversine
 
 class TravelHelper:

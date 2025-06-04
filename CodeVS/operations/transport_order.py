@@ -184,13 +184,32 @@ def travel_appointment_import(solution,     order, lookup_schedule_results, look
 def generate_travel_steps(arrival_datetime, travel_info):
     trave_steps = []
     start_travel_time = arrival_datetime
+    # print(travel_info['steps'][0]['start_id'])
+    # print(travel_info['steps'][-1]['end_id'])
+    if ('c' in travel_info['steps'][0]['start_id']) and ('c' in travel_info['steps'][-1]['end_id']):
+        travel_type = 'Sea-Sea'
+    elif('s' in travel_info['steps'][0]['start_id']) and ('c' in travel_info['steps'][-1]['end_id']):
+        travel_type = 'River-Sea'
+
+    elif('c' in travel_info['steps'][0]['start_id']) and ('s' in travel_info['steps'][-1]['end_id']):
+        travel_type = 'Sea-River'
+
+    elif('s' in travel_info['steps'][0]['start_id']) and ('s' in travel_info['steps'][-1]['end_id']):
+        travel_type = 'River-River'
+
+    data = TravelHelper._instance.data
+    # print("\n")
+
+    # print(data['stations']['c1'])
+    # print("\n")
+    # eeeeee
     for step in travel_info['steps']:
         finish_travel_time = start_travel_time + timedelta(minutes=(step['travel_time'])*60)
 
         travel_step ={
                 "ID": "Travel",
-                'type': "Sea-River",
-                'name': step['start_id'] + ' to ' + step['end_id'] ,
+                'type': travel_type,
+                'name': data['stations'][step['start_id']].name + ' to ' + data['stations'][step['end_id']].name ,
                 'enter_datetime': start_travel_time,
                 'exit_datetime': finish_travel_time,
                 'distance': step['distance'],

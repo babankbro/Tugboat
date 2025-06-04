@@ -1,10 +1,10 @@
 # prompt: filter only sea tugboats in dic tugboat
 # Define Tugboat class
-from CodeVS.compoents.carrier import Carrier
+from CodeVS.components.carrier import Carrier
 from CodeVS.operations.travel_helper import *
 from CodeVS.utility.helpers import *
 from datetime import datetime 
-from  CodeVS.compoents.water_enum import *
+from  CodeVS.components.water_enum import *
 
 # def calculate_sea_move(tugboat, start_location, sea_stations, all_stations = None):
 #     """

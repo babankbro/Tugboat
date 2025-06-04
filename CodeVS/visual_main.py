@@ -13,7 +13,7 @@ from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.scheduling import *
 from CodeVS.operations.transport_order import *
 from CodeVS.operations.travel_helper import *
-from CodeVS.compoents.solution import Solution
+from CodeVS.components.solution import Solution
 
 import pandas as pd
 import json

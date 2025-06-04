@@ -1,18 +1,18 @@
 import sys
 import os
 
-from CodeVS.compoents.transport_type import TransportType
-from CodeVS.compoents.water_enum import WaterBody
+from CodeVS.components.transport_type import TransportType
+from CodeVS.components.water_enum import WaterBody
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime, timedelta
-from CodeVS.compoents.carrier import Carrier
-from CodeVS.compoents.order import Order
-from CodeVS.compoents.tugboat import Tugboat
-from CodeVS.compoents.barge import Barge
+from CodeVS.components.carrier import Carrier
+from CodeVS.components.order import Order
+from CodeVS.components.tugboat import Tugboat
+from CodeVS.components.barge import Barge
 import pandas as pd
 from CodeVS.operations.assigned_barge import * 
-from CodeVS.compoents.station import * 
+from CodeVS.components.station import * 
 
 
 def initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df):
