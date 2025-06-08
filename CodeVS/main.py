@@ -312,10 +312,7 @@ def main(testing=False, testing_result=TestingResult.CRANE):
     
     data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df)
     
-    if TravelHelper._instance is None:
-        TravelHelper()
-        
-    TravelHelper._set_data(TravelHelper._instance,  data)
+    
     
     print(f"Data Type: {type(data)}")
     for key, value in data.items():

@@ -23,6 +23,13 @@ class Solution:
         # print("========================================")
         # print(f"Type {type(TravelHelper._instance)}")
         # print("========================================")
+        if TravelHelper._instance is None:
+            TravelHelper(data=data)
+        else:
+            TravelHelper._set_data(TravelHelper._instance,  data)
+        
+        
+        
         for tugboat_id, tugboat in data['tugboats'].items():
             closeset_station = TravelHelper._instance.get_next_river_station(transport_type=TransportType.EXPORT, km=tugboat._km)
             info = {
