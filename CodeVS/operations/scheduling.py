@@ -4,9 +4,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import timedelta
 from typing import List, Dict
-from CodeVS.compoents.order import Order
-from CodeVS.compoents.barge import Barge
-from CodeVS.compoents.tugboat import Tugboat
+from CodeVS.components.order import Order
+from CodeVS.components.barge import Barge
+from CodeVS.components.tugboat import Tugboat
 from CodeVS.utility.helpers import *
 
 

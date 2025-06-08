@@ -1,11 +1,11 @@
 import sys
 import os
 
-from CodeVS.compoents.water_enum import WaterBody
-from CodeVS.compoents.transport_type import TransportType
+from CodeVS.components.water_enum import WaterBody
+from CodeVS.components.transport_type import TransportType
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from CodeVS.compoents.station import Station
+from CodeVS.components.station import Station
 from CodeVS.utility.helpers import haversine
 
 class TravelHelper:
@@ -224,6 +224,20 @@ class TravelHelper:
                 steps.append(first_point)
                 total_distance += distance
                 total_time += travel_time
+            else:
+                
+                first_point = {
+                    'start_location': info_start_ends['start_km'],
+                    'end_location': start_station.km,
+                    'start_id': start_station.station_id if start_station is not None else '-',
+                    'end_id': end_station.station_id if end_station is not None else '-',
+                    'distance': 0,
+                    'travel_time': 0,
+                    'speed': 0
+                }
+                if (first_point['start_id'] == first_point['end_id']):
+                    steps.append(first_point)
+                
 
             td, tt = self._append_travel_steps_for_river_stations(order_stations, steps, info_start_ends['speed'])
             total_distance += td

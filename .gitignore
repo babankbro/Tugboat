@@ -1,2 +1,5 @@
 .qodo
-desktop.ini 
+**/desktop.ini 
+**/.DS_Store
+**/__pycache__/
+**/.env

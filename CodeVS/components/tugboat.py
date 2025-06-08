@@ -1,10 +1,10 @@
 # prompt: filter only sea tugboats in dic tugboat
 # Define Tugboat class
-from CodeVS.compoents.carrier import Carrier
+from CodeVS.components.carrier import Carrier
 from CodeVS.operations.travel_helper import *
 from CodeVS.utility.helpers import *
 from datetime import datetime 
-from  CodeVS.compoents.water_enum import *
+from  CodeVS.components.water_enum import *
 
 # def calculate_sea_move(tugboat, start_location, sea_stations, all_stations = None):
 #     """
@@ -123,7 +123,7 @@ class Tugboat:
                 'end_km': end_station.km
             }
             
-            distance, travel_time, travel_steps = TraveTravelHelper._instancel_Helper.process_travel_steps(current_status, 
+            distance, travel_time, travel_steps = TravelHelper._instancel_Helper.process_travel_steps(current_status, 
                                                                 WaterBody.RIVER, travel_infos)
             setup_time = barge.setup_time / 60.0  # แปลงเวลาเชื่อมต่อจากนาทีเป็นชั่วโมง
             total_time += travel_time + setup_time  # รวมเวลาเดิน
@@ -310,7 +310,7 @@ class Tugboat:
                 'steps': result['steps']}
         
     def calculate_river_to_customer(self, input_travel_info):
-        order = self.assigned_barges[0].current_order
+        # order = self.assigned_barges[0].current_order
         end_station = self.assigned_barges[0].current_order.des_object
         nbarge = len(self.assigned_barges)
         start_station = TravelHelper._instance.data['stations'][ input_travel_info['appointment_station_id']]

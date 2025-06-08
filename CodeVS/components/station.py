@@ -1,4 +1,4 @@
-from CodeVS.compoents.water_enum import WaterBody
+from CodeVS.components.water_enum import WaterBody
 
 
 class Station:
@@ -13,4 +13,4 @@ class Station:
 
     def __str__(self):
         return (f"Station ID: {self.station_id}, Name: {self.name}, Location: ({self.lat}, {self.lng}), "
-                f"KM: {self.km}, CUS: {self.customer_name}")
+                f"KM: {self.km}, CUS: {self.customer_name} ")

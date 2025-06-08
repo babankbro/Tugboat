@@ -1,0 +1,8 @@
+**/.env
+.git/
+**/__pycache__/
+.qodo
+**/desktop.ini 
+**/.DS_Store
+data/
+html/

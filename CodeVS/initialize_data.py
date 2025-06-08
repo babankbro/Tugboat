@@ -1,29 +1,37 @@
 import sys
 import os
 
-from CodeVS.compoents.transport_type import TransportType
-from CodeVS.compoents.water_enum import WaterBody
+from CodeVS.components.transport_type import TransportType
+from CodeVS.components.water_enum import WaterBody
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime, timedelta
-from CodeVS.compoents.carrier import Carrier
-from CodeVS.compoents.order import Order
-from CodeVS.compoents.tugboat import Tugboat
-from CodeVS.compoents.barge import Barge
+from CodeVS.components.carrier import Carrier
+from CodeVS.components.order import Order
+from CodeVS.components.tugboat import Tugboat
+from CodeVS.components.barge import Barge
 import pandas as pd
 from CodeVS.operations.assigned_barge import * 
-from CodeVS.compoents.station import * 
+from CodeVS.components.station import * 
 
 
-def initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df):
+def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df):
     # Create dictionaries of objects with 'ID' as the key
     carriers = {
         row['NAME']+"_"+row['ORDER ID']: Carrier(row['ID'], row['ORDER ID'], row['NAME'], row['LAT'], row['LNG'])
         for _, row in carrier_df.iterrows()
     }
-
+    # print(carriers)
+    # eeeee
     stations = {
-        row['ID']: Station(row['ID'], row['TYPE'], row['NAME'], row['LAT'], row['LNG'], row['KM'], row['CUS'])
+        row['ID']: Station(
+            row['ID'], 
+            row['TYPE'], 
+            row['NAME'], 
+            row['LAT'], 
+            row['LNG'], 
+            row['KM'], 
+            row['CUS'])
         for _, row in station_df.iterrows()
     }
 
