@@ -18,6 +18,10 @@ def calculate_all_schedule():
         # order_df = order_df[order_df['ID']==order_id]
 
         data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df)
+        if TravelHelper._instance is None:
+            TravelHelper()
+        
+        TravelHelper._set_data(TravelHelper._instance,  data)
         # print(f"Data Type: {type(data)}")
         # for key, value in data.items():
         #         print(key, value, "\n")
