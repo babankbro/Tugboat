@@ -19,7 +19,7 @@ class Solution:
         self.tugboat_travel_results = {}
     
         
-        helper = TravelHelper(data=data)
+        
         # print("========================================")
         # print(f"Type {type(TravelHelper._instance)}")
         # print("========================================")

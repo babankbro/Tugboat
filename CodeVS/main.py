@@ -284,7 +284,7 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
 # # # # Now you can print the grouped data
 # # #     #print(grouped_df)
 
-# # #     #print("customer_river_time_lates", customer_river_time_lates, list_lates)
+# # #     #print("customer_river_time_lates", customerso_river_time_lates, list_lates)
 
 
 # # #     # for order_id, order_barge_info in lookup_order_barges.items():
@@ -306,10 +306,17 @@ def main(testing=False, testing_result=TestingResult.CRANE):
     # Initialize data structures
 
     carrier_df, barge_df, tugboat_df, station_df, order_df = get_data_from_db()
-    order_df = order_df[order_df['ID']=='o1']
+    #order_df = order_df[order_df['ID']=='o1']
     # print(carrier_df)
     # eed
+    
     data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+        
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    
     print(f"Data Type: {type(data)}")
     for key, value in data.items():
         print(key, value, "\n")
