@@ -15,15 +15,23 @@ from CodeVS.operations.assigned_barge import *
 from CodeVS.components.station import * 
 
 
-def initialize_data(carrier_df, station_df, order_df, tugboat_df, barge_df):
+def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df):
     # Create dictionaries of objects with 'ID' as the key
     carriers = {
         row['NAME']+"_"+row['ORDER ID']: Carrier(row['ID'], row['ORDER ID'], row['NAME'], row['LAT'], row['LNG'])
         for _, row in carrier_df.iterrows()
     }
-
+    # print(carriers)
+    # eeeee
     stations = {
-        row['ID']: Station(row['ID'], row['TYPE'], row['NAME'], row['LAT'], row['LNG'], row['KM'], row['CUS'])
+        row['ID']: Station(
+            row['ID'], 
+            row['TYPE'], 
+            row['NAME'], 
+            row['LAT'], 
+            row['LNG'], 
+            row['KM'], 
+            row['CUS'])
         for _, row in station_df.iterrows()
     }
 

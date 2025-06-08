@@ -24,7 +24,7 @@ class TugboatTravelStatus:
         self.is_move_down = True
 
 
-def travel_appointment_import(solution,     order, lookup_schedule_results, lookup_tugboat_results, appointment_infos, order_trip):
+def travel_appointment_import(solution, order, lookup_schedule_results, lookup_tugboat_results, appointment_infos, order_trip):
     last_point_exit_lookup = {}
     for tugboat_id, result in lookup_schedule_results.items():
         #print("\nSchedule for Tugboat TT", result['tugboat_schedule']['tugboat_id'])
@@ -122,6 +122,7 @@ def travel_appointment_import(solution,     order, lookup_schedule_results, look
         tugboat_result = lookup_tugboat_results[tugboat_id]
         schedule_result = lookup_schedule_results[tugboat_id]
         
+        print(appoint_info['appointment_station'])
         appointment_station = data['stations'][appoint_info['appointment_station']]
         
         travel_info = tugboat.calculate_travel_to_appointment(appoint_info)

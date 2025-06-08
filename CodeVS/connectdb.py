@@ -2,13 +2,18 @@ import mysql.connector
 from mysql.connector import Error
 import json # Added for JSON functionality
 from datetime import datetime # Added for timestamp conversion
+from dotenv import load_dotenv
+import os
 
-PORT = 18306
-HOST = '62.72.30.12'
-USER = 'maria'
-PASSWORD = 'password'
-DATABASE_NAME = 'spinterdb'
+load_dotenv()
 
+HOST=os.getenv('HOST')
+PORT=os.getenv('PORT')
+USER=os.getenv('USERNAME')
+PASSWORD=os.getenv('PASSWORD')
+DATABASE_NAME=os.getenv('DATABASE_NAME')
+
+# print(f"{HOST} {PORT} {USER} {PASSWORD} {DATABASE_NAME}")
 def connect_to_mysql_and_list_databases():
     """ Connect to MySQL server and list all databases """
     conn = None
@@ -20,7 +25,7 @@ def connect_to_mysql_and_list_databases():
             password=PASSWORD
         )
         if conn.is_connected():
-            print('Connected to MySQL server at 62.72.30.12')
+            
             cursor = conn.cursor()
             print("Executing SHOW DATABASES;")
             cursor.execute("SHOW DATABASES;")
@@ -52,7 +57,7 @@ def list_tables_in_database():
             database=DATABASE_NAME
         )
         if conn.is_connected():
-            print(f'Connected to MySQL database: {DATABASE_NAME} at 62.72.30.12')
+            print(f'Connected to MySQL database: {DATABASE_NAME} at {HOST}')
             cursor = conn.cursor()
             print(f"Executing SHOW TABLES; in {DATABASE_NAME}")
             cursor.execute("SHOW TABLES;")
@@ -84,11 +89,26 @@ def query_table_to_json(table_name):
             database=DATABASE_NAME
         )
         if conn.is_connected():
-            print(f'Connected to database: {DATABASE_NAME} to query table: {table_name}')
+            # print(f'Connected to database: {DATABASE_NAME} to query table: {table_name}')
             # Using dictionary=True to get results as dictionaries (column_name: value)
             cursor = conn.cursor(dictionary=True)
-            query = f"SELECT * FROM {table_name}" # Be cautious with unescaped table names in production
-            print(f"Executing query: {query}")
+            if table_name == 'Station':
+                query = """
+                            SELECT s.Id, s.Type, s.Name AS StationName, s.Latitude, s.Longitude, s.DistanceKm, c.Name 
+                            FROM `Station` AS s
+                                LEFT JOIN `Customer_Station` AS cs ON cs.`StationId` = s.`Id` 
+                                LEFT JOIN `Customer` AS c ON cs.`CustomerId` = c.`Id`;
+                        """
+            elif table_name == 'Carrier':
+                query = """
+                            SELECT c.Id, c.Name, c.Latitude, c.Longitude, o.Id AS Order_id
+                            FROM
+                                `Carrier` AS c LEFT JOIN
+                                `Order` AS o ON c.Name=o.FromPoint;
+                        """
+            else:
+                query = f"SELECT * FROM `{table_name}`;" # Be cautious with unescaped table names in production
+            # print(f"Executing query: {query}")
             cursor.execute(query)
             results = cursor.fetchall()
             cursor.close()
@@ -96,7 +116,7 @@ def query_table_to_json(table_name):
                 # Convert list of dictionaries to JSON string
                 # default=str handles non-serializable types like datetime
                 json_output = json.dumps(results, indent=4, default=str)
-                print(f"Data from {table_name} (JSON format):")
+                # print(f"Data from {table_name} (JSON format):")
                 # print(json_output) # Optionally print here or just return
                 return json_output
             else:
@@ -108,7 +128,7 @@ def query_table_to_json(table_name):
     finally:
         if conn and conn.is_connected():
             conn.close()
-            print(f'MySQL connection for querying {table_name} in {DATABASE_NAME} is closed')
+            # print(f'MySQL connection for querying {table_name} in {DATABASE_NAME} is closed')
 
 
 def drop_table(table_name):
