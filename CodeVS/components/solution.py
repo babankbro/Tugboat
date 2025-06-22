@@ -20,9 +20,17 @@ class Solution:
     
         
         
+        
         # print("========================================")
         # print(f"Type {type(TravelHelper._instance)}")
         # print("========================================")
+        if TravelHelper._instance is None:
+            TravelHelper(data=data)
+        else:
+            TravelHelper._set_data(TravelHelper._instance,  data)
+        
+        
+        
         for tugboat_id, tugboat in data['tugboats'].items():
             closeset_station = TravelHelper._instance.get_next_river_station(transport_type=TransportType.EXPORT, km=tugboat._km)
             info = {
@@ -1111,9 +1119,9 @@ class Solution:
         first_arrival_customer_datetime = None
         
         while len(all_assigned_barges) > 0:
-            # print("Rotation barge remain:", len(all_assigned_barges))
-            # for tugboat_id, tugboat in sea_tugboats.items():
-            #     print(tugboat_id, self.get_ready_time_tugboat(tugboat))
+            print("Rotation barge remain:", len(all_assigned_barges))
+            for tugboat_id, tugboat in sea_tugboats.items():
+                print(tugboat_id, self.get_ready_time_tugboat(tugboat))
             assigned_tugboats = self.assign_barges_to_tugboats(order, sea_tugboats, all_assigned_barges)
             
             

@@ -32,7 +32,7 @@ class Barge:
 
     def __str__(self):
         return (f"Barge ID: {self.barge_id}, Name: {self.name}, LOAD: {self._load}, Capacity: {self.capacity}, "
-                f"Location: ({self.lat}, {self.lng}), Setup Time: {self.setup_time} mins, "
-                f"Ready Time: {self.ready_time}, Status: {self.status}")
+                f"Location: ({self._lat}, {self._lng}), Setup Time: {self.setup_time} mins, "
+                f"Ready Time: {self._ready_time}, Water Status: {self._water_status}")
         
     

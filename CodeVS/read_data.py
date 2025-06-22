@@ -12,9 +12,12 @@ file_path = FILE_INPUT_NAME
 
 #assigned_barge_df = xls.parse("assigned_barge")
 
-def get_table_from_db(table_name, order_id=False):
+def get_table_from_db(table_name, order_id=None):
+    """
+    Updated column mapping to match the actual database schema from the PDF
+    """
     column_name_dict = {
-        'Tugboat':{
+        'Tugboat': {
             'Id': 'ID',
             'Name': 'NAME',
             'MaxCapacity': 'MAX CAP',
@@ -25,72 +28,213 @@ def get_table_from_db(table_name, order_id=False):
             'MaxSpeed': 'MAX SPEED',
             'EngineRpm': 'RPM',
             'HorsePower': 'HP',
-            'Latitude': 'LAT',
-            'Longitude': 'LNG',
-            'WaterStatus': 'STATUS',
-            'DistanceKm': 'KM',
+            'WaterStatus': 'STATUS',  # From database schema
+            'StationId': 'STATION',   # From database schema
             'ReadyDateTime': 'READY DATETIME'
         },
-        'Carrier':{'Id':'ID',
-                    'Name':'NAME', 
-                    'Order_id':'ORDER ID',
-                    'Latitude':'LAT', 
-                    'Longitude':'LNG'},
-
-        'Barge':{'Id':'ID', 
-                 'Name':'NAME', 
-                 'Weight':'WEIGHT', 
-                 'Capacity':'CAP', 
-                 'Latitude':'LAT', 
-                 'Longitude':'LNG',
-                 'WaterStatus':'WATER STATUS', 
-                 'StationId':'STATION', 
-                 'DistanceKm':'KM', 
-                 'SetupTime':'SETUP TIME', 
-                 'ReadyDatetime':'READY DATETIME'},
-
-        'Station':{'Id':'ID', 
-                   'StationName':'NAME', 
-                   'Type':'TYPE', 
-                   'Latitude':'LAT', 
-                   'Longitude':'LNG', 
-                   'DistanceKm':'KM',
-                   'Name':'CUS'},
-
-        'Order':{'Id':'ID', 
-                 'Type':'TYPE', 
-                 'FromPoint':'START POINT', 
-                 'DestPoint':'DES POINT', 
-                 'ProductName':'PRODUCT', 
-                 'Demand':'DEMAND',
-                 'StartDateTime':'START DATETIME', 
-                 'DueDateTime':'DUE DATETIME', 
-                 'LoadingRate':'LD+ULD RATE', 
-                 'CR1':'CRANE RATE1', 
-                 'CR2':'CRANE RATE2', 
-                 'CR3':'CRANE RATE3',
-                 'CR4':'CRANE RATE4', 
-                 'CR5':'CRANE RATE5', 
-                 'CR6':'CRANE RATE6', 
-                 'CR7':'CRANE RATE7', 
-                 'TimeReadyCR1':'TIME READY CR1', 
-                 'TimeReadyCR2':'TIME READY CR2',
-                 'TimeReadyCR3':'TIME READY CR3', 
-                 'TimeReadyCR4':'TIME READY CR4', 
-                 'TimeReadyCR5':'TIME READY CR5', 
-                 'TimeReadyCR6':'TIME READY CR6',
-                 'TimeReadyCR7':'TIME READY CR7'}
-
+        'Carrier': {
+            'Id': 'ID',
+            'Name': 'NAME'
+        },
+        'Barge': {
+            'Id': 'ID', 
+            'Name': 'NAME', 
+            'Weight': 'WEIGHT', 
+            'Capacity': 'CAP', 
+            'WaterStatus': 'WATER STATUS',  # From database schema
+            'StationId': 'STATION',         # From database schema
+            'SetupTime': 'SETUP TIME', 
+            'ReadyDatetime': 'READY DATETIME'
+        },
+        'Station': {
+            'Id': 'ID', 
+            'Name': 'NAME',  # Changed from 'StationName' to 'Name' per schema
+            'Type': 'TYPE', 
+            'Latitude': 'LAT', 
+            'Longitude': 'LNG', 
+            'DistanceKm': 'KM'
+        },
+        'Order': {
+            'Id': 'ID', 
+            'Type': 'TYPE', 
+            'FromPoint': 'START POINT', 
+            'DestPoint': 'DES POINT', 
+            'StartStationId': 'START STATION ID',    # New fields from schema
+            'DestStationId': 'DES STATION ID',        # New fields from schema
+            'ProductName': 'PRODUCT', 
+            'Demand': 'DEMAND',
+            'StartDateTime': 'START DATETIME', 
+            'DueDateTime': 'DUE DATETIME', 
+            'LoadingRate': 'LD+ULD RATE', 
+            'CR1': 'CRANE RATE1', 
+            'CR2': 'CRANE RATE2', 
+            'CR3': 'CRANE RATE3',
+            'CR4': 'CRANE RATE4', 
+            'CR5': 'CRANE RATE5', 
+            'CR6': 'CRANE RATE6', 
+            'CR7': 'CRANE RATE7', 
+            'TimeReadyCR1': 'TIME READY CR1', 
+            'TimeReadyCR2': 'TIME READY CR2',
+            'TimeReadyCR3': 'TIME READY CR3', 
+            'TimeReadyCR4': 'TIME READY CR4', 
+            'TimeReadyCR5': 'TIME READY CR5', 
+            'TimeReadyCR6': 'TIME READY CR6',
+            'TimeReadyCR7': 'TIME READY CR7'
+        },
+        'Customer': {
+            'Id': 'ID',
+            'Name': 'NAME',
+            'Email': 'EMAIL',
+            'Address': 'ADDRESS'
+        },
+        'Customer_Station': {
+            'CustomerId': 'CUSTOMER_ID',
+            'StationId': 'STATION_ID'
+        }
     }
-    data_json = query_table_to_json(table_name)
-    table = pd.read_json(data_json)
     
-    table = table.rename(columns=column_name_dict[table_name])
-    # print(table)
-    # if order_id:
-    #     table = table[table['ID']==order_id]
-    # print(table)
-    # eeeeee
+    # Get raw data from database
+    if table_name == 'Station':
+        # Updated query to match the new schema structure
+        data_json = query_table_to_json_custom('Station', """
+            SELECT s.Id, s.Type, s.Name, s.Latitude, s.Longitude, s.DistanceKm, c.Name AS CustomerName
+            FROM Station AS s
+            LEFT JOIN Customer_Station AS cs ON cs.StationId = s.Id 
+            LEFT JOIN Customer AS c ON cs.CustomerId = c.Id
+        """)
+        table = pd.read_json(data_json)
+        # Add customer name mapping
+        table = table.rename(columns={
+            'Id': 'ID',
+            'Name': 'NAME', 
+            'Type': 'TYPE',
+            'Latitude': 'LAT',
+            'Longitude': 'LNG', 
+            'DistanceKm': 'KM',
+            'CustomerName': 'CUS'
+        })
+        
+    elif table_name == 'Carrier':
+        # Updated query to get carrier info with orders and location from start station
+        # Get carrier info directly from Order table FromPoint/DestPoint with fallback logic
+        try:
+            # Try with start_station_id/des_station_id first
+            data_json = query_table_to_json_custom('Carrier', """
+                SELECT DISTINCT
+                    CONCAT('carrier_', ROW_NUMBER() OVER (ORDER BY carrier_name, o.Id)) AS Id,
+                    carrier_name AS Name,
+                    o.Id AS OrderId,
+                    o.FromPoint,
+                    o.DestPoint,
+                    o.Type AS OrderType,
+                    CASE 
+                        WHEN o.Type = 'IMPORT' THEN ss.Latitude
+                        WHEN o.Type = 'EXPORT' THEN ds.Latitude
+                        ELSE ss.Latitude
+                    END AS Latitude,
+                    CASE 
+                        WHEN o.Type = 'IMPORT' THEN ss.Longitude
+                        WHEN o.Type = 'EXPORT' THEN ds.Longitude
+                        ELSE ss.Longitude
+                    END AS Longitude
+                FROM (
+                    SELECT Id, Type, FromPoint, DestPoint, StartStationId, DestStationId,
+                           CASE 
+                               WHEN Type = 'IMPORT' THEN FromPoint
+                               WHEN Type = 'EXPORT' THEN DestPoint
+                               ELSE FromPoint
+                           END AS carrier_name
+                    FROM `Order`
+                ) AS o
+                LEFT JOIN Station AS ss ON o.StartStationId = ss.Id
+                LEFT JOIN Station AS ds ON o.DestStationId = ds.Id
+                WHERE carrier_name IS NOT NULL AND carrier_name != ''
+            """)
+            print("✓ Using carrier query with StartStationId/DestStationId")
+            
+        except Exception as e:
+            print(f"Advanced carrier query failed: {e}")
+            print("Using fallback carrier query...")
+            
+            # Fallback: Simple query with default coordinates
+            data_json = query_table_to_json_custom('Carrier', """
+                SELECT DISTINCT
+                    CONCAT('carrier_', ROW_NUMBER() OVER (ORDER BY carrier_name, o.Id)) AS Id,
+                    carrier_name AS Name,
+                    o.Id AS OrderId,
+                    o.FromPoint,
+                    o.DestPoint,
+                    o.Type AS OrderType,
+                    13.7563 AS Latitude,
+                    100.5018 AS Longitude
+                FROM (
+                    SELECT Id, Type, FromPoint, DestPoint,
+                           CASE 
+                               WHEN Type = 'IMPORT' THEN FromPoint
+                               WHEN Type = 'EXPORT' THEN DestPoint
+                               ELSE FromPoint
+                           END AS carrier_name
+                    FROM `Order`
+                ) AS o
+                WHERE carrier_name IS NOT NULL AND carrier_name != ''
+            """)
+            print("✓ Using simple carrier query with default coordinates")
+        
+        table = pd.read_json(data_json)
+        table = table.rename(columns={
+            'Id': 'ID',
+            'Name': 'NAME',
+            'OrderId': 'ORDER ID',
+            'OrderType': 'ORDER TYPE',
+            'Latitude': 'LAT',
+            'Longitude': 'LNG'
+        })
+        # Note: Latitude and Longitude are not in the Carrier table per schema
+        # You might need to add these fields or get them from another source
+        
+    elif table_name == 'Tugboat':
+        # Updated query to get tugboat location from station
+        data_json = query_table_to_json_custom('Tugboat', """
+            SELECT t.Id, t.Name, t.MaxCapacity, t.MaxBarge, t.MaxFuelCon, t.Type,
+                   t.MinSpeed, t.MaxSpeed, t.EngineRpm, t.HorsePower, t.WaterStatus,
+                   t.ReadyDateTime, t.StationId, s.Latitude, s.Longitude, s.DistanceKm
+            FROM Tugboat AS t
+            LEFT JOIN Station AS s ON t.StationId = s.Id
+        """)
+        table = pd.read_json(data_json)
+        table = table.rename(columns=column_name_dict[table_name])
+        # Add LAT, LNG, KM from station data
+        table['LAT'] = table.get('Latitude', 0)
+        table['LNG'] = table.get('Longitude', 0) 
+        table['KM'] = table.get('DistanceKm', 0)
+        
+    elif table_name == 'Barge':
+        # Updated query to get barge location from station
+        data_json = query_table_to_json_custom('Barge', """
+            SELECT b.Id, b.Name, b.Weight, b.Capacity, b.WaterStatus, b.StationId,
+                   b.SetupTime, b.ReadyDatetime, s.Latitude, s.Longitude, s.DistanceKm
+            FROM Barge AS b
+            LEFT JOIN Station AS s ON b.StationId = s.Id
+        """)
+        table = pd.read_json(data_json)
+        table = table.rename(columns=column_name_dict[table_name])
+        # Add LAT, LNG, KM from station data
+        table['LAT'] = table.get('Latitude', 0)
+        table['LNG'] = table.get('Longitude', 0)
+        table['KM'] = table.get('DistanceKm', 0)
+        
+    else:
+        # For other tables, use the standard query
+        data_json = query_table_to_json(table_name)
+        table = pd.read_json(data_json)
+        
+        if table_name in column_name_dict:
+            table = table.rename(columns=column_name_dict[table_name])
+    
+    # Filter by order_id if provided
+    if order_id and 'ID' in table.columns:
+        table = table[table['ID'] == order_id]
+    
     return table
 
 def get_data_from_db(table_name=False, order_id=False):
@@ -169,7 +313,23 @@ def test_read_data():
     print("Are tugboat_dfv2 and tugboat_df equal?")
     print(tugboat_dfv2.equals(tugboat_df))
     
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    # tugboat_df = get_table_from_db('Tugboat')
+    # print(tugboat_df.head())
+    # station_df = get_table_from_db('Station')
+    # print(station_df.head())
+    # carrier_df = get_table_from_db('Carrier')
+    # print(carrier_df.head())
+    # barge_df = get_table_from_db('Barge')
+    # print(barge_df.head())
+    # order_df = get_table_from_db('Order')
+    # print(order_df.head())
+    carrier_df, barge_df, tugboat_df, station_df, order_df = get_data_from_db()
+    print(carrier_df.head())
+    print(barge_df.head())
+    print(tugboat_df.head())
+    print(station_df.head())    
+    print(order_df.head())
 #     schedule_json = query_table_to_json('Schedule')
 #     schedule_dfv2 = pd.read_json(schedule_json)
 #     print(schedule_dfv2.columns)

@@ -278,3 +278,4 @@ def calculate_single_schedule(order_id):
 
 if __name__ == 'main':
     app.run(debug=DEBUG, host="0.0.0.0")
+    #flask --app app run --debug

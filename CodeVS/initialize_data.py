@@ -1,9 +1,13 @@
 import sys
 import os
 
+
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from read_data import get_data_from_db
 from CodeVS.components.transport_type import TransportType
 from CodeVS.components.water_enum import WaterBody
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime, timedelta
 from CodeVS.components.carrier import Carrier
@@ -88,7 +92,10 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df):
         'barges': barges
     }
     
-    station_points, distances =  create_station_points(data)
+    for station in data['stations'].values():
+        print(station)
+    
+    station_points, distances =  create_station_points(stations)
     data['station_points'] = station_points
     
     print(len(station_points), len(distances))
@@ -147,56 +154,67 @@ def print_all_objects(data):
     for barge in data['barges'].values():
         print(barge)
 
-def create_station_points(data):
-    stations = data['stations']
+def create_station_points(stations):
+    #stations = data['stations']
 
-    # Station data points
-    old_data_points = [
-        {"ID": "c1", "name": "1-Koh Si Chang", "enter_datetime": datetime(2025, 3, 6, 8, 0), "exit_datetime": datetime(2025, 3, 6, 9, 0)},
-        {"ID": "s0", "name": "1-Bangkok Bar", "enter_datetime": datetime(2025, 3, 6, 10, 30), "exit_datetime": datetime(2025, 3, 6, 11, 30)},
-        {"ID": "s1", "name": "2-Phra Chunlachomklao Fort", "enter_datetime": datetime(2025, 3, 6, 12, 0), "exit_datetime": datetime(2025, 3, 6, 13, 0)},
-        {"ID": "s2", "name": "3-Bang Hua Suea Pier", "enter_datetime": datetime(2025, 3, 6, 13, 30), "exit_datetime": datetime(2025, 3, 6, 14, 30)},
-        {"ID": "s3", "name": "4-Bangkok Port", "enter_datetime": datetime(2025, 3, 6, 15, 30), "exit_datetime": datetime(2025, 3, 6, 16, 30)},
-        {"ID": "s4", "name": "5-Royal Thai Navy HQ", "enter_datetime": datetime(2025, 3, 6, 18, 30), "exit_datetime": datetime(2025, 3, 6, 19, 30)},
-        {"ID": "s5", "name": "Wat Choeng Len", "enter_datetime": datetime(2025, 3, 6, 22, 30), "exit_datetime": datetime(2025, 3, 6, 23, 30)},
-        {"ID": "s6", "name": "Tai Kred", "enter_datetime": datetime(2025, 3, 7, 0, 0), "exit_datetime": datetime(2025, 3, 7, 1, 0)},
-        {"ID": "s7", "name": "Rama IV Bridge", "enter_datetime": datetime(2025, 3, 7, 1, 30), "exit_datetime": datetime(2025, 3, 7, 2, 30)},
-        {"ID": "s8", "name": "Rangsit Bridge (Nonthaburi)", "enter_datetime": datetime(2025, 3, 7, 4, 0), "exit_datetime": datetime(2025, 3, 7, 5, 0)},
-        {"ID": "s9", "name": "Pathum Thani Bridge", "enter_datetime": datetime(2025, 3, 7, 7, 0), "exit_datetime": datetime(2025, 3, 7, 8, 0)},
-        {"ID": "s10", "name": "Wat Kai Tia Pier", "enter_datetime": datetime(2025, 3, 7, 9, 30), "exit_datetime": datetime(2025, 3, 7, 10, 30)},
-        {"ID": "s11", "name": "Sam Khok Pier", "enter_datetime": datetime(2025, 3, 7, 11, 0), "exit_datetime": datetime(2025, 3, 7, 12, 0)},
-        {"ID": "s12", "name": "Wat Chang Yai", "enter_datetime": datetime(2025, 3, 7, 14, 0), "exit_datetime": datetime(2025, 3, 7, 15, 0)},
-        {"ID": "s13", "name": "Bang Pa-In (District)", "enter_datetime": datetime(2025, 3, 7, 17, 30), "exit_datetime": datetime(2025, 3, 7, 18, 30)},
-        {"ID": "s14", "name": "Wat Thong Bo", "enter_datetime": datetime(2025, 3, 7, 20, 30), "exit_datetime": datetime(2025, 3, 7, 21, 30)},
-        {"ID": "s15", "name": "Wat Prot Sat", "enter_datetime": datetime(2025, 3, 7, 22, 0), "exit_datetime": datetime(2025, 3, 7, 23, 0)},
-        {"ID": "s16", "name": "Wat Song Kusol Pier", "enter_datetime": datetime(2025, 3, 8, 0, 30), "exit_datetime": datetime(2025, 3, 8, 1, 30)},
-        {"ID": "s17", "name": "Sam Yaek Wat Phanan Choeng", "enter_datetime": datetime(2025, 3, 8, 2, 0), "exit_datetime": datetime(2025, 3, 8, 3, 0)},
-        {"ID": "s18", "name": "Pridi Bridge", "enter_datetime": datetime(2025, 3, 8, 4, 30), "exit_datetime": datetime(2025, 3, 8, 5, 30)},
-        {"ID": "s19", "name": "Chao Phrom Market", "enter_datetime": datetime(2025, 3, 8, 7, 0), "exit_datetime": datetime(2025, 3, 8, 8, 0)},
-        {"ID": "s20", "name": "Wat Pa Kho", "enter_datetime": datetime(2025, 3, 8, 9, 30), "exit_datetime": datetime(2025, 3, 8, 10, 30)},
-        {"ID": "s21", "name": "Wat Mai Sommarin", "enter_datetime": datetime(2025, 3, 8, 11, 0), "exit_datetime": datetime(2025, 3, 8, 12, 0)},
-        {"ID": "s22", "name": "Bo Phrong Bridge Pier", "enter_datetime": datetime(2025, 3, 8, 13, 30), "exit_datetime": datetime(2025, 3, 8, 14, 30)},
-        {"ID": "s23", "name": "Wat Bandai Pier", "enter_datetime": datetime(2025, 3, 8, 17, 0), "exit_datetime": datetime(2025, 3, 8, 18, 0)},
-        {"ID": "s24", "name": "Wat Sam Makan", "enter_datetime": datetime(2025, 3, 8, 20, 30), "exit_datetime": datetime(2025, 3, 8, 21, 30)},
-    ]
+    # # Station data points
+    # old_data_points = [
+    #     {"ID": "c1", "name": "1-Koh Si Chang", "enter_datetime": datetime(2025, 3, 6, 8, 0), "exit_datetime": datetime(2025, 3, 6, 9, 0)},
+    #     {"ID": "s0", "name": "1-Bangkok Bar", "enter_datetime": datetime(2025, 3, 6, 10, 30), "exit_datetime": datetime(2025, 3, 6, 11, 30)},
+    #     {"ID": "s1", "name": "2-Phra Chunlachomklao Fort", "enter_datetime": datetime(2025, 3, 6, 12, 0), "exit_datetime": datetime(2025, 3, 6, 13, 0)},
+    #     {"ID": "s2", "name": "3-Bang Hua Suea Pier", "enter_datetime": datetime(2025, 3, 6, 13, 30), "exit_datetime": datetime(2025, 3, 6, 14, 30)},
+    #     {"ID": "s3", "name": "4-Bangkok Port", "enter_datetime": datetime(2025, 3, 6, 15, 30), "exit_datetime": datetime(2025, 3, 6, 16, 30)},
+    #     {"ID": "s4", "name": "5-Royal Thai Navy HQ", "enter_datetime": datetime(2025, 3, 6, 18, 30), "exit_datetime": datetime(2025, 3, 6, 19, 30)},
+    #     {"ID": "s5", "name": "Wat Choeng Len", "enter_datetime": datetime(2025, 3, 6, 22, 30), "exit_datetime": datetime(2025, 3, 6, 23, 30)},
+    #     {"ID": "s6", "name": "Tai Kred", "enter_datetime": datetime(2025, 3, 7, 0, 0), "exit_datetime": datetime(2025, 3, 7, 1, 0)},
+    #     {"ID": "s7", "name": "Rama IV Bridge", "enter_datetime": datetime(2025, 3, 7, 1, 30), "exit_datetime": datetime(2025, 3, 7, 2, 30)},
+    #     {"ID": "s8", "name": "Rangsit Bridge (Nonthaburi)", "enter_datetime": datetime(2025, 3, 7, 4, 0), "exit_datetime": datetime(2025, 3, 7, 5, 0)},
+    #     {"ID": "s9", "name": "Pathum Thani Bridge", "enter_datetime": datetime(2025, 3, 7, 7, 0), "exit_datetime": datetime(2025, 3, 7, 8, 0)},
+    #     {"ID": "s10", "name": "Wat Kai Tia Pier", "enter_datetime": datetime(2025, 3, 7, 9, 30), "exit_datetime": datetime(2025, 3, 7, 10, 30)},
+    #     {"ID": "s11", "name": "Sam Khok Pier", "enter_datetime": datetime(2025, 3, 7, 11, 0), "exit_datetime": datetime(2025, 3, 7, 12, 0)},
+    #     {"ID": "s12", "name": "Wat Chang Yai", "enter_datetime": datetime(2025, 3, 7, 14, 0), "exit_datetime": datetime(2025, 3, 7, 15, 0)},
+    #     {"ID": "s13", "name": "Bang Pa-In (District)", "enter_datetime": datetime(2025, 3, 7, 17, 30), "exit_datetime": datetime(2025, 3, 7, 18, 30)},
+    #     {"ID": "s14", "name": "Wat Thong Bo", "enter_datetime": datetime(2025, 3, 7, 20, 30), "exit_datetime": datetime(2025, 3, 7, 21, 30)},
+    #     {"ID": "s15", "name": "Wat Prot Sat", "enter_datetime": datetime(2025, 3, 7, 22, 0), "exit_datetime": datetime(2025, 3, 7, 23, 0)},
+    #     {"ID": "s16", "name": "Wat Song Kusol Pier", "enter_datetime": datetime(2025, 3, 8, 0, 30), "exit_datetime": datetime(2025, 3, 8, 1, 30)},
+    #     {"ID": "s17", "name": "Sam Yaek Wat Phanan Choeng", "enter_datetime": datetime(2025, 3, 8, 2, 0), "exit_datetime": datetime(2025, 3, 8, 3, 0)},
+    #     {"ID": "s18", "name": "Pridi Bridge", "enter_datetime": datetime(2025, 3, 8, 4, 30), "exit_datetime": datetime(2025, 3, 8, 5, 30)},
+    #     {"ID": "s19", "name": "Chao Phrom Market", "enter_datetime": datetime(2025, 3, 8, 7, 0), "exit_datetime": datetime(2025, 3, 8, 8, 0)},
+    #     {"ID": "s20", "name": "Wat Pa Kho", "enter_datetime": datetime(2025, 3, 8, 9, 30), "exit_datetime": datetime(2025, 3, 8, 10, 30)},
+    #     {"ID": "s21", "name": "Wat Mai Sommarin", "enter_datetime": datetime(2025, 3, 8, 11, 0), "exit_datetime": datetime(2025, 3, 8, 12, 0)},
+    #     {"ID": "s22", "name": "Bo Phrong Bridge Pier", "enter_datetime": datetime(2025, 3, 8, 13, 30), "exit_datetime": datetime(2025, 3, 8, 14, 30)},
+    #     {"ID": "s23", "name": "Wat Bandai Pier", "enter_datetime": datetime(2025, 3, 8, 17, 0), "exit_datetime": datetime(2025, 3, 8, 18, 0)},
+    #     {"ID": "s24", "name": "Wat Sam Makan", "enter_datetime": datetime(2025, 3, 8, 20, 30), "exit_datetime": datetime(2025, 3, 8, 21, 30)},
+    # ]
 
 
     data_points = []
     distances = []
     travel_times = []
-    for i, station in enumerate(stations.values()):
-        enter_datatime = old_data_points[i]["enter_datetime"]
-        exit_datatime = old_data_points[i]["exit_datetime"]
+    value_stations = list(stations.values())
+    for i, station in enumerate(value_stations):
+        
+        #enter_datatime = value_stations[i]["enter_datetime"]
+        #exit_datatime = value_stations[i]["exit_datetime"]
         info = {
             "ID": station.station_id,
             "name": station.name,
-            "enter_datetime": enter_datatime,
-            "exit_datetime": exit_datatime
+            #"enter_datetime": enter_datatime,
+            #"exit_datetime": exit_datatime
         }
         data_points.append(info) 
         
-        if i < len(stations)-1:
-            next_station = list(stations.values())[i+1]
+        if i < len(value_stations)-1:
+            next_station = list(value_stations)[i+1]
             distances.append(abs(station.km - next_station.km))
-    
+    #print("Data points:", data_points)
+    #print("Distances:", distances)
     return data_points, distances
+
+if __name__ == "__main__":
+    # Example usage
+    carrier_df, barge_df, tugboat_df, station_df, order_df = get_data_from_db()
+
+    data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df)
+    
+    print_all_objects(data)

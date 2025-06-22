@@ -89,47 +89,96 @@ def query_table_to_json(table_name):
             database=DATABASE_NAME
         )
         if conn.is_connected():
-            # print(f'Connected to database: {DATABASE_NAME} to query table: {table_name}')
             # Using dictionary=True to get results as dictionaries (column_name: value)
             cursor = conn.cursor(dictionary=True)
+            
+            # Updated queries to match the new database schema
             if table_name == 'Station':
                 query = """
-                            SELECT s.Id, s.Type, s.Name AS StationName, s.Latitude, s.Longitude, s.DistanceKm, c.Name 
-                            FROM `Station` AS s
-                                LEFT JOIN `Customer_Station` AS cs ON cs.`StationId` = s.`Id` 
-                                LEFT JOIN `Customer` AS c ON cs.`CustomerId` = c.`Id`;
-                        """
+                    SELECT s.Id, s.Type, s.Name, s.Latitude, s.Longitude, s.DistanceKm, c.Name AS CustomerName
+                    FROM Station AS s
+                    LEFT JOIN Customer_Station AS cs ON cs.StationId = s.Id 
+                    LEFT JOIN Customer AS c ON cs.CustomerId = c.Id
+                """
             elif table_name == 'Carrier':
                 query = """
-                            SELECT c.Id, c.Name, c.Latitude, c.Longitude, o.Id AS Order_id
-                            FROM
-                                `Carrier` AS c LEFT JOIN
-                                `Order` AS o ON c.Name=o.FromPoint;
-                        """
+                    SELECT c.Id, c.Name, o.Id AS OrderId, o.FromPoint, o.DestPoint
+                    FROM Carrier AS c 
+                    LEFT JOIN `Order` AS o ON c.Name = o.FromPoint OR c.Name = o.DestPoint
+                """
+            elif table_name == 'Tugboat':
+                query = """
+                    SELECT t.Id, t.Name, t.MaxCapacity, t.MaxBarge, t.MaxFuelCon, t.Type,
+                           t.MinSpeed, t.MaxSpeed, t.EngineRpm, t.HorsePower, t.WaterStatus,
+                           t.ReadyDateTime, t.StationId, s.Latitude, s.Longitude, s.DistanceKm
+                    FROM Tugboat AS t
+                    LEFT JOIN Station AS s ON t.StationId = s.Id
+                """
+            elif table_name == 'Barge':
+                query = """
+                    SELECT b.Id, b.Name, b.Weight, b.Capacity, b.WaterStatus, b.StationId,
+                           b.SetupTime, b.ReadyDatetime, s.Latitude, s.Longitude, s.DistanceKm
+                    FROM Barge AS b
+                    LEFT JOIN Station AS s ON b.StationId = s.Id
+                """
+            elif table_name == 'Order':
+                query = """
+                    SELECT o.Id, o.Type, o.FromPoint, o.DestPoint, o.StartStationId, o.DestStationId,
+                           o.ProductName, o.Demand, o.StartDateTime, o.DueDateTime, o.LoadingRate,
+                           o.CR1, o.CR2, o.CR3, o.CR4, o.CR5, o.CR6, o.CR7,
+                           o.TimeReadyCR1, o.TimeReadyCR2, o.TimeReadyCR3, o.TimeReadyCR4,
+                           o.TimeReadyCR5, o.TimeReadyCR6, o.TimeReadyCR7
+                    FROM `Order` AS o
+                """
             else:
-                query = f"SELECT * FROM `{table_name}`;" # Be cautious with unescaped table names in production
-            # print(f"Executing query: {query}")
+                query = f"SELECT * FROM `{table_name}`;"
+                
             cursor.execute(query)
             results = cursor.fetchall()
             cursor.close()
             if results:
-                # Convert list of dictionaries to JSON string
-                # default=str handles non-serializable types like datetime
                 json_output = json.dumps(results, indent=4, default=str)
-                # print(f"Data from {table_name} (JSON format):")
-                # print(json_output) # Optionally print here or just return
                 return json_output
             else:
                 print(f"No data found in table {table_name}.")
-                return json.dumps([]) # Return an empty JSON array string
+                return json.dumps([])
     except Error as e:
         print(f"Error querying table '{table_name}' in database '{DATABASE_NAME}': {e}")
-        return None # Indicate failure
+        return None
     finally:
         if conn and conn.is_connected():
             conn.close()
-            # print(f'MySQL connection for querying {table_name} in {DATABASE_NAME} is closed')
 
+def query_table_to_json_custom(table_name, custom_query):
+    """
+    Execute a custom query and return results as JSON.
+    Added to support complex queries with joins.
+    """
+    conn = None
+    try:
+        conn = mysql.connector.connect(
+            host=HOST,
+            port=PORT,
+            user=USER,
+            password=PASSWORD,
+            database=DATABASE_NAME
+        )
+        if conn.is_connected():
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(custom_query)
+            results = cursor.fetchall()
+            cursor.close()
+            if results:
+                return json.dumps(results, indent=4, default=str)
+            else:
+                print(f"No data found for custom query on {table_name}.")
+                return json.dumps([])
+    except Error as e:
+        print(f"Error executing custom query for '{table_name}': {e}")
+        return None
+    finally:
+        if conn and conn.is_connected():
+            conn.close()
 
 def drop_table(table_name):
     """ Connects to a specific MySQL database and drops a table. """
@@ -296,11 +345,11 @@ if __name__ == '__main__':
     #connect_to_mysql_and_list_databases() # Lists all databases
     #list_tables_in_database('spinterdb') # Initial list if needed
 
-    print("\nAttempting to drop 'Schedule' table (if it exists)...")
-    drop_table('Schedule')
+    #print("\nAttempting to drop 'Schedule' table (if it exists)...")
+    #drop_table('Schedule')
     
-    print("\nAttempting to create 'Schedule' table...")
-    create_schedule_table()
+    #print("\nAttempting to create 'Schedule' table...")
+    #create_schedule_table()
     
     print("\nListing tables in 'spinterdb' after operations:")
     list_tables_in_database()
