@@ -317,9 +317,9 @@ def main(testing=False, testing_result=TestingResult.CRANE):
         
     TravelHelper._set_data(TravelHelper._instance,  data)
     
-    print(f"Data Type: {type(data)}")
-    for key, value in data.items():
-        print(key, value, "\n")
+    #print(f"Data Type: {type(data)}")
+    #for key, value in data.items():
+    #    print(key, value, "\n")
     # print(data)
     # eeeee
     # TravelHelper()
@@ -340,7 +340,65 @@ def main(testing=False, testing_result=TestingResult.CRANE):
     # print(Travel_Helper.get_next_station(TransportType.IMPORT, 15))
     # print(Travel_Helper.get_next_station(TransportType.EXPORT, 15))
     print(testing, testing_result)
+    
+    filtered_df = tugboat_df[
+                        ((tugboat_df['tugboat_id'] == 'tbs01') | (tugboat_df['tugboat_id'] == 'tbr05x')) 
+                        # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
+                        &  ((tugboat_df['order_id'] == 'o1') )
+                        # & (tugboat_df['order_trip'] == 1)
+                        #& (tugboat_df['distance'] > 60)
+                        #(tugboat_df['distance'] > 60)
+                        ]
+    
+    temp_df = filtered_df[['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 
+                           'tugboat_id','distance', 'time', 'speed','order_trip',
+                      # 'distance', 'time', 'speed', 'order_trip', 'total_load', 'barge_ids'
+                     # 'total_load', 'barge_ids',
+       #'order_distance', 'order_time', 'barge_speed', 'order_arrival_time',
+       #'tugboat_id', 'order_id', 'water_type'
+       ]]
+    
+    print(temp_df)
+    print("order_df", order_df.columns)
+    print("order_df", order_df[['ID', 'TYPE', 'START POINT', 'DES POINT', 'START STATION ID',
+       'DES STATION ID', 'PRODUCT', 'DEMAND', 'START DATETIME', 'DUE DATETIME',
+       #'LD+ULD RATE', 'CRANE RATE1', 'CRANE RATE2', 'CRANE RATE3',
+       #'CRANE RATE4', 'CRANE RATE5', 'CRANE RATE6', 'CRANE RATE7',
+       #'TIME READY CR1', 'TIME READY CR2', 'TIME READY CR3', 'TIME READY CR4',
+       #'TIME READY CR5', 'TIME READY CR6', 'TIME READY CR7'
+       ]])
+    
     return tugboat_df
 
+def test_read_data():
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    print(carrier_df)
+    print(barge_df)
+    print(tugboat_df)
+    print(station_df)
+    print(order_df)
+    print(customer_df)
+    
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    print_all_objects(data)
+    
+    
+    order_ids = [ order_id for order_id in data['orders'].keys()]
+    order_ids = order_ids[:1]
+    
+    solution = Solution(data)
+    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    
+    print(tugboat_df)
+    print(barge_df)
+    
 if __name__ == "__main__":
-    result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)
+    #result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)
+    test_read_data()
+    

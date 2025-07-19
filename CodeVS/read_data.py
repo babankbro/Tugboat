@@ -7,11 +7,8 @@ file_path = FILE_INPUT_NAME
 
 # Load the Excel file
 # xls = pd.ExcelFile(file_path)
-
 # Read specific sheets into DataFrames
-
 #assigned_barge_df = xls.parse("assigned_barge")
-
 def get_table_from_db(table_name, order_id=None):
     """
     Updated column mapping to match the actual database schema from the PDF
@@ -55,37 +52,44 @@ def get_table_from_db(table_name, order_id=None):
             'DistanceKm': 'KM'
         },
         'Order': {
-            'Id': 'ID', 
-            'Type': 'TYPE', 
-            'FromPoint': 'START POINT', 
-            'DestPoint': 'DES POINT', 
-            'StartStationId': 'START STATION ID',    # New fields from schema
-            'DestStationId': 'DES STATION ID',        # New fields from schema
-            'ProductName': 'PRODUCT', 
+            'Id': 'ID',
+            'Type': 'TYPE',
+            'FromEntityId': 'START POINT',  # Map to existing column name
+            'DestEntityId': 'DES POINT',    # Map to existing column name
+            'StartStationId': 'START STATION ID',
+            'DestStationId': 'DES STATION ID',
+            'ProductName': 'PRODUCT',
             'Demand': 'DEMAND',
-            'StartDateTime': 'START DATETIME', 
-            'DueDateTime': 'DUE DATETIME', 
-            'LoadingRate': 'LD+ULD RATE', 
-            'CR1': 'CRANE RATE1', 
-            'CR2': 'CRANE RATE2', 
+            'StartDateTime': 'START DATETIME',
+            'DueDateTime': 'DUE DATETIME',
+            'LoadingRate': 'LD+ULD RATE',
+            'CR1': 'CRANE RATE1',
+            'CR2': 'CRANE RATE2',
             'CR3': 'CRANE RATE3',
-            'CR4': 'CRANE RATE4', 
-            'CR5': 'CRANE RATE5', 
-            'CR6': 'CRANE RATE6', 
-            'CR7': 'CRANE RATE7', 
-            'TimeReadyCR1': 'TIME READY CR1', 
+            'CR4': 'CRANE RATE4',
+            'CR5': 'CRANE RATE5',
+            'CR6': 'CRANE RATE6',
+            'CR7': 'CRANE RATE7',
+            'CR8': 'CRANE RATE8',  # Added CR8 and CR9 from schema
+            'CR9': 'CRANE RATE9',
+            'TimeReadyCR1': 'TIME READY CR1',
             'TimeReadyCR2': 'TIME READY CR2',
-            'TimeReadyCR3': 'TIME READY CR3', 
-            'TimeReadyCR4': 'TIME READY CR4', 
-            'TimeReadyCR5': 'TIME READY CR5', 
+            'TimeReadyCR3': 'TIME READY CR3',
+            'TimeReadyCR4': 'TIME READY CR4',
+            'TimeReadyCR5': 'TIME READY CR5',
             'TimeReadyCR6': 'TIME READY CR6',
-            'TimeReadyCR7': 'TIME READY CR7'
+            'TimeReadyCR7': 'TIME READY CR7',
+            'TimeReadyCR8': 'TIME READY CR8',  # Added these mappings
+            'TimeReadyCR9': 'TIME READY CR9'
         },
         'Customer': {
             'Id': 'ID',
             'Name': 'NAME',
             'Email': 'EMAIL',
-            'Address': 'ADDRESS'
+            'Address': 'ADDRESS',
+            'StationId': 'STATION',
+            'Latitude': 'LAT',
+            'Longitude': 'LNG'
         },
         'Customer_Station': {
             'CustomerId': 'CUSTOMER_ID',
@@ -97,10 +101,9 @@ def get_table_from_db(table_name, order_id=None):
     if table_name == 'Station':
         # Updated query to match the new schema structure
         data_json = query_table_to_json_custom('Station', """
-            SELECT s.Id, s.Type, s.Name, s.Latitude, s.Longitude, s.DistanceKm, c.Name AS CustomerName
+            SELECT s.Id, s.Type, s.Name, s.Latitude, s.Longitude, s.DistanceKm, s.StationType, c.Name AS CustomerName
             FROM Station AS s
-            LEFT JOIN Customer_Station AS cs ON cs.StationId = s.Id 
-            LEFT JOIN Customer AS c ON cs.CustomerId = c.Id
+            LEFT JOIN Customer AS c ON c.stationId = s.Id
         """)
         table = pd.read_json(data_json)
         # Add customer name mapping
@@ -114,6 +117,95 @@ def get_table_from_db(table_name, order_id=None):
             'CustomerName': 'CUS'
         })
         
+    elif table_name == 'Order':
+    # Updated query to handle Order table with proper column mapping
+        if order_id:
+            try:
+                data_json = query_table_to_json_custom('Order', f"""
+                    SELECT Id, Type, FromEntityId, DestEntityId, StartStationId, DestStationId,
+                        ProductName, Demand, StartDateTime, DueDateTime, LoadingRate,
+                        CR1, CR2, CR3, CR4, CR5, CR6, CR7, CR8, CR9,
+                        TimeReadyCR1, TimeReadyCR2, TimeReadyCR3, TimeReadyCR4, TimeReadyCR5, 
+                        TimeReadyCR6, TimeReadyCR7, TimeReadyCR8, TimeReadyCR9
+                    FROM `Order`
+                    WHERE Id = '{order_id}'
+                """)
+                # Check if data_json is None or empty
+                if not data_json:
+                    raise ValueError("Empty or null result returned from database query")
+                
+                # Parse the JSON data
+                try:
+                    table = pd.read_json(data_json)
+                except Exception as e:
+                    print(f"Error parsing JSON data: {e}")
+                    return None
+                
+                table = table.rename(columns=column_name_dict[table_name])
+                
+            except Exception as e:
+                print(f"Error executing order query with order_id: {e}")
+                return None
+                
+        else:
+            try:
+                data_json = query_table_to_json_custom('Order', """
+                    SELECT Id, Type, FromEntityId, DestEntityId, StartStationId, DestStationId,
+                        ProductName, Demand, StartDateTime, DueDateTime, LoadingRate,
+                        CR1, CR2, CR3, CR4, CR5, CR6, CR7, CR8, CR9,
+                        TimeReadyCR1, TimeReadyCR2, TimeReadyCR3, TimeReadyCR4, TimeReadyCR5, 
+                        TimeReadyCR6, TimeReadyCR7, TimeReadyCR8, TimeReadyCR9
+                    FROM `Order`
+                """)
+                # Check if data_json is None or empty
+                if not data_json:
+                    raise ValueError("Empty or null result returned from database query")
+                
+                # Parse the JSON data
+                try:
+                    table = pd.read_json(data_json)
+                except Exception as e:
+                    print(f"Error parsing JSON data: {e}")
+                    return None
+                
+                table = table.rename(columns=column_name_dict[table_name])
+                
+            except Exception as e:
+                print(f"Error executing order query: {e}")
+                return None
+    
+    elif table_name == 'Customer':
+        # Handle Customer table
+        try:
+            data_json = query_table_to_json_custom('Customer', """
+                SELECT c.Id, c.Name, c.Email, c.Address, c.StationId, 
+                       s.Latitude, s.Longitude
+                FROM Customer AS c
+                LEFT JOIN Station AS s ON c.StationId = s.Id
+            """)
+            
+            # Check if data_json is None or empty
+            if not data_json:
+                raise ValueError("Empty or null result returned from database query")
+            
+            # Parse the JSON data
+            try:
+                table = pd.read_json(data_json)
+            except Exception as e:
+                print(f"Error parsing JSON data: {e}")
+                return None
+            
+            table = table.rename(columns=column_name_dict[table_name])
+            
+            # Add LAT, LNG from station data if available
+            if 'Latitude' in table.columns and 'Longitude' in table.columns:
+                table['LAT'] = table['Latitude']
+                table['LNG'] = table['Longitude']
+                
+        except Exception as e:
+            print(f"Error executing customer query: {e}")
+            return None
+        
     elif table_name == 'Carrier':
         # Updated query to get carrier info with orders and location from start station
         # Get carrier info directly from Order table FromPoint/DestPoint with fallback logic
@@ -121,11 +213,11 @@ def get_table_from_db(table_name, order_id=None):
             # Try with start_station_id/des_station_id first
             data_json = query_table_to_json_custom('Carrier', """
                 SELECT DISTINCT
-                    CONCAT('carrier_', ROW_NUMBER() OVER (ORDER BY carrier_name, o.Id)) AS Id,
-                    carrier_name AS Name,
+                    o.carrier_id AS Id,
+                    c.Name AS Name,
                     o.Id AS OrderId,
-                    o.FromPoint,
-                    o.DestPoint,
+                    o.StartStationId,
+                    o.DestEntityId,
                     o.Type AS OrderType,
                     CASE 
                         WHEN o.Type = 'IMPORT' THEN ss.Latitude
@@ -138,17 +230,18 @@ def get_table_from_db(table_name, order_id=None):
                         ELSE ss.Longitude
                     END AS Longitude
                 FROM (
-                    SELECT Id, Type, FromPoint, DestPoint, StartStationId, DestStationId,
+                    SELECT Id, Type, FromEntityId, DestEntityId, StartStationId, DestStationId,
                            CASE 
-                               WHEN Type = 'IMPORT' THEN FromPoint
-                               WHEN Type = 'EXPORT' THEN DestPoint
-                               ELSE FromPoint
-                           END AS carrier_name
+                               WHEN Type = 'IMPORT' THEN FromEntityId
+                               WHEN Type = 'EXPORT' THEN DestEntityId
+                               ELSE FromEntityId
+                           END AS carrier_id
                     FROM `Order`
                 ) AS o
-                LEFT JOIN Station AS ss ON o.StartStationId = ss.Id
-                LEFT JOIN Station AS ds ON o.DestStationId = ds.Id
-                WHERE carrier_name IS NOT NULL AND carrier_name != ''
+                LEFT JOIN `Carrier` AS c ON o.carrier_id = c.Id
+                LEFT JOIN `Station` AS ss ON o.StartStationId = ss.Id
+                LEFT JOIN `Station` AS ds ON o.DestStationId = ds.Id
+                WHERE c.Name IS NOT NULL AND c.Name != ''
             """)
             print("✓ Using carrier query with StartStationId/DestStationId")
             
@@ -159,7 +252,7 @@ def get_table_from_db(table_name, order_id=None):
             # Fallback: Simple query with default coordinates
             data_json = query_table_to_json_custom('Carrier', """
                 SELECT DISTINCT
-                    CONCAT('carrier_', ROW_NUMBER() OVER (ORDER BY carrier_name, o.Id)) AS Id,
+                    o.carrier_id AS Id,
                     carrier_name AS Name,
                     o.Id AS OrderId,
                     o.FromPoint,
@@ -223,13 +316,30 @@ def get_table_from_db(table_name, order_id=None):
         table['LNG'] = table.get('Longitude', 0)
         table['KM'] = table.get('DistanceKm', 0)
         
-    else:
-        # For other tables, use the standard query
-        data_json = query_table_to_json(table_name)
-        table = pd.read_json(data_json)
+    elif table_name == 'Order':
+    # Updated query to handle Order table with proper column mapping
+        if order_id:
+            data_json = query_table_to_json_custom('Order', f"""
+                SELECT Id, Type, FromEntityId, DestEntityId, StartStationId, DestStationId,
+                    ProductName, Demand, StartDateTime, DueDateTime, LoadingRate,
+                    CR1, CR2, CR3, CR4, CR5, CR6, CR7, CR8, CR9,
+                    TimeReadyCR1, TimeReadyCR2, TimeReadyCR3, TimeReadyCR4, TimeReadyCR5, 
+                    TimeReadyCR6, TimeReadyCR7, TimeReadyCR8, TimeReadyCR9
+                FROM `Order`
+                WHERE Id = '{order_id}'
+            """)
+        else:
+            data_json = query_table_to_json_custom('Order', """
+                SELECT Id, Type, FromEntityId, DestEntityId, StartStationId, DestStationId,
+                    ProductName, Demand, StartDateTime, DueDateTime, LoadingRate,
+                    CR1, CR2, CR3, CR4, CR5, CR6, CR7, CR8, CR9,
+                    TimeReadyCR1, TimeReadyCR2, TimeReadyCR3, TimeReadyCR4, TimeReadyCR5, 
+                    TimeReadyCR6, TimeReadyCR7, TimeReadyCR8, TimeReadyCR9
+                FROM `Order`
+            """)
         
-        if table_name in column_name_dict:
-            table = table.rename(columns=column_name_dict[table_name])
+        table = pd.read_json(data_json)
+        table = table.rename(columns=column_name_dict[table_name])
     
     # Filter by order_id if provided
     if order_id and 'ID' in table.columns:
@@ -249,13 +359,14 @@ def get_data_from_db(table_name=False, order_id=False):
         # print(tugboat_df)
         station_df = get_table_from_db('Station')
         # print(station_df)
-
+        customer_df = get_table_from_db('Customer')
+        # print(customer_df)
 
         # print(station_df.columns)
         order_df = get_table_from_db('Order',order_id=order_id)
         # print(order_df)
         # print(order_df.columns)
-        return (carrier_df, barge_df, tugboat_df, station_df, order_df)
+        return (carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
     elif table_name:
         return get_table_from_db(table_name)
         # print("Table not found.")
@@ -324,12 +435,13 @@ if __name__ == "__main__":
     # print(barge_df.head())
     # order_df = get_table_from_db('Order')
     # print(order_df.head())
-    carrier_df, barge_df, tugboat_df, station_df, order_df = get_data_from_db()
+    carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
     print(carrier_df.head())
     print(barge_df.head())
     print(tugboat_df.head())
     print(station_df.head())    
     print(order_df.head())
+    print(customer_df.head())
 #     schedule_json = query_table_to_json('Schedule')
 #     schedule_dfv2 = pd.read_json(schedule_json)
 #     print(schedule_dfv2.columns)

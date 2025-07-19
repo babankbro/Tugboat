@@ -194,9 +194,10 @@ def calculate_single_schedule(order_id):
                         query_schedule = "DELETE FROM `Schedule` WHERE `order_id`=%s;"
                         query_cost = "DELETE FROM `Cost` WHERE `OrderId`=%s;"
                         cursor.execute(query_schedule, (order_id,))
-                        # print(f"Executing query: {query_cost}")
+                        print(f"Executing query: {query_cost}")
 
                         cursor.execute(query_cost, (order_id,))
+                        
                         
                         # print("Cost Data Deleted")
                         insert_schedule_query = """
@@ -236,6 +237,7 @@ def calculate_single_schedule(order_id):
                                 row['order_id'] if row["order_id"] else None,
                                 row['water_type'] if row["water_type"] else None,
                             ))
+                            
 
                         insert_cost_query = """
                                     INSERT INTO 

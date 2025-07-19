@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from CodeVS.components.station import Station
 from CodeVS.utility.helpers import haversine
+import CodeVS.config_problem as config_problem
 
 class TravelHelper:
     _instance = None
@@ -78,12 +79,22 @@ class TravelHelper:
         end_index = self.data['lookup_station_index'][end_station_id]
         #print(start_station_id, start_index, end_station_id, end_index)
         result = []
+        key_station = config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID + "-"
         if start_index < end_index:
             for i in range(start_index, end_index + 1):
+                if key_station in self.data['station_ids'][i]:
+                    continue
                 result.append(self.data['station_ids'][i])
         else:
             for i in range(start_index, end_index - 1, -1):
+                if key_station in self.data['station_ids'][i]:
+                    continue
                 result.append(self.data['station_ids'][i])
+                
+        if key_station in end_station_id:
+            if key_station not in result:
+                result.append(config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID)
+            result.append(end_station_id)
         return result
 
     def convert_pos_to_latlng(self, location):
@@ -96,6 +107,15 @@ class TravelHelper:
         return start_pos
 
     def get_distance_station(self, start_station, end_station):
+        if start_station.water_type == WaterBody.SEA and end_station.water_type == WaterBody.SEA:
+            return abs(start_station.km - end_station.km)
+        if start_station.water_type == WaterBody.RIVER and end_station.water_type == WaterBody.SEA :
+            key = (start_station.station_id, config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID)
+            station_c01 = self.data['stations'][config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID]
+            lookup_distances = self.data['lookup_distances']
+            distance = lookup_distances[key]
+            return distance +  abs(station_c01.km - end_station.km)
+
         key = (start_station.station_id,end_station.station_id)
         lookup_distances = self.data['lookup_distances']
         distance = lookup_distances[key]
@@ -114,6 +134,9 @@ class TravelHelper:
             start_station = self.data['stations'][order_stations[i]]
             end_station = self.data['stations'][order_stations[i + 1]]
             distance = self.get_distance_station(start_station, end_station)
+            if (config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID in start_station.station_id 
+                and config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID in end_station.station_id):
+                print(f"{config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID} Station found in river travel steps", distance)
             travel_time = distance/ speed # t = d / v
             steps.append({
                 'start_location': start_station.km,
@@ -180,9 +203,11 @@ class TravelHelper:
                 steps.append(first_point)
                 total_distance += distance
                 total_time += travel_time
-
+            
             td, tt = self._append_travel_steps_for_river_stations(order_stations, steps, info_start_ends['speed'])
-
+            print("order_stations -------------- ",order_stations, td)
+            for step in steps:
+                print(step['start_location'], step['end_location'], step['distance'], step['travel_time'], step['speed'])
             total_distance += td
             total_time += tt
             if isContinue:

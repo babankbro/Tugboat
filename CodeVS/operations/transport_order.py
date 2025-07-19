@@ -187,15 +187,16 @@ def generate_travel_steps(arrival_datetime, travel_info):
     start_travel_time = arrival_datetime
     # print(travel_info['steps'][0]['start_id'])
     # print(travel_info['steps'][-1]['end_id'])
-    if ('c' in travel_info['steps'][0]['start_id']) and ('c' in travel_info['steps'][-1]['end_id']):
+    start_station = TravelHelper._instance.data['stations'][travel_info['steps'][0]['start_id']]
+    end_station = TravelHelper._instance.data['stations'][travel_info['steps'][-1]['end_id']]
+    if (start_station.water_type == WaterBody.SEA) and (end_station.water_type == WaterBody.SEA):
         travel_type = 'Sea-Sea'
-    elif('s' in travel_info['steps'][0]['start_id']) and ('c' in travel_info['steps'][-1]['end_id']):
+    elif(start_station.water_type == WaterBody.RIVER) and (end_station.water_type == WaterBody.SEA):
         travel_type = 'River-Sea'
 
-    elif('c' in travel_info['steps'][0]['start_id']) and ('s' in travel_info['steps'][-1]['end_id']):
+    elif(start_station.water_type == WaterBody.SEA) and (end_station.water_type == WaterBody.RIVER):
         travel_type = 'Sea-River'
-
-    elif('s' in travel_info['steps'][0]['start_id']) and ('s' in travel_info['steps'][-1]['end_id']):
+    elif(start_station.water_type == WaterBody.RIVER) and (end_station.water_type == WaterBody.RIVER):
         travel_type = 'River-River'
 
     data = TravelHelper._instance.data
@@ -210,7 +211,7 @@ def generate_travel_steps(arrival_datetime, travel_info):
         travel_step ={
                 "ID": "Travel",
                 'type': travel_type,
-                'name': data['stations'][step['start_id']].name + ' to ' + data['stations'][step['end_id']].name ,
+                'name': start_station.name + ' to ' + end_station.name ,
                 'enter_datetime': start_travel_time,
                 'exit_datetime': finish_travel_time,
                 'distance': step['distance'],

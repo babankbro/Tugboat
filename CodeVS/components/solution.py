@@ -123,16 +123,18 @@ class Solution:
         total_capacity = sum(b.capacity for b in available_barges)
         #print(f"AS  Total capacity: {total_capacity}")
         
-        stations = TravelHelper._instance.data['stations']
-        station_s0 = stations['s00']
+        
         
         # For import orders, sort by distance to carrier
         if order.order_type == TransportType.IMPORT:
+            stations = TravelHelper._instance.data['stations']
             carrier_location = (order.start_object.lat, order.start_object.lng)
             available_barges.sort(key=lambda b:
                  (self.get_river_km_barge(b)  if self.get_water_status_barge(b) == WaterBody.RIVER 
                  else TravelHelper._instance.get_distance_location(carrier_location, self.get_location_barge(b)))
             )
+        else:
+            raise Exception("Order type is not import")
         
         #print(f"Remaining: {remaining_demand} | Available: {len(available_barges)}")
         #barges_ids = [b.barge_id for b in available_barges]
@@ -876,8 +878,6 @@ class Solution:
             }
         self.barge_scheule[barge_id].append(info)
             
-    
-    
     def update_shedule_bring_down_barges(self, order, lookup_order_barges, lookup_tugboat_results):
         data = self.data
     
@@ -964,7 +964,7 @@ class Solution:
                 appointment_info[tugboat_id] = {
                     'river_tugboat': assigned_tugboats[i],
                     'tugboat_id': tugboat_id,
-                    'appointment_station': 's02',
+                    'appointment_station': config_problem.APPOINTMENT_STATION_BASE_REFERENCE_ID,
                     'meeting_time': None
                 }
             
@@ -1119,9 +1119,9 @@ class Solution:
         first_arrival_customer_datetime = None
         
         while len(all_assigned_barges) > 0:
-            print("Rotation barge remain:", len(all_assigned_barges))
-            for tugboat_id, tugboat in sea_tugboats.items():
-                print(tugboat_id, self.get_ready_time_tugboat(tugboat))
+            # print("Rotation barge remain:", len(all_assigned_barges))
+            # for tugboat_id, tugboat in sea_tugboats.items():
+            #     print(tugboat_id, self.get_ready_time_tugboat(tugboat))
             assigned_tugboats = self.assign_barges_to_tugboats(order, sea_tugboats, all_assigned_barges)
             
             
@@ -1175,7 +1175,7 @@ class Solution:
                 appointment_info[tugboat_id] = {
                     'sea_tugboat': assigned_tugboats[i],
                     'tugboat_id': tugboat_id,
-                    'appointment_station': 's02',
+                    'appointment_station': config_problem.APPOINTMENT_STATION_BASE_REFERENCE_ID,
                     'meeting_time': None
                 }
             travel_appointment_import(self, order, lookup_sea_schedule_results, 
@@ -1198,9 +1198,9 @@ class Solution:
                     barge_info = lookup_order_barges[barge.barge_id] 
                     barge_info['appointment_station'] = appoint_info['appointment_station']
                     
-            
+            appointment_station = config_problem.APPOINTMENT_STATION_BASE_REFERENCE_ID
             river_tugboats =  data['river_tugboats'] 
-            appointment_location= (stations['s02'].lat, stations['s02'].lng)
+            appointment_location= (stations[appointment_station].lat, stations[appointment_station].lng)
             river_assigned_tugboats = assign_barges_to_river_tugboats(self, appointment_location, order,
                                                                     data, river_tugboats, order_barges)
             
@@ -1300,8 +1300,17 @@ class Solution:
             'schedule_results': schedule_results,
             "river_tugboat_results": temp_river_tugboat_results
         }
+    
+    def travel_import_order(self, order_ids):
         
-    def generate_schedule(self):
+        for order_id in order_ids:
+            order = self.data['orders'][order_id]
+            results = self.travel_import(order)
+        
+        return results
+    
+      
+    def generate_schedule(self, order_ids):
         data = self.data
         orders = data['orders']
         barges = data['barges']
@@ -1312,9 +1321,10 @@ class Solution:
         
         total_tugboat_weight = 0
         
-        for order_id, order in orders.items():
+        for order_id in order_ids:
+            order = orders[order_id]
             if order.order_type != TransportType.IMPORT:
-                continue
+                raise Exception("Order {} is not import".format(order_id))
             
         
             #print(order)
