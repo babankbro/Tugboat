@@ -220,7 +220,7 @@ class Tugboat:
         lastbarge = self.assigned_barges[-1]
         barge_info = barge_scheule[lastbarge.barge_id][-1]
         blocation = barge_info['location']
-        print("Barge Info Carrier:", barge_info)
+        #print("Barge Info Carrier:", barge_info)
         nbarge = len(self.assigned_barges)
         base_weight_barges = self.get_total_weight_barge()
         speed_tug = self.calculate_speed(base_weight_barges, nbarge, base_weight_barges)
@@ -237,7 +237,7 @@ class Tugboat:
         else:
             distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(barge_info["water_status"], 
                                                                                      WaterBody.SEA, travel_infos)
-        print("Distance to Carrier", distance, "Speed Tugboat", speed_tug, "Base Weight Barges", base_weight_barges)
+        #print("Distance to Carrier", distance, "Speed Tugboat", speed_tug, "Base Weight Barges", base_weight_barges)
         
         carrier_distance = distance
         base_weight_barges = self.get_total_weight_barge()

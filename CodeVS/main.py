@@ -371,13 +371,15 @@ def main(testing=False, testing_result=TestingResult.CRANE):
     return tugboat_df
 
 def test_read_data():
+  
     carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
-    print(carrier_df)
-    print(barge_df)
-    print(tugboat_df)
-    print(station_df)
-    print(order_df)
-    print(customer_df)
+    
+    # print(carrier_df)
+    # print(barge_df)
+    # print(tugboat_df)
+    # print(station_df)
+    # print(order_df)
+    # print(customer_df)
     
     data = initialize_data(carrier_df, barge_df, 
                            tugboat_df, station_df, order_df, customer_df)
@@ -386,17 +388,29 @@ def test_read_data():
         TravelHelper()
     
     TravelHelper._set_data(TravelHelper._instance,  data)
-    print_all_objects(data)
+    # print_all_objects(data)
+
     
-    
-    order_ids = [ order_id for order_id in data['orders'].keys()]
-    order_ids = order_ids[:1]
+    order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.IMPORT]
+    order_ids = order_ids[:7]
     
     solution = Solution(data)
     tugboat_df, barge_df = solution.generate_schedule(order_ids)
     
-    print(tugboat_df)
-    print(barge_df)
+    #print(tugboat_df)
+    columns_of_interest = ['tugboat_id', 'type', 'name', 'enter_datetime', 'exit_datetime', 
+                      'distance', 'time', 'speed', 'total_load', 'barge_ids', 'type_point']
+
+    
+    multiple_combos = tugboat_df[
+        ((tugboat_df['tugboat_id'] == 'RiverTB_02') & (tugboat_df['order_id'] == 'ODR_001')) |
+        ((tugboat_df['tugboat_id'] == 'RiverTB_02') & (tugboat_df['order_id'] == 'ODR_001'))
+    ]
+    multiple_combos = tugboat_df
+    print("\nData for SeaTB_01-ODR_001 and RiverTB_09-ODR_001:")
+    print(multiple_combos[columns_of_interest].head(20))
+    print(len(multiple_combos))
+    
     
 if __name__ == "__main__":
     #result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)

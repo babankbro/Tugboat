@@ -53,7 +53,10 @@ def travel_appointment_import(solution, order, lookup_schedule_results, lookup_t
         
         travel_time = last_point['order_distance'] / last_point['barge_speed']
         arrival_datetime = last_point_exit_datetime + timedelta(hours=travel_time)
-        
+        print("Fixed Error Time Start ==========================")
+        print ("SeaTB_01 Travel Time:", travel_time,  last_point_exit_datetime) if tugboat_id == 'SeaTB_01' else None
+        print ("SeaTB_01 Travel Time:", arrival_datetime,  order.start_datetime) if tugboat_id == 'SeaTB_01' else None
+
         
         order_location ={
                 "ID": order.start_object.order_id,
@@ -78,7 +81,7 @@ def travel_appointment_import(solution, order, lookup_schedule_results, lookup_t
                 crane_start_time = arrival_datetime
             
             crane_id = crane['crane_id']
-            if order_trip > 0:
+            if order_trip > 1:
                 #filter from tugboat_result['data_points'] of 'name' contain crane_id from all lookup_tugboat_results
                 max_time_exit = order.start_datetime
                 
@@ -122,7 +125,7 @@ def travel_appointment_import(solution, order, lookup_schedule_results, lookup_t
         tugboat_result = lookup_tugboat_results[tugboat_id]
         schedule_result = lookup_schedule_results[tugboat_id]
         
-        print(appoint_info['appointment_station'])
+        #print(appoint_info['appointment_station'])
         appointment_station = data['stations'][appoint_info['appointment_station']]
         
         travel_info = tugboat.calculate_travel_to_appointment(appoint_info)
@@ -207,11 +210,12 @@ def generate_travel_steps(arrival_datetime, travel_info):
     # eeeeee
     for step in travel_info['steps']:
         finish_travel_time = start_travel_time + timedelta(minutes=(step['travel_time'])*60)
-
+        start_station_step = data['stations'][step['start_id']]
+        end_station_step = data['stations'][step['end_id']]
         travel_step ={
                 "ID": "Travel",
                 'type': travel_type,
-                'name': start_station.name + ' to ' + end_station.name ,
+                'name': start_station_step.station_id + ' to ' + end_station_step.station_id ,
                 'enter_datetime': start_travel_time,
                 'exit_datetime': finish_travel_time,
                 'distance': step['distance'],

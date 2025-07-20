@@ -205,9 +205,9 @@ class TravelHelper:
                 total_time += travel_time
             
             td, tt = self._append_travel_steps_for_river_stations(order_stations, steps, info_start_ends['speed'])
-            print("order_stations -------------- ",order_stations, td)
-            for step in steps:
-                print(step['start_location'], step['end_location'], step['distance'], step['travel_time'], step['speed'])
+            # print("order_stations -------------- ",order_stations, td)
+            # for step in steps:
+            #     print(step['start_location'], step['end_location'], step['distance'], step['travel_time'], step['speed'])
             total_distance += td
             total_time += tt
             if isContinue:

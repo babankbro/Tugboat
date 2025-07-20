@@ -1,0 +1,56 @@
+ID,TYPE,NAME,LAT,LNG,KM,StationType,CUS
+ST_001,SEA,1-Koh Si Chang,13.1885,100.815,39.0,Customer,
+ST_002,SEA,1-Koh Si Chang - Stop Point 01,13.1677,100.837,40.0,Park Point,
+ST_003,SEA,1-Koh Si Chang - Stop Point 02,13.1442,100.832,40.5,Park Point,
+ST_004,SEA,1-Koh Si Chang - Stop Point 03,13.1444,100.832,40.75,Park Point,
+ST_005,RIVER,Water Level 1 Sandon Chao Phraya,13.4597,100.598,0.0,Water Level Station,
+ST_006,RIVER,Water Level 2 Pom Phra Chunlachom,13.5535,100.577,11.0,Water Level Station,
+ST_007,RIVER,Thanakorn,13.5724,100.569,13.0,Customer,customer01
+ST_008,RIVER,Khong Bang Pu,13.5877,100.585,15.0,Park Point,
+ST_009,RIVER,Pak Nam,13.5954,100.594,16.0,Park Point,
+ST_010,RIVER,"Thai Ruam Thun, Mit Phon",27.2183,201.14,20.0,Customer,customer02
+ST_010,RIVER,"Thai Ruam Thun, Mit Phon",27.2183,201.14,20.0,Customer,customer03
+ST_011,RIVER,Laem Thong Bang Pla Kot,13.6104,100.567,21.0,Park Point,
+ST_012,RIVER,Thai Central Phra Pradaeng,13.6154,100.555,22.0,Customer,customer04
+ST_013,RIVER,Thai Silo,13.6204,100.547,23.0,Customer,customer05
+ST_014,RIVER,Bang Hua Suea,13.6273,100.545,24.0,Park Point,
+ST_015,RIVER,United,13.6569,100.55,29.0,Customer,customer06
+ST_016,RIVER,Thai Sugar,13.6556,100.564,31.0,Customer,customer07
+ST_017,RIVER,Water Level 3 Tha Ruea Krungthep,13.674,100.58,33.0,Water Level Station,
+ST_018,RIVER,Thun Khao Chao Phraya,13.6793,100.586,34.0,Park Point,
+ST_019,RIVER,"Khlong Toei, Thun 33 Chao Phraya",27.5353,201.22,38.0,Park Point,
+ST_020,RIVER,Nisshin,13.7076,100.557,40.0,Customer,customer08
+ST_021,RIVER,PH Bang Yaw,13.6824,100.553,43.0,Customer,customer09
+ST_022,RIVER,Chut Chot Ruea Sathu Pradit,13.6769,100.527,47.0,Park Point,
+ST_023,RIVER,Saphan Phut,13.7394,100.498,58.0,Park Point,
+ST_024,RIVER,Water Level 4 Kong Banchakan Kong Thap Ruea,13.7436,100.49,59.0,Water Level Station,
+ST_025,RIVER,"Wat Choeng Len, Thai Kret",27.7972,200.979,80.0,Park Point,
+ST_026,RIVER,Saphan Phra Ram 4,13.9156,100.493,82.0,Park Point,
+ST_027,RIVER,Saphan Rangsit (Sor Nonthaburi),13.9467,100.533,88.0,Park Point,
+ST_028,RIVER,Saphan Pathum Thani,14.0269,100.539,99.0,Park Point,
+ST_029,RIVER,Chut Chot Ruea Wat Kai Tia,14.0494,100.553,102.0,Park Point,
+ST_030,RIVER,Chut Chot Ruea Sam Khok,14.0678,100.53,105.0,Park Point,
+ST_031,RIVER,Wat Chang Yai,14.1623,100.511,119.0,Park Point,
+ST_032,RIVER,Chaiyong,14.1761,100.505,121.0,Customer,customer10
+ST_033,RIVER,Kaset Bang Sai,14.1963,100.506,123.0,Customer,customer11
+ST_034,RIVER,Phunphon Bang Sai,14.2013,100.517,125.0,Customer,customer12
+ST_035,RIVER,Bang Pa-in (Amphoe),14.2146,100.571,132.0,Park Point,
+ST_036,RIVER,Wat Thong Bo,14.2876,100.566,142.0,Park Point,
+ST_037,RIVER,Wat Prot Sat,14.2996,100.566,144.0,Park Point,
+ST_038,RIVER,Chut Chot Ruea Wat Song Kuson,14.3297,100.575,147.0,Park Point,
+ST_039,RIVER,Sam Yaek Wat Phanan Choeng,14.3449,100.577,149.0,Park Point,
+ST_040,RIVER,Saphan Pridi,14.3515,100.582,150.0,Park Point,
+ST_041,RIVER,Talat Chao Phrom,14.3591,100.581,151.0,Park Point,
+ST_042,RIVER,Wat Pa Kho,14.3742,100.58,153.0,Park Point,
+ST_043,RIVER,Wat Mai Sommarin,14.387,100.584,154.0,Park Point,
+ST_044,RIVER,Chut Chot Ruea Saphan Bo Phrong,14.4047,100.587,156.0,Park Point,
+ST_045,RIVER,"Namsin NKL L, Jumbo Mai NKL L",28.8232,201.183,157.0,Customer,customer13
+ST_045,RIVER,"Namsin NKL L, Jumbo Mai NKL L",28.8232,201.183,157.0,Customer,customer14
+ST_046,RIVER,Chokchai NKL R,14.4143,100.594,158.0,Customer,customer15
+ST_047,RIVER,"PR NKL L, Sinwatthana NKL L",28.8694,201.197,160.0,Customer,customer16
+ST_047,RIVER,"PR NKL L, Sinwatthana NKL L",28.8694,201.197,160.0,Customer,customer17
+ST_048,RIVER,Sap Sathaporn,28.8858,201.202,161.0,Park Point,
+ST_049,RIVER,Pand NKL R,14.4797,100.622,168.0,Customer,customer18
+ST_050,RIVER,Pui Mabin NKL R,14.4951,100.625,169.0,Customer,customer19
+ST_050,RIVER,Pui Mabin NKL R,14.4951,100.625,169.0,Customer,customer20
+ST_051,RIVER,Wat Sam Makhan,14.5035,100.631,171.0,Park Point,

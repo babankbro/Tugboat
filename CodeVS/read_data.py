@@ -348,6 +348,17 @@ def get_table_from_db(table_name, order_id=None):
     return table
 
 def get_data_from_db(table_name=False, order_id=False):
+    
+    if LOAD_TEMP:
+        carrier_df = pd.read_csv(f'{INPUT_FOLDER}Carrier.csv')
+        barge_df = pd.read_csv(f'{INPUT_FOLDER}Barge.csv')
+        tugboat_df = pd.read_csv(f'{INPUT_FOLDER}Tugboat.csv')
+        station_df = pd.read_csv(f'{INPUT_FOLDER}Station.csv')
+        order_df = pd.read_csv(f'{INPUT_FOLDER}Order.csv')
+        customer_df = pd.read_csv(f'{INPUT_FOLDER}Customer.csv')
+        return (carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+    # print(carrier_df)
+    
     if not table_name:
         carrier_df = get_table_from_db('Carrier')
         # print(carrier_df)

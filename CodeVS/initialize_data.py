@@ -101,7 +101,7 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
     # Create a dictionary of Barge objects with 'ID' as the key
     barges = {
         row['ID']: Barge(row['ID'], row['NAME'], row['WEIGHT'], row['CAP'], 
-                         row['LAT'], row['LNG'], row['WATER STATUS'],row['STATION'],row['KM'],row['SETUP TIME'],
+                         row['LAT'], row['LNG'], row['WATER STATUS'],row['STATION'], stations[row['STATION']].km  ,row['SETUP TIME'],
                          row.get('READY DATETIME', None))
         for _, row in barge_df.iterrows()
     }
@@ -247,8 +247,8 @@ def create_station_points(stations):
         distances.append(abs(current_satation.km - next_station.km))
     
     #distances[0] = 0
-    print("Data points:", data_points)
-    print("Distances:", distances)
+    #print("Data points:", data_points)
+    #print("Distances:", distances)
    
     return data_points, distances
 
