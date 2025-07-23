@@ -963,6 +963,8 @@ class Solution:
         while len(bring_down_river_barges) > 0:
             # print("Bring down barge remain:", len(bring_down_river_barges))
             assigned_tugboats = self.assign_barges_to_tugboats(order, river_tugboats, bring_down_river_barges)
+            if len(bring_down_river_barges) > 0:
+                return False, tugboat_results
             # print("Assigned tugboats:", len(assigned_tugboats))
             # for tugboat in assigned_tugboats:
                 # print(tugboat.tugboat_id, [barge.barge_id for barge in tugboat.assigned_barges])
@@ -987,7 +989,7 @@ class Solution:
                 # print(df)
             
         #print("END_DOWN -------------------------------")
-        return tugboat_results
+        return True, tugboat_results
 
     def __create_active_cranes(self, order, schedule_results):
         active_cranes = []
@@ -1114,7 +1116,9 @@ class Solution:
             print("No barge found to bring down river")
         else:
             print("Bring down river barge", order.order_id, [barge.barge_id for barge in bring_down_river_barges])
-            tugboat_results = self._bring_barge_travel_import(order, bring_down_river_barges)
+            isCompleted, tugboat_results = self._bring_barge_travel_import(order, bring_down_river_barges)
+            if not isCompleted:
+                return False, tugboat_results
             lookup_tugboat_results = {tugboat_result['tugboat_id']: tugboat_result for tugboat_result in tugboat_results}
             
             order_barges, lookup_order_barges = order_barges_from_arrival_tugboats(data, lookup_tugboat_results)
@@ -1307,7 +1311,7 @@ class Solution:
         
            
                 
-        return {
+        return True, {
             'assign_barge_infos': assigned_barge_infos,
             'assign_river_barges':temp_river_assigned_tugboats,
             "sea_tugboat_results": temp_sea_tugboat_results,
@@ -1338,7 +1342,9 @@ class Solution:
         for order_id in order_ids:
             order = orders[order_id]
             if order.order_type != TransportType.IMPORT:
-                raise Exception("Order {} is not import".format(order_id))
+                #raise Exception("Order {} is not import".format(order_id))
+                print("############################################################################# Order {} is not import".format(order_id))
+                continue
             
         
             #print(order)
@@ -1361,7 +1367,15 @@ class Solution:
             
             
             
-            result_order1 = self.travel_import(order)
+            isCompleted, result_order1 = self.travel_import(order)
+            
+            if not isCompleted:
+                print("----------------------------------------------------- Order {} is not completed".format(order.order_id))
+                
+            if not "assign_barge_infos" in result_order1:
+                continue
+                #raise Exception("Order {} is not completed".format(order.order_id))
+            
             assigned_barge_infos = result_order1['assign_barge_infos']
             sea_tugboat_results = result_order1['sea_tugboat_results']
             river_tugboat_results = result_order1['river_tugboat_results']
@@ -1612,6 +1626,8 @@ class Solution:
     def calculate_cost(self, tugboat_df_o, barge_df):
         
         # filter only main_type = 'TUGBOAT'
+        print("=====================================+++++++++++++++======")
+        print(tugboat_df_o.head(2))
         tugboat_df = tugboat_df_o[(tugboat_df_o['type'] == 'Customer Station') | (tugboat_df_o['type'] == 'Appointment') | 
                                   (tugboat_df_o['type'] == 'Barge Collection')]
         

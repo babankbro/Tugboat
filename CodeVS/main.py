@@ -392,7 +392,7 @@ def test_read_data():
 
     
     order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.IMPORT]
-    order_ids = order_ids[:7]
+    order_ids = order_ids[:]
     
     solution = Solution(data)
     tugboat_df, barge_df = solution.generate_schedule(order_ids)

@@ -10,7 +10,14 @@ from flask import Flask
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000", "http://45.82.72.96:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+
+})
 
 DEBUG = os.getenv('DEBUG')
 
@@ -19,19 +26,23 @@ def calculate_all_schedule():
     try:
         # print(f"Order ID: {order_id}")
         # Similar to main.py
-        carrier_df, barge_df, tugboat_df, station_df, order_df = get_data_from_db()
+        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
         # order_df = order_df[order_df['ID']==order_id]
 
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df)
+        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
         if TravelHelper._instance is None:
-            TravelHelper()
-        
+                TravelHelper()
+                
         TravelHelper._set_data(TravelHelper._instance,  data)
+        order_ids = [ order_id for order_id in data['orders'].keys()]
+        #order_ids = [order_id]
+        
+        solution = Solution(data)
         # print(f"Data Type: {type(data)}")
         # for key, value in data.items():
         #         print(key, value, "\n")
-
-        cost_results, tugboat_df, barge_df, cost_df = test_transport_order(data)
+        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        cost_results, tugboat_df, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
         order_ids = list(tugboat_df["order_id"].unique())
         detail = []
         for order_id in order_ids:
@@ -164,8 +175,8 @@ def calculate_single_schedule(order_id):
                 TravelHelper()
                 
             TravelHelper._set_data(TravelHelper._instance,  data)
-            order_ids = [ order_id for order_id in data['orders'].keys()]
-            order_ids = [order_id]
+            order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.IMPORT]
+            #order_ids = [order_id]
             
             solution = Solution(data)
             tugboat_df, barge_df = solution.generate_schedule(order_ids)
