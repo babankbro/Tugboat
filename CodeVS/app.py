@@ -9,6 +9,13 @@ from components.solution import Solution
 from flask import Flask
 from flask_cors import CORS
 
+
+from pymoo.core.callback import Callback
+from pymoo.optimize import minimize
+from algorithm.AMIS import AMIS
+from problems.tugboat_problem import TugboatProblem
+
+
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
@@ -323,18 +330,87 @@ def calculate_multiple_schedules():
             }), 400
         
         # Get data from database
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+        carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    
+        data = initialize_data(carrier_df, barge_df, 
+                            tugboat_df, station_df, order_df, customer_df)
         
         if TravelHelper._instance is None:
             TravelHelper()
-            
-        TravelHelper._set_data(TravelHelper._instance, data)
         
-        # Process only the specified order_ids
+        TravelHelper._set_data(TravelHelper._instance,  data)
+        # print_all_objects(data)
+
+        barges = data['barges']
+        stations = data['stations']
+        orders = data['orders']
+        tugboats = data['tugboats']
+        
+        order_ids = [ order_id for order_id in orders.keys() ]
+        order_ids = order_ids[:]
+        
+        #total demand of order_ids
+        total_demand = sum(orders[order_id].demand for order_id in order_ids)
+        
+        average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
+        average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
+        print("Average Capacity Barge", average_capacity_barge)
+        print("Total Demand", total_demand//(average_capacity_barge), len(barges))
+        print("Average Capacity Tugboat", average_tugboat_capacity)
+        print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
+        
+        Number_Code_Tugboat = 4*int(2*total_demand//(average_tugboat_capacity)) #for barge and tugboat
+        print("Number Code Tugboat", Number_Code_Tugboat)
+        
+        
         solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
-        cost_results, tugboat_df, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
+        
+        np.random.seed(1)
+        xs = np.random.rand(Number_Code_Tugboat)
+        
+        #tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+        #tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+        
+        
+        problem = TugboatProblem(data, solution, Number_Code_Tugboat)
+        #np.random.seed(0)
+
+        algorithm = AMIS(problem,
+            pop_size=1,
+            CR=0.3,
+            max_iter = 1,
+            #dither="vector",
+            #jitter=False
+        )
+        algorithm.iterate()
+        columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
+        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
+        'water_type']
+        
+        solution = Solution(data)
+        tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
+        cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
+        
+        
+        #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
+        tugboat_dfx = tugboat_df
+        
+        print(tugboat_dfx[columns_of_interest])
+        order = data['orders'][order_ids[0]]
+        station_start = order.start_object.station
+        station_end = order.des_object.station
+        
+        print(order)
+        print(station_start)
+        print(station_end)
+        print(tugboat_df['tugboat_id'].unique())
+        print(len(tugboat_df))
+        print(cost_results)
+        
+        
+        print(cost_df)
+        print("Total Cost", sum(cost_df['cost']))
         
         # Prepare response details
         detail = []
@@ -394,24 +470,27 @@ def calculate_multiple_schedules():
                     for order_id in valid_order_ids:
                         temp_tugboat_df = tugboat_df[tugboat_df["order_id"]==order_id]
                         temp_tugboat_df = temp_tugboat_df.replace([np.nan], [None])
+                        # Before your batch insert, check for null time values
+                        
                         
                         for _, row in temp_tugboat_df.iterrows():
+                            
                             schedule_records.append((
                                 row['ID'] if row["ID"] else None,
                                 row['type'] if row["type"] else None,
                                 row['name'] if row["name"] else None,
                                 row['enter_datetime'] if row["enter_datetime"] else None,
                                 row['exit_datetime'] if row["exit_datetime"] else None,
-                                row['distance'] if row["distance"] else None,
-                                row['time'] if row["time"] else None,
-                                row['speed'] if row["speed"] else None,
+                                row['distance'] if row["distance"] is not None else 0.0,
+                                row['time'] if row["time"] is not None else 0.0,
+                                row['speed'] if row["speed"] is not None else 0.0,
                                 row['type_point'] if row["type_point"] else None,
                                 row['order_trip'] if row["order_trip"] else None,
-                                row['total_load'] if row["total_load"] else None,
+                                row['total_load'] if row["total_load"] is not None else 0.0,
                                 row['barge_ids'] if row["barge_ids"] else None,
-                                row['order_distance'] if row["order_distance"] else None,
-                                row['order_time'] if row["order_time"] else None,
-                                row['barge_speed'] if row["barge_speed"] else None,
+                                row['order_distance'] if row["order_distance"] is not None else 0.0,
+                                row['order_time'] if row["order_time"] is not None else 0.0,
+                                row['barge_speed'] if row["barge_speed"] is not None else 0.0,
                                 row['order_arrival_time'] if not row["order_arrival_time"] else None,
                                 row['tugboat_id'] if row["tugboat_id"] else None,
                                 row['order_id'] if row["order_id"] else None,
@@ -439,11 +518,11 @@ def calculate_multiple_schedules():
                             cost_records.append((
                                 row['tugboat_id'] if row["tugboat_id"] else None,
                                 row['order_id'] if row["order_id"] else None,
-                                row['time'] if row["time"] else None,
-                                row['distance'] if row["distance"] else None,
-                                row['consumption_rate'] if row["consumption_rate"] else None,
-                                row['cost'] if row["cost"] else None,
-                                row['total_load'] if row["total_load"] else None,
+                                row['time'] if row["time"] is not None else 0.0,
+                                row['distance'] if row["distance"] is not None else 0.0,
+                                row['consumption_rate'] if row["consumption_rate"] is not None else 0.0,
+                                row['cost'] if row["cost"] is not None else 0.0,
+                                row['total_load'] if row["total_load"] is not None else 0.0,
                             ))
                     
                     # Batch insert cost records
