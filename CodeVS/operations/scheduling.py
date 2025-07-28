@@ -219,12 +219,16 @@ def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat,
             'total_time': total_time,
             'start_time': start_time,
             'end_time': start_time + max_time_barge_shedule,
+            'start_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*start_time)),
+            'end_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*max_time_barge_shedule))
+            
             #'start_datetime': get_next_quarter_hour( order.due_datetime + timedelta(minutes=60*start_time)),
             #'end_datetime': get_next_quarter_hour( order.due_datetime + timedelta(minutes=60*max_time_barge_shedule))
         }
     }
 
-def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat], active_loadings, tugboat_ready_times: List[float] = None) -> List[Dict]:
+def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat], 
+                                     active_loadings, tugboat_ready_times: List[float] = None) -> List[Dict]:
    
     
     schedules = []
@@ -237,6 +241,7 @@ def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat], acti
         schedules.append(schedule)
         #print(f"Schedule for Tugboat XX {tugboat.tugboat_id}:", tugboat_ready_times[i])
     
-    
+    #if len(schedules) != 0:
+       # print("len(schedules) != 0", tugboats)
     
     return schedules

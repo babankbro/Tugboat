@@ -60,6 +60,60 @@ def assign_barges_to_tugboat( tugboat, order_barges):
             #order_barges.insert(0, barge)
             break
     
+    
+def assign_barges_to_sea_tugboats(solution, appointment_location, order, data, sea_tugboats, order_barges):
+    barges = data['barges']
+    assigned_barges = [barges[ barge_info['barge_id']] for barge_info in order_barges]
+    assigned_tugboats = []
+    
+    order_start = order.start_datetime
+    order_end = order.due_datetime
+    
+    # Filter available barges that are free during order time window and ready
+    avaliable_sea_tugboats = [
+        t for t in sea_tugboats.values() 
+        if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end) 
+    ]
+    
+    # total capacity of available tugboats
+    total_capacity = sum(t.max_capacity for t in avaliable_sea_tugboats)
+    
+    days = 1
+    while total_capacity < order.demand*1.2:
+        # create new available tugboats
+        avaliable_sea_tugboats = [
+            t for t in sea_tugboats.values() 
+            if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end + timedelta(days=days)) 
+        ]
+        total_capacity = sum(t.max_capacity for t in avaliable_sea_tugboats)
+        days += 1
+    
+    # For import orders, sort by distance to carrier
+    if order.order_type == TransportType.EXPORT:
+        avaliable_sea_tugboats.sort(key=lambda t: 
+            
+            ((solution.get_location_tugboat(t)[0] - appointment_location[0])**2 + 
+            (solution.get_location_tugboat(t)[1] - appointment_location[1])**2)**0.5)
+    else:
+        raise ValueError("Order type is not supported")
+    
+    #print(f" Available Tugboats: {len(avaliable_sea_tugboats)}")
+    
+    
+    
+    tugboat_ids = [tugboat.tugboat_id for tugboat in avaliable_sea_tugboats]
+    #print(f"Tugboat IDs: {tugboat_ids}")
+    
+    for tugboat in avaliable_sea_tugboats:
+        assign_barges_to_tugboat( tugboat, assigned_barges)
+        
+        if len(assigned_barges) == 0:
+            #print("Commpleted all barges assignment VV")
+            if len(tugboat.assigned_barges) != 0:
+                assigned_tugboats.append(tugboat)
+            break
+        assigned_tugboats.append(tugboat)
+    return assigned_tugboats
  
 def assign_barges_to_river_tugboats(solution, appointment_location, order, data, river_tugboats, order_barges):
     barges = data['barges']
@@ -74,6 +128,20 @@ def assign_barges_to_river_tugboats(solution, appointment_location, order, data,
         t for t in river_tugboats.values() 
         if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end) 
     ]
+    
+    # total capacity of available tugboats
+    total_capacity = sum(t.max_capacity for t in avaliable_river_tugboats)
+    
+    days = 1
+    while total_capacity < order.demand*1.2:
+        # create new available tugboats
+        avaliable_river_tugboats = [
+            t for t in river_tugboats.values() 
+            if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end + timedelta(days=days)) 
+        ]
+        total_capacity = sum(t.max_capacity for t in avaliable_river_tugboats)
+        days += 1
+        #print(f"Total capacity: {total_capacity}, days: {days}, order demand: {order.demand}")
     
     # For import orders, sort by distance to carrier
     if order.order_type == TransportType.IMPORT:

@@ -218,6 +218,8 @@ def get_table_from_db(table_name, order_id=None):
                     o.Id AS OrderId,
                     o.StartStationId,
                     o.DestEntityId,
+                    o.StartStationId,
+                    o.DestStationId,
                     o.Type AS OrderType,
                     CASE 
                         WHEN o.Type = 'IMPORT' THEN ss.Latitude
@@ -377,6 +379,17 @@ def get_data_from_db(table_name=False, order_id=False):
         order_df = get_table_from_db('Order',order_id=order_id)
         # print(order_df)
         # print(order_df.columns)
+        
+        #save all df
+        carrier_df.to_csv(f'{INPUT_FOLDER}Carrier.csv', index=False)
+        barge_df.to_csv(f'{INPUT_FOLDER}Barge.csv', index=False)
+        tugboat_df.to_csv(f'{INPUT_FOLDER}Tugboat.csv', index=False)
+        station_df.to_csv(f'{INPUT_FOLDER}Station.csv', index=False)
+        order_df.to_csv(f'{INPUT_FOLDER}Order.csv', index=False)
+        customer_df.to_csv(f'{INPUT_FOLDER}Customer.csv', index=False)
+        
+        
+        
         return (carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
     elif table_name:
         return get_table_from_db(table_name)

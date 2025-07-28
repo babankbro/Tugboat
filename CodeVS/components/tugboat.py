@@ -1,6 +1,7 @@
 # prompt: filter only sea tugboats in dic tugboat
 # Define Tugboat class
 from CodeVS.components.carrier import Carrier
+from CodeVS.components.customer import Customer
 from CodeVS.operations.travel_helper import *
 from CodeVS.utility.helpers import *
 from datetime import datetime 
@@ -61,12 +62,14 @@ from  CodeVS.components.water_enum import *
 class Tugboat:
     def __init__(self, tugboat_id, name, max_capacity, 
                  max_barge, max_fuel_con, tug_type,
-                 max_speed, lat, lng, status, km, ready_time=None):
+                 max_speed, lat, lng, status, km, station, ready_time=None):
         self.tugboat_id = tugboat_id
         self.name = name
         self.max_capacity = max_capacity
         self.max_barge = max_barge
         self.max_fuel_con = max_fuel_con
+        self.soft_fuel_con = max_fuel_con/2
+        self.min_fuel_con = max_fuel_con/4
         self.tug_type = str_to_enum(tug_type)
         self.max_speed = max_speed
         self.min_speed = max_speed/2
@@ -78,6 +81,7 @@ class Tugboat:
         self.assigned_barges = []
         self.current_load = 0
         self._current_order = None
+        self.start_station = station
         
     def reset(self):
         self.assigned_barges = []
@@ -215,8 +219,9 @@ class Tugboat:
         # travel to carriers
         # compute time grab product
         # -start time
-            # cr1 b1 b3  cr2 b2 b4  
-        carrier = self.assigned_barges[0].current_order.start_object
+        # cr1 b1 b3  cr2 b2 b4  
+        order = self.assigned_barges[0].current_order
+        start_object = order.start_object
         lastbarge = self.assigned_barges[-1]
         barge_info = barge_scheule[lastbarge.barge_id][-1]
         blocation = barge_info['location']
@@ -226,18 +231,20 @@ class Tugboat:
         speed_tug = self.calculate_speed(base_weight_barges, nbarge, base_weight_barges)
         travel_infos = {
                 'start_location': blocation,
-                'end_location': (carrier.lat, carrier.lng),
+                'end_location': (start_object.lat, start_object.lng),
                 'speed': speed_tug,
                 'start_km': barge_info["river_km"],
-                'end_km': None
+                'end_km': start_object.km if isinstance(start_object, Customer) else None
             }
         # check instance carrier is Carrier
-        if not isinstance(carrier, Carrier):
-            raise Exception("Start object is not a Carrier")
-        else:
+        if (isinstance(start_object, Carrier) and order.order_type == TransportType.IMPORT):
             distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(barge_info["water_status"], 
                                                                                      WaterBody.SEA, travel_infos)
-        #print("Distance to Carrier", distance, "Speed Tugboat", speed_tug, "Base Weight Barges", base_weight_barges)
+        elif (isinstance(start_object, Customer) and order.order_type == TransportType.EXPORT):
+            distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(barge_info["water_status"], 
+                                                                                     WaterBody.RIVER, travel_infos)
+        else:
+            raise Exception("Start object is not a Carrier or Customer")
         
         carrier_distance = distance
         base_weight_barges = self.get_total_weight_barge()
@@ -246,9 +253,9 @@ class Tugboat:
         #print("Speed Tugboat", speed_tug, base_weight_barges)
         travel_time = carrier_distance / speed_tug
         return {"travel_time":travel_time, 
-                "last_location": (carrier.lat, carrier.lng),
+                "last_location": (start_object.lat, start_object.lng),
                 "speed": speed_tug,  
-                "start_object": carrier,
+                "start_object": start_object,
                 'travel_distance': distance,
                 'steps': travel_steps}
     
@@ -334,6 +341,32 @@ class Tugboat:
                 "start_object": start_station,
                 'travel_distance': distance,
                 'steps': travel_steps}
+        
+        
+    def calculate_river_to_carrier(self, input_travel_info):
+        end_station = self.assigned_barges[0].current_order.des_object.station
+        nbarge = len(self.assigned_barges)
+        start_station = TravelHelper._instance.data['stations'][ input_travel_info['appointment_station_id']]
+        total_weight_barges = self.get_total_load()
+        base_weight_barges = self.get_total_weight_barge()
+        speed_tug = self.calculate_speed(total_weight_barges, nbarge, base_weight_barges)
+        travel_infos = {
+                'start_location': (start_station.lat, start_station.lng),
+                'end_location': (end_station.lat, end_station.lng),
+                'speed': speed_tug,
+                'start_km': start_station.km,
+                'end_km': end_station.km
+            }
+        distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(WaterBody.RIVER, WaterBody.SEA, travel_infos)
+        #print("Speed Tugboat", speed_tug, base_weight_barges)
+        travel_time = distance / speed_tug
+        return {"travel_time":travel_time, 
+                "last_location": (end_station.lat, end_station.lng),
+                "speed": speed_tug,  
+                "start_object": start_station,
+                'travel_distance': distance,
+                'steps': travel_steps}
+        
         
     def calculate_collection_product_time_with_crane_rate(self, last_lat):
         # travel to carriers

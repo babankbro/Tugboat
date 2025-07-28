@@ -1,6 +1,8 @@
 import sys
 import os
 
+from click.decorators import R
+
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -16,6 +18,11 @@ from CodeVS.components.solution import Solution
 import warnings
 warnings.filterwarnings(action='ignore')
 import numpy as np
+
+from pymoo.core.callback import Callback
+from pymoo.optimize import minimize
+from CodeVS.algorithm.AMIS import AMIS
+from CodeVS.problems.tugboat_problem import TugboatProblem
 
 
 from enum import Enum
@@ -411,8 +418,356 @@ def test_read_data():
     print(multiple_combos[columns_of_interest].head(20))
     print(len(multiple_combos))
     
+def test_export():
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
     
+    # print(carrier_df)
+    # print(barge_df)
+    # print(tugboat_df)
+    # print(station_df)
+    # print(order_df)
+    # print(customer_df)
+    
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    
+    order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.EXPORT]
+    order_ids = order_ids[:1]
+    solution = Solution(data)
+    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
+       'water_type']
+    
+    #filter tugboat_df
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
+    
+    print(tugboat_dfx[columns_of_interest])
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+    
+    print(order)
+    print(station_start)
+    print(station_end)
+    print(tugboat_df['tugboat_id'].unique())
+    print(len(tugboat_df))
+    
+def test_mixed():
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    order_ids = [ order_id for order_id in data['orders'].keys() ]
+    order_ids = order_ids[:]
+    solution = Solution(data)
+    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
+       'water_type']
+    
+    #filter tugboat_df
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
+    
+    print(tugboat_dfx[columns_of_interest])
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+    
+    print(order)
+    print(station_start)
+    print(station_end)
+    print(tugboat_df['tugboat_id'].unique())
+    print(len(tugboat_df))
+    
+    
+def test_import():
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    
+    # print(carrier_df)
+    # print(barge_df)
+    # print(tugboat_df)
+    # print(station_df)
+    # print(order_df)
+    # print(customer_df)
+    
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    
+    order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.IMPORT]
+    order_ids = order_ids[:1]
+    solution = Solution(data)
+    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    
+    #save csv
+    tugboat_df.to_csv('tugboat_df.csv', index=False)
+    barge_df.to_csv('barge_df.csv', index=False)
+    
+
+def test_generate_codes():
+    
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    barges = data['barges']
+    stations = data['stations']
+    orders = data['orders']
+    tugboats = data['tugboats']
+    
+    order_ids = [ order_id for order_id in orders.keys() ]
+    order_ids = order_ids[:]
+    
+    #total demand of order_ids
+    total_demand = sum(orders[order_id].demand for order_id in order_ids)
+    
+    average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
+    average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
+    print("Average Capacity Barge", average_capacity_barge)
+    print("Total Demand", total_demand//(average_capacity_barge), len(barges))
+    print("Average Capacity Tugboat", average_tugboat_capacity)
+    print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
+    
+    Number_Code_Tugboat = int(2*total_demand//(average_tugboat_capacity)) #for barge and tugboat
+    print("Number Code Tugboat", Number_Code_Tugboat)
+    
+    
+    order_start = orders[order_ids[0]].start_datetime
+    order_end = orders[order_ids[0]].due_datetime
+    days = 4
+    
+    
+    MAX_DISTANCE  = max(station.km for station in stations.values())
+    MAX_SPEED = max(tugboat.max_speed for tugboat in tugboats.values())
+    MAX_FUEL_CON = max(tugboat.max_fuel_con for tugboat in tugboats.values())
+    
+    BASED_VALUE = MAX_DISTANCE * MAX_FUEL_CON / MAX_SPEED
+    
+    solution = Solution(data)
+    #start_station = stations[config_problem.APPOINTMENT_STATION_BASE_REFERENCE_ID]
+    start_station = stations['ST_001']
+    available_barges = [
+            b for b in barges.values() 
+            #if (self.get_ready_barge(b)is None or self.get_ready_barge(b) < order_end - timedelta(days=4) ) 
+            if (solution.get_ready_barge(b)is None or solution.get_ready_barge(b) < order_start + timedelta(days=days)) 
+        ]
+    
+    available_tugboats = [
+            t for t in tugboats.values() 
+            #if (self.get_ready_tugboat(t)is None or self.get_ready_tugboat(t) < order_end - timedelta(days=4) ) 
+            if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) < order_start + timedelta(days=days)) 
+        ]
+    
+    
+    def get_distance_barge(b: Barge):
+        delta = stations[solution.get_station_id_barge(b)].km - start_station.km
+        distance = abs(delta)
+        if stations[solution.get_station_id_barge(b)].water_type == WaterBody.RIVER and start_station.water_type == WaterBody.RIVER:
+            pass
+        elif start_station.water_type == WaterBody.SEA and stations[solution.get_station_id_barge(b)].water_type == WaterBody.RIVER:
+            distance = stations[solution.get_station_id_barge(b)].km + start_station.km
+        elif start_station.water_type == WaterBody.RIVER and stations[solution.get_station_id_barge(b)].water_type == WaterBody.SEA:
+            distance = abs(stations[solution.get_station_id_barge(b)].km - start_station.km)
+        else:
+            distance = abs(stations[solution.get_station_id_barge(b)].km - start_station.km)
+        
+        return distance
+    
+    def get_distance_tugboat(t: Tugboat):
+        delta = stations[solution.get_station_id_tugboat(t)].km - start_station.km
+        distance = abs(delta)
+        if stations[solution.get_station_id_tugboat(t)].water_type == WaterBody.RIVER and start_station.water_type == WaterBody.RIVER:
+            pass
+        elif start_station.water_type == WaterBody.SEA and stations[solution.get_station_id_tugboat(t)].water_type == WaterBody.RIVER:
+            distance = stations[solution.get_station_id_tugboat(t)].km + start_station.km
+        elif start_station.water_type == WaterBody.RIVER and stations[solution.get_station_id_tugboat(t)].water_type == WaterBody.SEA:
+            distance = abs(stations[solution.get_station_id_tugboat(t)].km - start_station.km)
+        else:
+            distance = abs(stations[solution.get_station_id_tugboat(t)].km - start_station.km)
+        
+        return distance
+    
+    
+    def sorted_barges(b: Barge):
+        return get_distance_barge(b)/MAX_DISTANCE
+    
+    def sorted_tugboats(t: Tugboat):
+        distance = get_distance_tugboat(t)
+        speed = t.max_speed
+        consumption = t.max_fuel_con
+        return (distance * consumption / speed )/BASED_VALUE
+    
+    
+    #random array xs Number_Code_Tugboat
+    np.random.seed(0)
+    xs = np.random.rand(Number_Code_Tugboat)
+    #random array xs based on seed numpy array len available_tugboats
+    np.random.seed(int(xs[0]*100000000))
+    rxs_tugboats = np.random.rand(len(available_tugboats))
+    np.random.seed(int(xs[1]*100000000))
+    rxs_barges = np.random.rand(len(available_barges))
+    
+    
+    
+    
+    # For tugboats
+    tugboat_values = np.fromiter((sorted_tugboats(t) for t in available_tugboats), dtype=float)
+    sorted_tugboat_indices = np.argsort(tugboat_values )
+    sorted_tugboats_list = np.array(available_tugboats, dtype=object)[sorted_tugboat_indices].tolist()
+
+    # For barges
+    barge_values = np.fromiter((sorted_barges(b) for b in available_barges), dtype=float)
+    sorted_barge_indices = np.argsort(barge_values)
+    sorted_barges_list = np.array(available_barges, dtype=object)[sorted_barge_indices].tolist()
+    
+    print("Start Station", start_station.station_id)
+    for barge in sorted_barges_list:
+        barge_station = stations[solution.get_station_id_barge(barge)]
+        # print(barge.barge_id, solution.get_ready_barge(barge), barge_station.station_id, 
+        #       barge_station.water_type, barge_station.km)
+    
+    #
+    for tugboat in sorted_tugboats_list:
+        tugboat_station = stations[solution.get_station_id_tugboat(tugboat)]
+        #print(tugboat)
+        print(tugboat.tugboat_id, solution.get_ready_time_tugboat(tugboat), tugboat_station.station_id, 
+              tugboat_station.water_type, tugboat_station.km, tugboat.max_fuel_con, tugboat.min_speed)
+    
+    
+    print("Sorted Tugboats", [t.tugboat_id for t in sorted_tugboats_list])
+    print("Sorted Value Tugboats", tugboat_values[sorted_tugboat_indices])
+    print()
+    print("Sorted Barges", [b.barge_id for b in sorted_barges_list][:10])
+    print("Sorted Value Barges", barge_values[sorted_barge_indices][:10])
+    
+    FACTOR = 0.01
+    sorted_tugboat_indices = np.argsort(tugboat_values + rxs_tugboats*FACTOR)
+    sorted_tugboats_list = np.array(available_tugboats, dtype=object)[sorted_tugboat_indices].tolist()
+    sorted_barge_indices = np.argsort(barge_values + rxs_barges*FACTOR)
+    sorted_barges_list = np.array(available_barges, dtype=object)[sorted_barge_indices].tolist()
+    print("--------------------------------------------------------------------")
+    print("After Sorted Tugboats", [t.tugboat_id for t in sorted_tugboats_list])
+    print("After Sorted Value Tugboats", tugboat_values[sorted_tugboat_indices])
+    print()
+    print("After Sorted Barges", [b.barge_id for b in sorted_barges_list][:10])
+    print("After Sorted Value Barges", barge_values[sorted_barge_indices][:10])
+    
+def test_algorithm():
+    
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    barges = data['barges']
+    stations = data['stations']
+    orders = data['orders']
+    tugboats = data['tugboats']
+    
+    order_ids = [ order_id for order_id in orders.keys() ]
+    order_ids = order_ids[:]
+    
+    #total demand of order_ids
+    total_demand = sum(orders[order_id].demand for order_id in order_ids)
+    
+    average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
+    average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
+    print("Average Capacity Barge", average_capacity_barge)
+    print("Total Demand", total_demand//(average_capacity_barge), len(barges))
+    print("Average Capacity Tugboat", average_tugboat_capacity)
+    print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
+    
+    Number_Code_Tugboat = 4*int(2*total_demand//(average_tugboat_capacity)) #for barge and tugboat
+    print("Number Code Tugboat", Number_Code_Tugboat)
+    
+    
+    solution = Solution(data)
+    
+    np.random.seed(1)
+    xs = np.random.rand(Number_Code_Tugboat)
+    
+    #tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+    #tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    
+    
+    problem = TugboatProblem(data, solution, Number_Code_Tugboat)
+    #np.random.seed(0)
+
+    algorithm = AMIS(problem,
+        pop_size=5,
+        CR=0.3,
+        max_iter = 5,
+        #dither="vector",
+        #jitter=False
+    )
+    algorithm.iterate()
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
+       'water_type']
+    
+    solution = Solution(data)
+    tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
+    cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    
+    
+    #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
+    tugboat_dfx = tugboat_df
+    
+    print(tugboat_dfx[columns_of_interest])
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+    
+    print(order)
+    print(station_start)
+    print(station_end)
+    print(tugboat_df['tugboat_id'].unique())
+    print(len(tugboat_df))
+    print(cost_results)
+    
+    
+    print(tugboat_df_grouped)
+    print("Total Cost", sum(tugboat_df_grouped['cost']))
+    
+
 if __name__ == "__main__":
     #result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)
-    test_read_data()
+    #test_read_data()
+    #test_generate_codes()
+    #test_import()
+    test_algorithm()
     

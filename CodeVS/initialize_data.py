@@ -36,10 +36,11 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
             row['CUS'])
         for _, row in station_df.iterrows()
     }
-    #print(carrier_df['DestStationId'])
+    #print(carrier_df.head(10))
     carriers = {
         row['ID']+"_"+row['ORDER ID']: Carrier(row['ID'], row['ORDER ID'], row['NAME'],
-                                               row['LAT'], row['LNG'], stations[row['StartStationId']])
+                                               row['LAT'], row['LNG'], 
+                                               stations[row['StartStationId']] if row['ORDER TYPE'].lower() != 'export' else stations[row['DestStationId']])
         for _, row in carrier_df.iterrows()
     }
     
@@ -61,7 +62,7 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
             )
             for _, row in customer_df.iterrows()
         }
-        print(f"Created {len(customers)} customer objects")
+        #print(f"Created {len(customers)} customer objects")
 
     orders = {
         row['ID']: Order(
@@ -88,12 +89,14 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
         else:
             order.start_object = customers[order.start_point]
             order.des_object = carriers[order.des_point+"_"+order.order_id]
+            #print(order.des_object, order.des_object.station)
 
     
     # Create a dictionary of Tugboat objects with 'ID' as the key
     tugboats = {
         row['ID']: Tugboat(row['ID'], row['NAME'], row['MAX CAP'], row['MAX BARGE'], row['MAX FUEL CON'],
                         row['TYPE'], row['MAX SPEED'], row['LAT'], row['LNG'], row['STATUS'], row['KM'],
+                        stations[row['STATION']],
                         row.get('READY DATETIME', None))
         for _, row in tugboat_df.iterrows()
     }
