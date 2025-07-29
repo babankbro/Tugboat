@@ -19,7 +19,7 @@ from problems.tugboat_problem import TugboatProblem
 app = Flask(__name__)
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://localhost:3000", "http://45.82.72.96:3000"],
+        "origins": ["http://localhost:3000", "http://45.82.72.96:3000", "http://tugboat.otpzlab.com"],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
