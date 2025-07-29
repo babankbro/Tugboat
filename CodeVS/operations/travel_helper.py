@@ -95,6 +95,9 @@ class TravelHelper:
             if key_station not in result:
                 result.append(config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID)
             result.append(end_station_id)
+            
+            
+        
         return result
 
     def convert_pos_to_latlng(self, location):
@@ -303,12 +306,20 @@ class TravelHelper:
                     'travel_time': travel_time,
                     'speed': info_start_ends['speed']
                 }    
-            #print("Debugging SEA - RIVER Step", order_stations)
+            #rint("Debugging SEA - RIVER Step", order_stations)
+            order_stations = [station_id for station_id in order_stations 
+                    if (self.data['stations'][station_id].water_type == WaterBody.RIVER or 
+                        (station_id == start_station.station_id or station_id == end_station.station_id))]
+            # result contian station id if want to remove that station water_type == WaterBody.SEA
+            
+            #print("After Debugging SEA - RIVER Step", order_stations)
+            
             steps.append(first_point)
             total_distance += distance
             total_time += travel_time
             
-            td, tt = self._append_travel_steps_for_river_stations(order_stations, steps, info_start_ends['speed'])
+            td, tt = self._append_travel_steps_for_river_stations(order_stations, 
+                                                                  steps, info_start_ends['speed'])
             total_distance += td
             total_time += tt
             

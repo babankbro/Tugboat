@@ -346,8 +346,8 @@ def calculate_multiple_schedules():
         orders = data['orders']
         tugboats = data['tugboats']
         
-        order_ids = [ order_id for order_id in orders.keys() ]
-        order_ids = order_ids[:]
+        #order_ids = [ order_id for order_id in orders.keys() ]
+        #order_ids = order_ids[:]
         
         #total demand of order_ids
         total_demand = sum(orders[order_id].demand for order_id in order_ids)
@@ -377,9 +377,9 @@ def calculate_multiple_schedules():
         #np.random.seed(0)
 
         algorithm = AMIS(problem,
-            pop_size=1,
+            pop_size=5,
             CR=0.3,
-            max_iter = 1,
+            max_iter = 5,
             #dither="vector",
             #jitter=False
         )

@@ -744,8 +744,8 @@ def test_algorithm():
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     
     
-    #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
-    tugboat_dfx = tugboat_df
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
+    #tugboat_dfx = tugboat_df
     
     print(tugboat_dfx[columns_of_interest])
     order = data['orders'][order_ids[0]]

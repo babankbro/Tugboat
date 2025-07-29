@@ -795,6 +795,7 @@ class Solution:
     
     
     def arrival_step_travel_empty_barges(self, order, tugboats, appointment_infos):
+        
         time_boat_lates = []
         tugboat_results = []
         arrival_times = []
@@ -2041,20 +2042,14 @@ class Solution:
     def calculate_cost(self, tugboat_df_o, barge_df):
         
         # filter only main_type = 'TUGBOAT'
-        #print("=====================================+++++++++++++++======")
-        #print(tugboat_df_o.head(2))
         tugboat_df = tugboat_df_o[(tugboat_df_o['type'] == 'Customer Station') | (tugboat_df_o['type'] == 'Appointment') | 
                                   (tugboat_df_o['type'] == 'Barge Collection')]
-        
         
         cost_results = {}
         data = self.data
         tugboats = data['tugboats']
         orders = data['orders']
-        #print("Result ====================================================")
         tugboat_df_grouped = tugboat_df.groupby(['tugboat_id', 'order_id'], as_index=False).agg({'time': 'sum', 'distance': 'sum'})
-        
-        #tugboat_df_grouped['cost'] = tugboat_df_grouped['time'] * tugboats[tugboat_df_grouped['tugboat_id']]['max_fuel_con'] + tugboat_df_grouped['distance'] * tugboats[tugboat_df_grouped['tugboat_id']]['fuel_con']
         
         tugboat_df_grouped['consumption_rate'] = np.zeros(len(tugboat_df_grouped))
         tugboat_df_grouped['soft_fuel_con'] = np.zeros(len(tugboat_df_grouped))
@@ -2067,37 +2062,55 @@ class Solution:
             for order_id, order in orders.items():
                 tugboat_df_grouped.loc[(tugboat_df_grouped['tugboat_id'] == tugboat_id) & (tugboat_df_grouped['order_id'] == order_id), 
                                        'consumption_rate'] = tugboat.max_fuel_con
-                tugboat_df_grouped.loc[(tugboat_df_grouped['tugboat_id'] == tugboat_id) & (tugboat_df_grouped['order_id'] == order_id), 
-                                       'soft_fuel_con'] = tugboat.soft_fuel_con
-                tugboat_df_grouped.loc[(tugboat_df_grouped['tugboat_id'] == tugboat_id) & (tugboat_df_grouped['order_id'] == order_id), 
-                                       'min_fuel_con'] = tugboat.min_fuel_con
                 
         tugboat_df_grouped['cost'] = tugboat_df_grouped['time'] * tugboat_df_grouped['consumption_rate']     
         
-        
-        # print("Total Cost", tugboat_df_grouped['cost'].sum())
-        # print("Total Time", tugboat_df_grouped['time'].sum())
-        # print("Total Distance", tugboat_df_grouped['distance'].sum())
-        # print("End Result ====================================================")
-        
         tugboat_dfv2 = tugboat_df[(tugboat_df['type'] == 'Customer Station') | (tugboat_df['type'] == 'Appointment')]
         tugboat_df_groupedv2 = tugboat_dfv2.groupby(['tugboat_id', 'order_id'], as_index=False)
-        
-        # print(tugboat_df_groupedv2)
-        # # display tugboat_df_groupedv2 in each group
+    
         for name, group in tugboat_df_groupedv2:
             tugboat_df_grouped.loc[(tugboat_df_grouped['tugboat_id'] == name[0]) & (tugboat_df_grouped['order_id'] == name[1]), 
                                        'total_load'] = (group['total_load'].sum())
         
+        
+        #group2
+        tugboat_dfg2 = tugboat_df_o[(tugboat_df_o['type'] == 'Barge Change') | (tugboat_df_o['type'] == 'Barge Change') | 
+                                  (tugboat_df_o['type'] == 'Barge Change')]
+        
+        cost_results = {}
+        data = self.data
+        tugboats = data['tugboats']
+        orders = data['orders']
+        tugboat_df_groupedg2 = tugboat_dfg2.groupby(['tugboat_id', 'order_id'], as_index=False).agg({'time': 'sum', 'distance': 'sum'})
+        
+        tugboat_df_groupedg2['consumption_rate'] = np.zeros(len(tugboat_df_groupedg2))
+        tugboat_df_groupedg2['soft_fuel_con'] = np.zeros(len(tugboat_df_groupedg2))
+        tugboat_df_groupedg2['min_fuel_con'] = np.zeros(len(tugboat_df_groupedg2))
+        tugboat_df_groupedg2['cost'] = np.zeros(len(tugboat_df_groupedg2))
+        
+        #tugboat_df_grouped['load'] = np.zeros(len(tugboat_df_grouped))
+        
+        for tugboat_id, tugboat in tugboats.items():
+            for order_id, order in orders.items():
+                tugboat_df_groupedg2.loc[(tugboat_df_groupedg2['tugboat_id'] == tugboat_id) & (tugboat_df_groupedg2['order_id'] == order_id), 
+                                       'consumption_rate'] = tugboat.min_fuel_con
+                
+        tugboat_df_groupedg2['cost'] = tugboat_df_groupedg2['time'] * tugboat_df_groupedg2['consumption_rate']     
+        
+        tugboat_dfg2v2 = tugboat_dfg2[(tugboat_dfg2['type'] == 'Barge Change') | (tugboat_dfg2['type'] == 'Barge Change') | 
+                                  (tugboat_dfg2['type'] == 'Barge Change')]
+        tugboat_dfg2v2 = tugboat_dfg2v2.groupby(['tugboat_id', 'order_id'], as_index=False)
+    
+        for name, group in tugboat_dfg2v2:
+            tugboat_df_groupedg2.loc[(tugboat_df_groupedg2['tugboat_id'] == name[0]) & (tugboat_df_groupedg2['order_id'] == name[1]), 
+                                       'total_load'] = (group['total_load'].sum())
+            
+        
+        
        
-        # print(tugboat_df_grouped)
-        # print("Total Cost", tugboat_df_grouped['cost'].sum())
-        # print("Total Time", tugboat_df_grouped['time'].sum())
-        # print("Total Distance", tugboat_df_grouped['distance'].sum())
-        # print("Total Load", tugboat_df_grouped['total_load'].sum()/2)
-        # print("End Result ====================================================")
-      
-
+        #merge tugboat_df_grouped and tugboat_df_groupedg2
+        tugboat_df_grouped = pd.concat([tugboat_df_grouped, tugboat_df_groupedg2], ignore_index=True)
+       
         
         return cost_results, tugboat_df_o, barge_df, tugboat_df_grouped
         

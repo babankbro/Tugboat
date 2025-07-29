@@ -70,6 +70,7 @@ class CodeInfo:
         speed = t.max_speed
         consumption = t.max_fuel_con
         return (distance * consumption / speed )/self.BASED_VALUE
+        #return distance
     
             
     def set_code(self, xs):

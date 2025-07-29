@@ -162,7 +162,9 @@ class Tugboat:
         
 
     def calculate_collection_barge_time(self, tugboat_info, barge_infos):
-        location = tugboat_info['location']
+        #station_id = tugboat_info['station_id']
+        #station = self.data['stations'][station_id]
+        location =tugboat_info['location']
         barges = sort_barges_by_distance(location[0], location[1], self.assigned_barges, barge_infos)
         total_time = 0.0  # เวลารวมเริ่มต้น
         nbarge = 0
@@ -188,6 +190,10 @@ class Tugboat:
             distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(current_status, 
                                                                                               water_status, 
                                                                                               travel_infos)
+            
+            print("Travel Steps:", travel_steps) if self.tugboat_id == 'SeaTB_05' and barge.barge_id == 'B_150' else None
+                
+            
             setup_time = barge.setup_time / 60.0  # แปลงเวลาเชื่อมต่อจากนาทีเป็นชั่วโมง
             total_time += travel_time + setup_time  # รวมเวลาเดิน
             total_weight_barge += barge.weight_barge

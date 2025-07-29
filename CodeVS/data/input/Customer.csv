@@ -1,6 +1,6 @@
 ID,NAME,EMAIL,ADDRESS,STATION,LAT,LNG
-Cust_001,customer01,customer01@gmail.com,Address customer01,ST_007,13.5724,100.569
-Cust_002,customer02,customer02@gmail.com,Address customer02,ST_010,27.2183,201.14
+Cust_001,customer01,customer01@gmail.com,Address customer01,ST_001,13.1885,100.815
+Cust_002,customer02,customer02@gmail.com,Address customer02,ST_007,13.5724,100.569
 Cust_003,customer03,customer03@gmail.com,Address customer03,ST_010,27.2183,201.14
 Cust_004,customer04,customer04@gmail.com,Address customer04,ST_012,13.6154,100.555
 Cust_005,customer05,customer05@gmail.com,Address customer05,ST_013,13.6204,100.547
@@ -12,10 +12,7 @@ Cust_010,customer10,customer10@gmail.com,Address customer10,ST_032,14.1761,100.5
 Cust_011,customer11,customer11@gmail.com,Address customer11,ST_033,14.1963,100.506
 Cust_012,customer12,customer12@gmail.com,Address customer12,ST_034,14.2013,100.517
 Cust_013,customer13,customer13@gmail.com,Address customer13,ST_045,28.8232,201.183
-Cust_014,customer14,customer14@gmail.com,Address customer14,ST_045,28.8232,201.183
-Cust_015,customer15,customer15@gmail.com,Address customer15,ST_046,14.4143,100.594
-Cust_016,customer16,customer16@gmail.com,Address customer16,ST_047,28.8694,201.197
-Cust_017,customer17,customer17@gmail.com,Address customer17,ST_047,28.8694,201.197
-Cust_018,customer18,customer18@gmail.com,Address customer18,ST_049,14.4797,100.622
-Cust_019,customer19,customer19@gmail.com,Address customer19,ST_050,14.4951,100.625
-Cust_020,customer20,customer20@gmail.com,Address customer20,ST_050,14.4951,100.625
+Cust_014,customer14,customer14@gmail.com,Address customer14,ST_046,14.4143,100.594
+Cust_015,customer15,customer15@gmail.com,Address customer15,ST_047,28.8694,201.197
+Cust_016,customer16,customer16@gmail.com,Address customer16,ST_049,14.4797,100.622
+Cust_017,customer17,customer17@gmail.com,Address customer17,ST_050,14.4951,100.625

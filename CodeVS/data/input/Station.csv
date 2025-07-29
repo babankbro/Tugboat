@@ -1,14 +1,13 @@
 ID,TYPE,NAME,LAT,LNG,KM,StationType,CUS
-ST_001,SEA,1-Koh Si Chang,13.1885,100.815,39.0,Customer,
+ST_001,SEA,1-Koh Si Chang,13.1885,100.815,39.0,Customer,customer01
 ST_002,SEA,1-Koh Si Chang - Stop Point 01,13.1677,100.837,40.0,Park Point,
 ST_003,SEA,1-Koh Si Chang - Stop Point 02,13.1442,100.832,40.5,Park Point,
 ST_004,SEA,1-Koh Si Chang - Stop Point 03,13.1444,100.832,40.75,Park Point,
 ST_005,RIVER,Water Level 1 Sandon Chao Phraya,13.4597,100.598,0.0,Water Level Station,
 ST_006,RIVER,Water Level 2 Pom Phra Chunlachom,13.5535,100.577,11.0,Water Level Station,
-ST_007,RIVER,Thanakorn,13.5724,100.569,13.0,Customer,customer01
+ST_007,RIVER,Thanakorn,13.5724,100.569,13.0,Customer,customer02
 ST_008,RIVER,Khong Bang Pu,13.5877,100.585,15.0,Park Point,
 ST_009,RIVER,Pak Nam,13.5954,100.594,16.0,Park Point,
-ST_010,RIVER,"Thai Ruam Thun, Mit Phon",27.2183,201.14,20.0,Customer,customer02
 ST_010,RIVER,"Thai Ruam Thun, Mit Phon",27.2183,201.14,20.0,Customer,customer03
 ST_011,RIVER,Laem Thong Bang Pla Kot,13.6104,100.567,21.0,Park Point,
 ST_012,RIVER,Thai Central Phra Pradaeng,13.6154,100.555,22.0,Customer,customer04
@@ -45,12 +44,9 @@ ST_042,RIVER,Wat Pa Kho,14.3742,100.58,153.0,Park Point,
 ST_043,RIVER,Wat Mai Sommarin,14.387,100.584,154.0,Park Point,
 ST_044,RIVER,Chut Chot Ruea Saphan Bo Phrong,14.4047,100.587,156.0,Park Point,
 ST_045,RIVER,"Namsin NKL L, Jumbo Mai NKL L",28.8232,201.183,157.0,Customer,customer13
-ST_045,RIVER,"Namsin NKL L, Jumbo Mai NKL L",28.8232,201.183,157.0,Customer,customer14
-ST_046,RIVER,Chokchai NKL R,14.4143,100.594,158.0,Customer,customer15
-ST_047,RIVER,"PR NKL L, Sinwatthana NKL L",28.8694,201.197,160.0,Customer,customer16
-ST_047,RIVER,"PR NKL L, Sinwatthana NKL L",28.8694,201.197,160.0,Customer,customer17
+ST_046,RIVER,Chokchai NKL R,14.4143,100.594,158.0,Customer,customer14
+ST_047,RIVER,"PR NKL L, Sinwatthana NKL L",28.8694,201.197,160.0,Customer,customer15
 ST_048,RIVER,Sap Sathaporn,28.8858,201.202,161.0,Park Point,
-ST_049,RIVER,Pand NKL R,14.4797,100.622,168.0,Customer,customer18
-ST_050,RIVER,Pui Mabin NKL R,14.4951,100.625,169.0,Customer,customer19
-ST_050,RIVER,Pui Mabin NKL R,14.4951,100.625,169.0,Customer,customer20
+ST_049,RIVER,Pand NKL R,14.4797,100.622,168.0,Customer,customer16
+ST_050,RIVER,Pui Mabin NKL R,14.4951,100.625,169.0,Customer,customer17
 ST_051,RIVER,Wat Sam Makhan,14.5035,100.631,171.0,Park Point,
