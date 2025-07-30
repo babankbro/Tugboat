@@ -97,8 +97,10 @@ def travel_appointment_import(solution, order, lookup_schedule_results, lookup_t
                 if crane_start_time < max_time_exit:
                     #print("######################################### Crane start time is less than max time exit")
                     crane_start_time = max_time_exit
-                
-                
+            
+            order_id = order.order_id
+            last_crane_info = solution.crane_order_scheule[order_id][crane['crane_id']][-1]
+            crane_start_time = max(crane_start_time, last_crane_info['end_datetime'])
             
             crane_location = {
                 "ID": order.start_object.order_id,
@@ -113,6 +115,16 @@ def travel_appointment_import(solution, order, lookup_schedule_results, lookup_t
             }
             tugboat_result['data_points'].append(crane_location) # add result data points
             order_location['exit_datetime'] = max(order_location['exit_datetime'], crane_location['exit_datetime'])
+           
+            crane_info = {
+                'crane_id': crane['crane_id'],
+                'order_id': order_id,
+                'start_datetime': crane_start_time,
+                'end_datetime': crane_location['exit_datetime'],
+                'barge_id': crane['barge'].barge_id,
+            }
+            solution.crane_order_scheule[order_id][crane['crane_id']].append(crane_info)
+        
         
         last_point_exit_lookup[tugboat_id] = order_location['exit_datetime']
         
@@ -676,7 +688,15 @@ def update_export_sea_travel_tugboats(order, first_arrival_carrier_datetime, loo
 
             
             
+            order_id = order.order_id
+            last_crane_info = solution.crane_order_scheule[order_id][crane['crane_id']][-1]
+            crane_start = max(crane_start, last_crane_info['end_datetime'])
+            
+            
             crane_end = crane_start + timedelta(minutes=int((crane['crane_schedule'] - crane['start_time'])*60))
+            
+            
+            
             
             
             crane_location = {
@@ -694,6 +714,17 @@ def update_export_sea_travel_tugboats(order, first_arrival_carrier_datetime, loo
             crane_start = crane_end
             if end_date_last < crane_location['exit_datetime']:
                 end_date_last = crane_location['exit_datetime']
+                
+            crane_info = {
+                'crane_id': crane['crane_id'],
+                'order_id': order_id,
+                'start_datetime': crane_start,
+                'end_datetime': crane_end,
+                'barge_id': crane['barge'].barge_id,
+            }
+            solution.crane_order_scheule[order_id][crane['crane_id']].append(crane_info)
+                
+                
         #print("Set Customer End Time:", end_date_last) if tugboat_id == 'tbr1' else None
         carrier_location['exit_datetime'] = end_date_last
         

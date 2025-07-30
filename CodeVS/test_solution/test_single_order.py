@@ -32,6 +32,49 @@ except ImportError as e:
     print("Python path:", sys.path[:3])
     raise
         
+        
+def get_tugboat_df():
+    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    
+    data = initialize_data(carrier_df, barge_df, 
+                           tugboat_df, station_df, order_df, customer_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    barges = data['barges']
+    stations = data['stations']
+    orders = data['orders']
+    tugboats = data['tugboats']
+    
+    order_ids = [ order_id for order_id in orders.keys() ]
+    order_ids = order_ids[:]
+    
+    #total demand of order_ids
+    total_demand = sum(orders[order_id].demand for order_id in order_ids)
+    
+    average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
+    average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
+    print("Average Capacity Barge", average_capacity_barge)
+    print("Total Demand", total_demand//(average_capacity_barge), len(barges))
+    print("Average Capacity Tugboat", average_tugboat_capacity)
+    print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
+    
+    Number_Code_Tugboat = 4*int(2*total_demand//(average_tugboat_capacity)) #for barge and tugboat
+    print("Number Code Tugboat", Number_Code_Tugboat)
+    
+    
+    solution = Solution(data)
+    
+    np.random.seed(1)
+    xs = np.random.rand(Number_Code_Tugboat)
+    
+    tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+    return tugboat_df
+        
 class TestSingleOrder(unittest.TestCase):
     # def test_file_type(self):
     #     result_df = main()
@@ -40,24 +83,8 @@ class TestSingleOrder(unittest.TestCase):
     # uncomment below to skip this method for testing
     #@unittest.skip("Skipping crane loading test for now")
     def test_crane_load(self):
-        #return
-        # get unique crane name from name column in the self.result_df
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-    #order_df = order_df[order_df['ID']=='o1']
-    # print(carrier_df)
-    # eed
     
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
-        
-        if TravelHelper._instance is None:
-            TravelHelper()
-            
-        TravelHelper._set_data(TravelHelper._instance,  data)
-        order_ids = [ order_id for order_id in data['orders'].keys()]
-        order_ids = order_ids[:1]
-        
-        solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        tugboat_df = get_tugboat_df()
         
         result_df = tugboat_df
         name = list(result_df['name'].unique())
@@ -104,7 +131,9 @@ class TestSingleOrder(unittest.TestCase):
                     else:
                         is_passed = False
                         print(i, seconds, order_ids[i], order_ids[i-1], enter_datetime[i], exit_datetime[i-1], tugboat_ids[i], tugboat_ids[i-1])
+                        print(crane_activity)
                         break
+                
                 self.assertTrue(is_passed, f"Load Crane {crane_name} has a time difference issue.")
                 if not is_passed:
                     isBreak = True
@@ -115,21 +144,7 @@ class TestSingleOrder(unittest.TestCase):
     
     
     def test_crane_unload(self):
-        #return
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
- 
-    
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
-        
-        if TravelHelper._instance is None:
-            TravelHelper()
-            
-        TravelHelper._set_data(TravelHelper._instance,  data)
-        order_ids = [ order_id for order_id in data['orders'].keys()]
-        order_ids = order_ids[:1]
-        
-        solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         name = list(result_df['name'].unique())
         # print(name)
@@ -178,19 +193,7 @@ class TestSingleOrder(unittest.TestCase):
                 self.assertTrue(is_passed, f"Unload Crane {crane_name} has a time difference issue.")
     
     def test_tugboat_timeline_overlap(self):
-        #return
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
-        
-        if TravelHelper._instance is None:
-            TravelHelper()
-            
-        TravelHelper._set_data(TravelHelper._instance,  data)
-        order_ids = [ order_id for order_id in data['orders'].keys()]
-        order_ids = order_ids[:1]
-        
-        solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         filter_out_type = ['Barge Collection', 'Barge Release', 'Start Order Carrier', 'Destination Barge', 
                            'Crane-Carrier', 'Appointment', 'Barge Change', 'Customer Station']
@@ -237,25 +240,12 @@ class TestSingleOrder(unittest.TestCase):
                 break
     
     def test_nan_ensuring(self):
-        #return
-        is_passed = True
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
-        
-        if TravelHelper._instance is None:
-            TravelHelper()
-            
-        TravelHelper._set_data(TravelHelper._instance,  data)
-        order_ids = [ order_id for order_id in data['orders'].keys()]
-        order_ids = order_ids[:1]
-        
-        solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         
         names = result_df["name"].values
         name_with_nan = ""
-
+        is_passed = True
         for name in names:
             if "nan" in name:
                 name_with_nan = name
@@ -265,20 +255,7 @@ class TestSingleOrder(unittest.TestCase):
         self.assertTrue(is_passed, f"There is nan in {name_with_nan}")
 
     def test_barge_timeline_overlap(self):
-        #return
-        
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
-        
-        if TravelHelper._instance is None:
-            TravelHelper()
-            
-        TravelHelper._set_data(TravelHelper._instance,  data)
-        order_ids = [ order_id for order_id in data['orders'].keys()]
-        order_ids = order_ids[:1]
-        
-        solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         filter_out_type = ['main_point']
     
@@ -328,8 +305,6 @@ class TestSingleOrder(unittest.TestCase):
                 self.assertTrue(is_passed_overall, "\n".join(["One or more barges have timeline overlapping issues:"] + error_messages))
                 if not is_passed_overall:
                     break
-
-
 
 
 if __name__ == "__main__":

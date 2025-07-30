@@ -134,7 +134,13 @@ class CodeInfo:
             if (self.solution.get_ready_time_tugboat(t)is None or self.solution.get_ready_time_tugboat(t) < order_start + timedelta(days=days)) 
         ]
         
-    
+        #check tugboat is available
+        tugboat_ids = [t.tugboat_id for t in available_tugboats]
+        if "SeaTB_14" in tugboat_ids:
+            print(tugboat_ids)
+            raise Exception("SeaTB_14 is available")
+        
+        
         if not self.active:
             return available_tugboats
         

@@ -191,7 +191,8 @@ class Tugboat:
                                                                                               water_status, 
                                                                                               travel_infos)
             
-            print("Travel Steps:", travel_steps) if self.tugboat_id == 'SeaTB_05' and barge.barge_id == 'B_150' else None
+            
+            #print("Travel Steps:", travel_infos['start_location'], travel_infos['end_location'], travel_steps) if self.tugboat_id == 'SeaTB_05' and barge.barge_id == 'B_150' else None
                 
             
             setup_time = barge.setup_time / 60.0  # แปลงเวลาเชื่อมต่อจากนาทีเป็นชั่วโมง

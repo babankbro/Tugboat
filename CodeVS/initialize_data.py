@@ -91,7 +91,8 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
             order.des_object = carriers[order.des_point+"_"+order.order_id]
             #print(order.des_object, order.des_object.station)
 
-    
+    print(tugboat_df)
+    #print(station_df)
     # Create a dictionary of Tugboat objects with 'ID' as the key
     tugboats = {
         row['ID']: Tugboat(row['ID'], row['NAME'], row['MAX CAP'], row['MAX BARGE'], row['MAX FUEL CON'],

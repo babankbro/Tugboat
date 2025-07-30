@@ -14,6 +14,7 @@ from CodeVS.problems.code_info import CodeInfo
 class Solution:
     def __init__(self, data):
         self.data = data
+        self.crane_order_scheule = {}
         self.tugboat_scheule = {}
         self.barge_scheule = {}
         self.tugboat_travel_results = {}
@@ -30,6 +31,19 @@ class Solution:
             TravelHelper._set_data(TravelHelper._instance,  data)
         
         
+        for order_id, order in data['orders'].items():
+            self.crane_order_scheule[order_id] = {}
+            for i in range(len(order.crane_rates)):
+                info = {
+                    'crane_id': f'cr{i+1}',
+                    'order_id': order_id,
+                    'start_datetime': order.start_datetime + timedelta(hours=order.crane_ready_times[i]),
+                    'end_datetime': order.start_datetime + timedelta(hours=order.crane_ready_times[i]),
+                     
+                }
+                self.crane_order_scheule[order_id][info['crane_id']]= [info]
+            
+        
         
         for tugboat_id, tugboat in data['tugboats'].items():
             if tugboat.start_station.water_type == WaterBody.RIVER:
@@ -43,7 +57,7 @@ class Solution:
                 'end_datetime': tugboat._ready_time,
                 'river_km': tugboat._km,
                 'water_status': tugboat._status , 
-                'location': (tugboat._lat, tugboat._lng),
+                'location': (closeset_station.lat, closeset_station.lng),
                 'station_id':  closeset_station.station_id if closeset_station != None  else None,
                 'barge_infos': [],
                  
@@ -254,6 +268,10 @@ class Solution:
         arrival_times = []
         for tugboat in assigned_tugboats:
             tugboat_info = self.tugboat_scheule[tugboat.tugboat_id][-1]
+            
+            #print("Calculate collection barge:", tugboat.tugboat_id, len(self.tugboat_scheule[tugboat.tugboat_id]), tugboat_info) if tugboat.tugboat_id == 'SeaTB_05' else None
+                
+            
             
             collection_time_info = tugboat.calculate_collection_barge_time(tugboat_info, self.barge_scheule)
             travel_info = tugboat.calculate_travel_to_start_object(self.barge_scheule)

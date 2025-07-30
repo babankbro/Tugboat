@@ -359,7 +359,7 @@ def calculate_multiple_schedules():
         print("Average Capacity Tugboat", average_tugboat_capacity)
         print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
         
-        Number_Code_Tugboat = 4*int(2*total_demand//(average_tugboat_capacity)) #for barge and tugboat
+        Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 1)) #for barge and tugboat
         print("Number Code Tugboat", Number_Code_Tugboat)
         
         
