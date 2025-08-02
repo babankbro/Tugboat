@@ -20,7 +20,7 @@ class Solution:
         self.tugboat_travel_results = {}
     
         
-        self.code_info = CodeInfo(data=data, solution=self)
+        
         
         # print("========================================")
         # print(f"Type {type(TravelHelper._instance)}")
@@ -50,6 +50,8 @@ class Solution:
                 closeset_station = TravelHelper._instance.get_next_river_station(transport_type=TransportType.EXPORT, km=tugboat._km)
             else:
                 closeset_station =tugboat.start_station
+            if closeset_station.station_id == "ST_047":
+                raise Exception("Closest station is ST_047", tugboat._km)
             info = {
                 'tugboat_id': tugboat.tugboat_id,
                 'order_id': None,
@@ -84,7 +86,9 @@ class Solution:
                     
             }
             self.barge_scheule[barge_id] = [info]
-            
+        
+        self.code_info = CodeInfo(data=data, solution=self)
+        
     def get_ready_barge(self, barge):
         return self.barge_scheule[barge.barge_id][-1]['end_datetime']
     
@@ -226,9 +230,9 @@ class Solution:
             return assigned_tugboats
         
         
-        #print("Sea Tugboat", self.code_info.index_code_tugboat)
-        sorted_tugboats = self.code_info.get_code_next_tugboat(order, tugboats, config_problem.MAX_RELAX_DAYS)
         
+        sorted_tugboats = self.code_info.get_code_next_tugboat(order, tugboats, config_problem.MAX_RELAX_DAYS)
+        #print("Sorted Tugboats", [t.tugboat_id for t in sorted_tugboats])
         for tugboat in sorted_tugboats:
             tugboat_ready_time = self.get_ready_time_tugboat(tugboat)
             tugboat_id = tugboat.tugboat_id
@@ -1033,9 +1037,9 @@ class Solution:
                 'station_id': station_last.station_id,
             }
             
-            tugboat._lat = station_last.lat 
-            tugboat._lng = station_last.lng
-            tugboat._km = station_last.km
+            #tugboat._lat = station_last.lat 
+            #tugboat._lng = station_last.lng
+            #tugboat._km = station_last.km
             
             
             for barge in tugboat.assigned_barges:
@@ -1470,8 +1474,8 @@ class Solution:
                     
             appointment_station = config_problem.APPOINTMENT_STATION_BASE_REFERENCE_ID
             river_tugboats =  data['river_tugboats'] 
-            appointment_location= (stations[appointment_station].lat, stations[appointment_station].lng)
-            river_assigned_tugboats = assign_barges_to_river_tugboats(self, appointment_location, order,
+            #appointment_location= (stations[appointment_station].lat, stations[appointment_station].lng)
+            river_assigned_tugboats = assign_barges_to_river_tugboats(self, stations[appointment_station], order,
                                                                     data, river_tugboats, order_barges)
             
         
@@ -1761,13 +1765,14 @@ class Solution:
         
     def generate_schedule(self, order_ids , xs = None):
         data = self.data
-        orders = data['orders']
         barges = data['barges']
+        orders = data['orders']
         tugboats = data['tugboats']
         
         #sorted order_ids base on start_datetime
+        #print("Input Order IDs", order_ids)
         order_ids = sorted(order_ids, key=lambda x: orders[x].start_datetime)
-        
+        #print("After Input Order IDs", order_ids)
         
         self.code_info.set_code(xs)
    
@@ -1882,6 +1887,8 @@ class Solution:
         # combined_df = pd.concat(all_dfs, ignore_index=True)
             # Show the final merged DataFrame
         #print(combined_df)
+        
+        #print("Length:", len(pd.concat(all_dfs, ignore_index=True)))
         return pd.concat(all_dfs, ignore_index=True), pd.concat(barge_dfs, ignore_index=True)
 
     def save_schedule_to_csv(self, tugboat_df, barge_df, 

@@ -69,16 +69,24 @@ class AMIS:
         self.Xs = np.random.rand( self.pop_size, self.problem.n_var)
         self.fitnessXs = np.zeros((self.pop_size,))
         self.cal_fitness()
-        max_index = np.argmax(self.fitnessXs)
-        self.bestX = np.copy(self.Xs[max_index])
+        min_index = np.argmin(self.fitnessXs)
+        self.bestX = np.copy(self.Xs[min_index])
         self.best2X = np.copy(self.bestX)
-        self.bestFitness = self.fitnessXs[max_index]
-        
+        self.bestFitness = self.fitnessXs[min_index]
+        for t in range(1):
+            print("Initial best",min_index, self.bestFitness)
+            self.problem._evaluate(self.bestX, self.out)
+            print("Initial best", self.out['F'])
+            self.problem._evaluate(self.Xs[min_index], self.out)
+            z = np.sum(self.bestX-self.Xs[min_index])
+            print("Initial xs", min_index, self.out['F'], z)
+
     def cal_fitness(self):
         for i in range(self.pop_size):
             self.problem._evaluate(self.Xs[i], self.out)
             self.fitnessXs[i] = self.out['F']
-        
+            #print("Test",i, self.out['F'])
+            
     def IB1_best(self, xs):
         N = len(xs)
         indexs = np.arange(0, self.pop_size, 1).astype(dtype=np.uint8)
@@ -205,7 +213,7 @@ class AMIS:
             
 
     def recombination(self):
-        cross_select = np.random.choice(a=[0, 1], size=self.Xs.shape, p=[self.CR, 1-self.CR])  
+        cross_select = np.copy( np.random.choice(a=[0, 1], size=self.Xs.shape, p=[self.CR, 1-self.CR]))  
         self.Us = (1-cross_select)*self.Xs + cross_select*self.Vs
         
     def accept_all(self):
@@ -216,7 +224,7 @@ class AMIS:
             fitnessUs[i] = self.out['F']
             self.fitnessXs[i] = fitnessUs[i]
             self.Xs[i] = np.copy(self.Us[i])
-            if fitnessUs[i] > self.bestFitness:
+            if fitnessUs[i] < self.bestFitness:
                 self.bestFitness = fitnessUs[i]
                 self.best2X = np.copy(self.bestX)
                 self.bestX = np.copy(self.Us[i])
@@ -227,25 +235,34 @@ class AMIS:
         for i in range(self.pop_size):
             self.problem._evaluate(self.Us[i], self.out)
             fitnessUs[i] = self.out['F']
+            
+            #self.problem._evaluate(self.Xs[i], self.out)
+            #temp = self.out['F']
+            #self.fitnessXs[i] = temp
             delta = fitnessUs[i] - self.fitnessXs[i]
-            if (delta < 0 or 
-                np.random.rand() + 5 < np.exp(-delta*100) or
-                np.random.rand()  < 0.00001):
+            #print("u", i, fitnessUs[i], temp, self.fitnessXs[i], delta)
+            
+            if (delta < 0 
+                #or np.random.rand() + 5 < np.exp(-delta*100) 
+                #or np.random.rand()  < 0.00001
+                ):
                 self.fitnessXs[i] = fitnessUs[i]
                 self.Xs[i] = np.copy(self.Us[i])
                 if fitnessUs[i] < self.bestFitness:
-                    self.bestFitness = fitnessUs[i]
+                    self.bestFitness = fitnessUs[i] 
                     self.best2X = np.copy(self.bestX)
                     self.bestX = np.copy(self.Us[i])
+                    
 
 
 
     def iterate(self):
         for it in range(self.max_iter):
+            #print("000000000000000000000000000000000")
             self.currentTracks = self.adaptiveWeight.random_tracks(self.pop_size)
             self.select_blocks()
-            arg_max = np.argmin(self.fitnessXs)
-            self.adaptiveWeight.update(self.currentTracks, self.fitnessXs, self.currentTracks[arg_max])
+            arg_min = np.argmin(self.fitnessXs)
+            self.adaptiveWeight.update(self.currentTracks, self.fitnessXs, self.currentTracks[arg_min])
             self.recombination()
             self.selection()
 
@@ -254,3 +271,6 @@ class AMIS:
             print(it, round(np.mean(self.fitnessXs), 4), round(self.bestFitness, 4), self.adaptiveWeight.pobWeights)
             arg_maxs = np.argsort(self.fitnessXs)
             self.data[it*3:3*(it+1)] = np.copy(self.Xs[arg_maxs[:3]])
+            self.problem._evaluate(self.bestX, self.out)
+            #print("Inner Test", self.out['F'], self.fitnessXs[arg_min])
+            self.cal_fitness()

@@ -359,7 +359,7 @@ def calculate_multiple_schedules():
         print("Average Capacity Tugboat", average_tugboat_capacity)
         print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
         
-        Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 1)) #for barge and tugboat
+        Number_Code_Tugboat = 4*int(max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
         print("Number Code Tugboat", Number_Code_Tugboat)
         
         
@@ -373,7 +373,7 @@ def calculate_multiple_schedules():
         #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
         
         
-        problem = TugboatProblem(data, solution, Number_Code_Tugboat)
+        problem = TugboatProblem(order_ids, data, solution, Number_Code_Tugboat)
         #np.random.seed(0)
 
         algorithm = AMIS(problem,

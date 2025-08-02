@@ -679,10 +679,10 @@ def test_generate_codes():
     print("After Sorted Barges", [b.barge_id for b in sorted_barges_list][:10])
     print("After Sorted Value Barges", barge_values[sorted_barge_indices][:10])
     
-def test_algorithm():
+def test_algorithm(order_input_ids = None):
     
     carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
-    
+    print()
     data = initialize_data(carrier_df, barge_df, 
                            tugboat_df, station_df, order_df, customer_df)
     
@@ -698,10 +698,17 @@ def test_algorithm():
     tugboats = data['tugboats']
     
     order_ids = [ order_id for order_id in orders.keys() ]
-    order_ids = order_ids[:]
-    
+    if order_input_ids is not None:
+        order_ids = order_input_ids
+    else  :
+        order_ids = order_ids[:]
+    print("Order\n", order_df)
+    for order_id in order_ids:
+        print(order_id, orders[order_id])
     #total demand of order_ids
     total_demand = sum(orders[order_id].demand for order_id in order_ids)
+    print("Total Demand", total_demand)
+    print("Average Demand", order_ids)
     
     average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
     average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
@@ -710,7 +717,7 @@ def test_algorithm():
     print("Average Capacity Tugboat", average_tugboat_capacity)
     print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
     
-    Number_Code_Tugboat = 4*int(2*total_demand//(average_tugboat_capacity)) #for barge and tugboat
+    Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
     print("Number Code Tugboat", Number_Code_Tugboat)
     
     
@@ -724,7 +731,7 @@ def test_algorithm():
     #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     
     
-    problem = TugboatProblem(data, solution, Number_Code_Tugboat)
+    problem = TugboatProblem(order_ids, data, solution, Number_Code_Tugboat)
     #np.random.seed(0)
 
     algorithm = AMIS(problem,
@@ -743,7 +750,6 @@ def test_algorithm():
     tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     
-    
     tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     #tugboat_dfx = tugboat_df
     
@@ -761,7 +767,7 @@ def test_algorithm():
     
     
     print(tugboat_df_grouped)
-    print("Total Cost", sum(tugboat_df_grouped['cost']))
+    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
     
 
 if __name__ == "__main__":
@@ -770,4 +776,4 @@ if __name__ == "__main__":
     #test_generate_codes()
     #test_import()
     test_algorithm()
-    
+

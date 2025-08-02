@@ -1,6 +1,8 @@
 from datetime import timedelta
 from CodeVS.components.transport_type import TransportType
 from CodeVS.utility.helpers import haversine
+from CodeVS.operations.travel_helper import TravelHelper
+import CodeVS.config_problem as config_problem 
 # from CodeVS.components.solution import *
 
 def assign_barges_to_orders(orders, barges, assigned_barge_df):
@@ -115,49 +117,62 @@ def assign_barges_to_sea_tugboats(solution, appointment_location, order, data, s
         assigned_tugboats.append(tugboat)
     return assigned_tugboats
  
-def assign_barges_to_river_tugboats(solution, appointment_location, order, data, river_tugboats, order_barges):
+def assign_barges_to_river_tugboats(solution, appointment_station, order, data, river_tugboats, order_barges):
     barges = data['barges']
     assigned_barges = [barges[ barge_info['barge_id']] for barge_info in order_barges]
     assigned_tugboats = []
     
-    order_start = order.start_datetime
-    order_end = order.due_datetime
+    # order_start = order.start_datetime
+    # order_end = order.due_datetime
     
-    # Filter available barges that are free during order time window and ready
-    avaliable_river_tugboats = [
-        t for t in river_tugboats.values() 
-        if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end) 
-    ]
+    # # Filter available barges that are free during order time window and ready
+    # avaliable_river_tugboats = [
+    #     t for t in river_tugboats.values() 
+    #     if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end) 
+    # ]
     
-    # total capacity of available tugboats
-    total_capacity = sum(t.max_capacity for t in avaliable_river_tugboats)
+    # # total capacity of available tugboats
+    # total_capacity = sum(t.max_capacity for t in avaliable_river_tugboats)
     
-    days = 1
-    while total_capacity < order.demand*1.2:
-        # create new available tugboats
-        avaliable_river_tugboats = [
-            t for t in river_tugboats.values() 
-            if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end + timedelta(days=days)) 
-        ]
-        total_capacity = sum(t.max_capacity for t in avaliable_river_tugboats)
-        days += 1
-        #print(f"Total capacity: {total_capacity}, days: {days}, order demand: {order.demand}")
+    # days = 1
+    # while total_capacity < order.demand*1.2:
+    #     # create new available tugboats
+    #     avaliable_river_tugboats = [
+    #         t for t in river_tugboats.values() 
+    #         if (solution.get_ready_time_tugboat(t)is None or solution.get_ready_time_tugboat(t) <= order_end + timedelta(days=days)) 
+    #     ]
+    #     total_capacity = sum(t.max_capacity for t in avaliable_river_tugboats)
+    #     days += 1
+    #     #print(f"Total capacity: {total_capacity}, days: {days}, order demand: {order.demand}")
     
-    # For import orders, sort by distance to carrier
-    if order.order_type == TransportType.IMPORT:
-        avaliable_river_tugboats.sort(key=lambda t: 
+    # # For import orders, sort by distance to carrier
+    # if order.order_type == TransportType.IMPORT:
+    #     avaliable_river_tugboats.sort(key=lambda t: 
             
-            ((solution.get_location_tugboat(t)[0] - appointment_location[0])**2 + 
-            (solution.get_location_tugboat(t)[1] - appointment_location[1])**2)**0.5)
+    #         ((solution.get_location_tugboat(t)[0] - appointment_location[0])**2 + 
+    #         (solution.get_location_tugboat(t)[1] - appointment_location[1])**2)**0.5)
     
-    #print(f" Available Tugboats: {len(avaliable_river_tugboats)}")
+    # #print(f" Available Tugboats: {len(avaliable_river_tugboats)}")
     
     
     
-    tugboat_ids = [tugboat.tugboat_id for tugboat in avaliable_river_tugboats]
-    #print(f"Tugboat IDs: {tugboat_ids}")
+    # tugboat_ids = [tugboat.tugboat_id for tugboat in avaliable_river_tugboats]
+    # #print(f"Tugboat IDs: {tugboat_ids}")
     
-    for tugboat in avaliable_river_tugboats:
+    target_station = appointment_station
+    sorted_tugboats = solution.code_info.get_code_next_target_tugboat(order, river_tugboats,
+                                                                      target_station,
+                                                                      config_problem.MAX_RELAX_DAYS)
+    tugboat_ids = [tugboat.tugboat_id for tugboat in sorted_tugboats]
+    
+    
+    station_ids = [solution.get_station_id_tugboat(solution.data['tugboats'][tugboat_id]) for tugboat_id in tugboat_ids]
+    
+    river_tugboats = [tugboat.tugboat_id for tugboat in river_tugboats.values()]
+    #print("Sorted tugboats: ",  river_tugboats[:] , station_ids[:])
+    #print("River tugboats: ", [tugboat.tugboat_id for tugboat in river_tugboats.values()])
+    
+    for tugboat in sorted_tugboats:
         assign_barges_to_tugboat( tugboat, assigned_barges)
         
         if len(assigned_barges) == 0:
