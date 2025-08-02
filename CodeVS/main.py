@@ -775,5 +775,9 @@ if __name__ == "__main__":
     #test_read_data()
     #test_generate_codes()
     #test_import()
-    test_algorithm()
+    test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+                    "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+                    "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+                    "ODR_013", "ODR_014", 
+                    ])
 

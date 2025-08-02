@@ -322,8 +322,8 @@ def calculate_multiple_schedules():
                 "detail": "Missing order_ids in request body"
             }), 400
         
-        order_ids = request_data['order_ids']
-        if not isinstance(order_ids, list) or len(order_ids) == 0:
+        order_input_ids = request_data['order_ids']
+        if not isinstance(order_input_ids, list) or len(order_input_ids) == 0:
             return jsonify({
                 "message": "error",
                 "detail": "order_ids must be a non-empty list"
@@ -346,11 +346,18 @@ def calculate_multiple_schedules():
         orders = data['orders']
         tugboats = data['tugboats']
         
-        #order_ids = [ order_id for order_id in orders.keys() ]
-        #order_ids = order_ids[:]
-        
+        order_ids = [ order_id for order_id in orders.keys() ]
+        if order_input_ids is not None:
+            order_ids = order_input_ids
+        else  :
+            order_ids = order_ids[:]
+        print("Order\n", order_df)
+        for order_id in order_ids:
+            print(order_id, orders[order_id])
         #total demand of order_ids
         total_demand = sum(orders[order_id].demand for order_id in order_ids)
+        print("Total Demand", total_demand)
+        print("Average Demand", order_ids)
         
         average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
         average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
@@ -359,7 +366,7 @@ def calculate_multiple_schedules():
         print("Average Capacity Tugboat", average_tugboat_capacity)
         print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
         
-        Number_Code_Tugboat = 4*int(max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
+        Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
         print("Number Code Tugboat", Number_Code_Tugboat)
         
         
@@ -374,7 +381,7 @@ def calculate_multiple_schedules():
         
         
         problem = TugboatProblem(order_ids, data, solution, Number_Code_Tugboat)
-        #np.random.seed(0)
+    #np.random.seed(0)
 
         algorithm = AMIS(problem,
             pop_size=5,
