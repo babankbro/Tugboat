@@ -28,6 +28,7 @@ class Barge:
         return self._load + self.weight_barge
     
     def set_load(self, load):
+        #raise Exception("Cannot set load directly")
         self._load = load
 
     def __str__(self):

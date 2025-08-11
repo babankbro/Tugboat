@@ -743,10 +743,10 @@ def main():
     
     solution = Solution(data)
     
-    vtugboat_df, vbarge_df = solution.generate_schedule()
+    is_success, tugboat_df, barge_df = solution.generate_schedule()
     
-    filtered_df = vtugboat_df[
-                            ((vtugboat_df['tugboat_id'] == 'tbs1')) 
+    filtered_df = tugboat_df[
+                            ((tugboat_df['tugboat_id'] == 'tbs1')) 
                            # &  ((tugboat_df['order_id'] == 'o1') | (tugboat_df['order_id'] == 'o1'))
                              # & ((vtugboat_df['order_id'] == 'o1') )
                            # & (tugboat_df['order_trip'] == 1)

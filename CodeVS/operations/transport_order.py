@@ -16,6 +16,38 @@ from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.scheduling import *
 from CodeVS.utility.helpers import *
 
+# create class data_point
+# customer_location = {
+#             "ID": order.des_object.station_id,
+#             'name': f'From {travel_info["start_object"].name} To {customer_station.name}',
+#             'type': "Customer Station",
+#             'enter_datetime': arrival_datetime,
+#             'exit_datetime':None,
+#             'distance': travel_info['travel_distance'],
+#             'speed': travel_info['speed'],
+#             'time': travel_info['travel_time'],
+#             'type_point': 'main_point'
+#         }
+
+
+class DataPoint:
+    # generate __init__ constructor with all attributes of customer_location
+    def __init__(self, ID, name, type, enter_datetime, exit_datetime, distance, speed, time, type_point):
+        self.ID = ID
+        self.name = name
+        self.type = type
+        self.enter_datetime = enter_datetime
+        self.exit_datetime = exit_datetime
+        self.distance = distance
+        self.speed = speed
+        self.time = time
+        self.type_point = type_point
+        
+    def __str__(self):
+        
+        return f"DataPoint(ID={self.ID}, name={self.name}, type={self.type}, enter_datetime={self.enter_datetime}," +\
+               f"exit_datetime={self.exit_datetime}, distance={self.distance}, speed={self.speed}, time={self.time}," +\
+               f"type_point={self.type_point})"
 
 class TugboatTravelStatus:
     def __init__(self, tugboat, is_river_status):
@@ -51,7 +83,8 @@ def travel_appointment_import(solution, order, lookup_schedule_results, lookup_t
         #order_arrival_time = last_point['order_arrival_time'] 
         last_point_exit_datetime = last_point['exit_datetime']
         
-        travel_time = last_point['order_distance'] / last_point['barge_speed']
+        
+        travel_time = last_point['order_distance'] / last_point['barge_speed'] if last_point['barge_speed'] != 0 else 0
         arrival_datetime = last_point_exit_datetime + timedelta(hours=travel_time)
         #print("Fixed Error Time Start ==========================")
         #print ("SeaTB_01 Travel Time:", travel_time,  last_point_exit_datetime) if tugboat_id == 'SeaTB_01' else None
@@ -225,7 +258,7 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
         #order_arrival_time = last_point['order_arrival_time'] 
         last_point_exit_datetime = last_point['exit_datetime']
         
-        travel_time = last_point['order_distance'] / last_point['barge_speed']
+        travel_time = last_point['order_distance'] / last_point['barge_speed'] if last_point['barge_speed'] != 0 else 0
         arrival_datetime = last_point_exit_datetime + timedelta(hours=travel_time)
         #print("Fixed Error Time Start ==========================")
         #print ("RiverTB_01 Travel Time:", travel_time,  last_point_exit_datetime) if tugboat_id == 'RiverTB_01' else None
@@ -362,8 +395,8 @@ def generate_travel_steps(arrival_datetime, travel_info):
     start_travel_time = arrival_datetime
     # print(travel_info['steps'][0]['start_id'])
     # print(travel_info['steps'][-1]['end_id'])
-    start_station = TravelHelper._instance.data['stations'][travel_info['steps'][0]['start_id']]
-    end_station = TravelHelper._instance.data['stations'][travel_info['steps'][-1]['end_id']]
+    start_station = TravelHelper._instance.data['stations'][travel_info['travel_steps'][0].start_id]
+    end_station = TravelHelper._instance.data['stations'][travel_info['travel_steps'][-1].end_id]
     if (start_station.water_type == WaterBody.SEA) and (end_station.water_type == WaterBody.SEA):
         travel_type = 'Sea-Sea'
     elif(start_station.water_type == WaterBody.RIVER) and (end_station.water_type == WaterBody.SEA):
@@ -380,19 +413,19 @@ def generate_travel_steps(arrival_datetime, travel_info):
     # print(data['stations']['c1'])
     # print("\n")
     # eeeeee
-    for step in travel_info['steps']:
-        finish_travel_time = start_travel_time + timedelta(minutes=(step['travel_time'])*60)
-        start_station_step = data['stations'][step['start_id']]
-        end_station_step = data['stations'][step['end_id']]
+    for step in travel_info['travel_steps']:
+        finish_travel_time = start_travel_time + timedelta(minutes=(step.travel_time)*60)
+        start_station_step = data['stations'][step.start_id]
+        end_station_step = data['stations'][step.end_id]
         travel_step ={
                 "ID": "Travel",
                 'type': travel_type,
                 'name': start_station_step.station_id + ' to ' + end_station_step.station_id ,
                 'enter_datetime': start_travel_time,
                 'exit_datetime': finish_travel_time,
-                'distance': step['distance'],
-                'speed': step['speed'],
-                'time': step['travel_time'],
+                'distance': step.distance,
+                'speed': step.travel_speed,
+                'time': step.travel_time,
                 'type_point': 'travel_point',
             }
         start_travel_time = finish_travel_time

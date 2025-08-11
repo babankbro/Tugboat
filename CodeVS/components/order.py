@@ -39,6 +39,7 @@ class Order:
         return 0
 
     def __str__(self):
+        #raise Exception("Order __str__")
         return (f"Order ID: {self.order_id}\n"
                 f"Type: {self.order_type}\n"
                 f"Start Point: {self.start_point}\n"

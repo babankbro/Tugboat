@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 from read_data import get_data_from_db
-from CodeVS.components.transport_type import TransportType
+from CodeVS.components.transport_type import TransportType, WaterTravelType
 from CodeVS.components.water_enum import WaterBody
 
 from datetime import datetime, timedelta
@@ -20,9 +20,26 @@ import pandas as pd
 from CodeVS.operations.assigned_barge import * 
 from CodeVS.components.station import * 
 import CodeVS.config_problem as config_problem
+from CodeVS.components.water_lookup import FastStationLookup
 
 
-def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df=None):
+def initialize_data(data_df):
+    
+    carrier_df = data_df['carrier']
+    barge_df = data_df['barge']
+    tugboat_df = data_df['tugboat']
+    station_df = data_df['station']
+    order_df = data_df['order']
+    customer_df = data_df['customer']
+    water_level_up_df = data_df['water_level_up']
+    water_level_down_df = data_df['water_level_down']
+    
+    water_level_up = FastStationLookup()
+    water_level_up.load_data_df(water_level_up_df)
+    
+    water_level_down = FastStationLookup()
+    water_level_down.load_data_df(water_level_down_df)
+    
     
     # eeeee
     stations = {
@@ -91,16 +108,20 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
             order.des_object = carriers[order.des_point+"_"+order.order_id]
             #print(order.des_object, order.des_object.station)
 
-    print(tugboat_df)
+    #print(tugboat_df)
     #print(station_df)
     # Create a dictionary of Tugboat objects with 'ID' as the key
     tugboats = {
         row['ID']: Tugboat(row['ID'], row['NAME'], row['MAX CAP'], row['MAX BARGE'], row['MAX FUEL CON'],
-                        row['TYPE'], row['MAX SPEED'], row['LAT'], row['LNG'], row['STATUS'], row['KM'],
+                        row['TYPE'], row['MAX SPEED'], row['MIN SPEED'], row['LAT'], row['LNG'], row['STATUS'], row['KM'],
                         stations[row['STATION']],
                         row.get('READY DATETIME', None))
         for _, row in tugboat_df.iterrows()
     }
+    
+    # for tugboat_id, tugboat in tugboats.items():
+    #     tugboat._
+    
     
     # Create a dictionary of Barge objects with 'ID' as the key
     barges = {
@@ -118,13 +139,15 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
         'customer_station_map': customer_station_map,
         'tugboats': tugboats,
         'barges': barges,
-        'customers': customers
+        'customers': customers,
+        'water_level_up': water_level_up,
+        'water_level_down': water_level_down
     }
     
     # for station in data['stations'].values():
     #     print(station)
     
-    station_points, distances =  create_station_points(stations)
+    station_points, distances, direction_station_lookup =  create_station_points(stations)
     data['station_points'] = station_points
     
     #print(len(station_points), len(distances))
@@ -153,6 +176,7 @@ def initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, cust
     data['lookup_station_km'] = {station.km:station  for station in data['stations'].values()}
     data['sea_stations'] = {station_id: station for station_id, station in stations.items() if station.water_type == WaterBody.SEA}
     data['river_stations'] = {station_id: station for station_id, station in stations.items() if station.water_type == WaterBody.RIVER}
+    data['direction_station_lookup'] = direction_station_lookup
     
     
     return data
@@ -243,28 +267,76 @@ def create_station_points(stations):
         if i < len(value_stations)-1:
             next_station = list(value_stations)[i+1]
             
-            
+    direction_station_lookup = {}
     for i in range(len(data_points)-1):
         # Calculate travel time as 1 hour per 100 km
         current_satation = data_points[i]['station']
         next_station = data_points[i+1]['station']
         distances.append(abs(current_satation.km - next_station.km))
+        key = current_satation.station_id + "->" + next_station.station_id
+        if current_satation.water_type == WaterBody.SEA and next_station.water_type == WaterBody.SEA:
+            direction_station_lookup[key] = WaterTravelType.SEA 
+        elif current_satation.water_type == WaterBody.SEA and next_station.water_type == WaterBody.RIVER:
+            direction_station_lookup[key] = WaterTravelType.SEA
+        elif current_satation.water_type == WaterBody.RIVER and next_station.water_type == WaterBody.SEA:
+            direction_station_lookup[key] = WaterTravelType.SEA
+        elif current_satation.water_type == WaterBody.RIVER and next_station.water_type == WaterBody.RIVER:
+            if current_satation.km < next_station.km:
+                direction_station_lookup[key] = WaterTravelType.RIVER_UP
+            else:
+                direction_station_lookup[key] = WaterTravelType.RIVER_DOWN
+                
+    for i in range(1, len(data_points)):
+        # Calculate travel time as 1 hour per 100 km
+        current_satation = data_points[i]['station']
+        next_station = data_points[i-1]['station']
+        
+        key = current_satation.station_id + "->" + next_station.station_id
+        if current_satation.water_type == WaterBody.SEA and next_station.water_type == WaterBody.SEA:
+            direction_station_lookup[key] = WaterTravelType.SEA 
+        elif current_satation.water_type == WaterBody.SEA and next_station.water_type == WaterBody.RIVER:
+            direction_station_lookup[key] = WaterTravelType.SEA
+        elif current_satation.water_type == WaterBody.RIVER and next_station.water_type == WaterBody.SEA:
+            direction_station_lookup[key] = WaterTravelType.SEA
+        elif current_satation.water_type == WaterBody.RIVER and next_station.water_type == WaterBody.RIVER:
+            if current_satation.km < next_station.km:
+                direction_station_lookup[key] = WaterTravelType.RIVER_UP
+            else:
+                direction_station_lookup[key] = WaterTravelType.RIVER_DOWN
+        
+        
+        
     
     #distances[0] = 0
     #print("Data points:", data_points)
     #print("Distances:", distances)
    
-    return data_points, distances
+    return data_points, distances, direction_station_lookup
 
 if __name__ == "__main__":
     # Example usage
-    carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
+    data_df = get_data_from_db()
+    carrier_df = data_df['carrier']
+    barge_df = data_df['barge']
+    tugboat_df = data_df['tugboat']
+    station_df = data_df['station']
+    order_df = data_df['order']
+    customer_df = data_df['customer']
     print(carrier_df.head())
     print(barge_df.head())
     print(tugboat_df.head())
     print(station_df.head())
     print(order_df.head())
     print(customer_df.head())
-    data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+    data = initialize_data(data_df)
     
     print_all_objects(data)
+    water_level_up =   data['water_level_up']
+    water_level_down = data['water_level_down']
+    
+    stup = water_level_up.lookup_time_series_vectorized('2025-01-01 00:00', '2025-01-01 23:00', [ 'ST_005'])
+    print(stup['stations']['ST_005'][:15])
+    stdown = water_level_down.lookup_time_series_vectorized('2025-01-01 00:00', '2025-01-01 23:00', [ 'ST_005'])
+    print(stdown['stations']['ST_005'][:15])
+    
+    

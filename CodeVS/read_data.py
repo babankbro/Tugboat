@@ -351,6 +351,9 @@ def get_table_from_db(table_name, order_id=None):
 
 def get_data_from_db(table_name=False, order_id=False):
     
+    water_level_up_df = pd.read_csv(f'{INPUT_FOLDER}level_up.csv')
+    water_level_down_df = pd.read_csv(f'{INPUT_FOLDER}level_down.csv')
+    
     if LOAD_TEMP:
         carrier_df = pd.read_csv(f'{INPUT_FOLDER}Carrier.csv')
         barge_df = pd.read_csv(f'{INPUT_FOLDER}Barge.csv')
@@ -358,7 +361,21 @@ def get_data_from_db(table_name=False, order_id=False):
         station_df = pd.read_csv(f'{INPUT_FOLDER}Station.csv')
         order_df = pd.read_csv(f'{INPUT_FOLDER}Order.csv')
         customer_df = pd.read_csv(f'{INPUT_FOLDER}Customer.csv')
-        return (carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+        
+        # create dic to collect all df to return single one
+        data = {
+            'carrier': carrier_df,
+            'barge': barge_df,
+            'tugboat': tugboat_df,
+            'station': station_df,
+            'order': order_df,
+            'customer': customer_df,
+            'water_level_up': water_level_up_df,
+            'water_level_down': water_level_down_df
+        }
+
+        
+        return data
     # print(carrier_df)
     
     if not table_name:
@@ -388,9 +405,19 @@ def get_data_from_db(table_name=False, order_id=False):
         order_df.to_csv(f'{INPUT_FOLDER}Order.csv', index=False)
         customer_df.to_csv(f'{INPUT_FOLDER}Customer.csv', index=False)
         
+         # create dic to collect all df to return single one
+        data = {
+            'carrier': carrier_df,
+            'barge': barge_df,
+            'tugboat': tugboat_df,
+            'station': station_df,
+            'order': order_df,
+            'customer': customer_df,
+            'water_level_up': water_level_up_df,
+            'water_level_down': water_level_down_df
+        }
         
-        
-        return (carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+        return data
     elif table_name:
         return get_table_from_db(table_name)
         # print("Table not found.")
@@ -459,13 +486,21 @@ if __name__ == "__main__":
     # print(barge_df.head())
     # order_df = get_table_from_db('Order')
     # print(order_df.head())
-    carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
+    data_df = get_data_from_db()
+    carrier_df = data_df['carrier']
+    barge_df = data_df['barge']
+    tugboat_df = data_df['tugboat']
+    station_df = data_df['station']
+    order_df = data_df['order']
+    customer_df = data_df['customer']
+    water_level_up_df = data_df['water_level_up']
     print(carrier_df.head())
     print(barge_df.head())
     print(tugboat_df.head())
     print(station_df.head())    
     print(order_df.head())
     print(customer_df.head())
+    print(water_level_up_df.head())
 #     schedule_json = query_table_to_json('Schedule')
 #     schedule_dfv2 = pd.read_json(schedule_json)
 #     print(schedule_dfv2.columns)

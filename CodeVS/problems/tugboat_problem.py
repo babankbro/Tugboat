@@ -23,11 +23,13 @@ class TugboatProblem(ElementwiseProblem):
         #f = self._function_cost(x)
         solution = Solution(self.data_lookup)
         
-        tugboat_df, barge_df = solution.generate_schedule(self.order_ids, xs=x)
+        is_success, tugboat_df, barge_df = solution.generate_schedule(self.order_ids, xs=x)
         cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
-
+        if not is_success:
+            out["F"] = 1000000000000
+        else:
+            out["F"] = np.sum(tugboat_df_grouped['cost'])
         #print("Cost", np.sum(tugboat_df_grouped['cost']))
         #print(tugboat_df_grouped)
         
         out["hash"] = hash(str(x))
-        out["F"] = np.sum(tugboat_df_grouped['cost'])

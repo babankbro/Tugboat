@@ -33,10 +33,10 @@ def calculate_all_schedule():
     try:
         # print(f"Order ID: {order_id}")
         # Similar to main.py
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
+        data_df = get_data_from_db()
         # order_df = order_df[order_df['ID']==order_id]
 
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+        data = initialize_data(data_df)
         if TravelHelper._instance is None:
                 TravelHelper()
                 
@@ -48,7 +48,7 @@ def calculate_all_schedule():
         # print(f"Data Type: {type(data)}")
         # for key, value in data.items():
         #         print(key, value, "\n")
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
         cost_results, tugboat_df, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
         order_ids = list(tugboat_df["order_id"].unique())
         detail = []
@@ -107,7 +107,7 @@ def calculate_all_schedule():
                         # temp_tugboat_df = temp_tugboat_df.replace([np.nat], [None])
 
                         for _, row in temp_tugboat_df.iterrows():
-                            # print(row)
+                            
                             cursor.execute(insert_schedule_query, (
                                 row['ID'] if row["ID"] else None,
                                 row['type'] if row["type"] else None,
@@ -175,8 +175,8 @@ def calculate_single_schedule(order_id):
         # print(f"Order ID: {order_id}")
         if order_id:
             # Similar tp main.py
-            carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-            data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+            data_df = get_data_from_db()
+            data = initialize_data(data_df)
             
             if TravelHelper._instance is None:
                 TravelHelper()
@@ -186,7 +186,7 @@ def calculate_single_schedule(order_id):
             #order_ids = [order_id]
             
             solution = Solution(data)
-            tugboat_df, barge_df = solution.generate_schedule(order_ids)
+            is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
             result_df = tugboat_df
             filter_out_type = ['main_point']
             # for key, value in data.items():
@@ -330,10 +330,9 @@ def calculate_multiple_schedules():
             }), 400
         
         # Get data from database
-        carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+        data_df = get_data_from_db()
     
-        data = initialize_data(carrier_df, barge_df, 
-                            tugboat_df, station_df, order_df, customer_df)
+        data = initialize_data(data_df)
         
         if TravelHelper._instance is None:
             TravelHelper()
@@ -366,7 +365,7 @@ def calculate_multiple_schedules():
         print("Average Capacity Tugboat", average_tugboat_capacity)
         print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
         
-        Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
+        Number_Code_Tugboat = 8*int(2*max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
         print("Number Code Tugboat", Number_Code_Tugboat)
         
         
@@ -396,7 +395,7 @@ def calculate_multiple_schedules():
         'water_type']
         
         solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
+        is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
         cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
         
         
@@ -415,9 +414,18 @@ def calculate_multiple_schedules():
         print(len(tugboat_df))
         print(cost_results)
         
+        tugboat_df_grouped = cost_df
+        print("Total Cost", np.sum(tugboat_df_grouped['cost']))
+        #filter tugboat_df_grouped by not cost is zero
+        tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
+        print(tugboat_df_grouped)
         
-        print(cost_df)
-        print("Total Cost", sum(cost_df['cost']))
+        
+        #filter tugboat_df by contain "Sea" Word in tugboat id
+        tugboat_df_sea = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
+        print("Total Load Sea", np.sum(tugboat_df_sea['total_load']))
+        tugboat_df_river = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
+        print("Total Load River", np.sum(tugboat_df_river['total_load']))
         
         # Prepare response details
         detail = []
@@ -481,7 +489,7 @@ def calculate_multiple_schedules():
                         
                         
                         for _, row in temp_tugboat_df.iterrows():
-                            
+                            #print(row)
                             schedule_records.append((
                                 row['ID'] if row["ID"] else None,
                                 row['type'] if row["type"] else None,

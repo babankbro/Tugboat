@@ -178,7 +178,8 @@ class CodeInfo:
         
         self.index_code_tugboat += 1
         if self.index_code_tugboat >= self.n_code_tugboat:
-            raise Exception("Index code tugboat out of range")
+            #raise Exception("Index code tugboat out of range")
+            self.index_code_tugboat = 0
         
         return sorted_tugboats_list
     
@@ -241,6 +242,7 @@ class CodeInfo:
         
         self.index_code_tugboat += 1
         if self.index_code_tugboat >= self.n_code_tugboat:
-            raise Exception("Index code tugboat out of range")
+            #raise Exception("Index code tugboat out of range")
+            self.index_code_tugboat = 0
         
         return sorted_tugboats_list

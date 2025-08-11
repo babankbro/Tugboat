@@ -312,12 +312,12 @@ def test_transport_order(data, testing=False, testing_result=TestingResult.CRANE
 def main(testing=False, testing_result=TestingResult.CRANE):
     # Initialize data structures
 
-    carrier_df, barge_df, tugboat_df, station_df, order_df = get_data_from_db()
+    data_df = get_data_from_db()
     #order_df = order_df[order_df['ID']=='o1']
     # print(carrier_df)
     # eed
     
-    data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df)
+    data = initialize_data(data_df)
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -402,7 +402,7 @@ def test_read_data():
     order_ids = order_ids[:]
     
     solution = Solution(data)
-    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
     
     #print(tugboat_df)
     columns_of_interest = ['tugboat_id', 'type', 'name', 'enter_datetime', 'exit_datetime', 
@@ -419,7 +419,7 @@ def test_read_data():
     print(len(multiple_combos))
     
 def test_export():
-    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    data_df = get_data_from_db()
     
     # print(carrier_df)
     # print(barge_df)
@@ -428,8 +428,7 @@ def test_export():
     # print(order_df)
     # print(customer_df)
     
-    data = initialize_data(carrier_df, barge_df, 
-                           tugboat_df, station_df, order_df, customer_df)
+    data = initialize_data(data_df)
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -441,7 +440,7 @@ def test_export():
     order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.EXPORT]
     order_ids = order_ids[:1]
     solution = Solution(data)
-    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
     columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
        'water_type']
@@ -461,9 +460,8 @@ def test_export():
     print(len(tugboat_df))
     
 def test_mixed():
-    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
-    data = initialize_data(carrier_df, barge_df, 
-                           tugboat_df, station_df, order_df, customer_df)
+    data_df = get_data_from_db()
+    data = initialize_data(data_df)
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -474,7 +472,7 @@ def test_mixed():
     order_ids = [ order_id for order_id in data['orders'].keys() ]
     order_ids = order_ids[:]
     solution = Solution(data)
-    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
     columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
        'water_type']
@@ -495,7 +493,7 @@ def test_mixed():
     
     
 def test_import():
-    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    data_df = get_data_from_db()
     
     # print(carrier_df)
     # print(barge_df)
@@ -504,8 +502,7 @@ def test_import():
     # print(order_df)
     # print(customer_df)
     
-    data = initialize_data(carrier_df, barge_df, 
-                           tugboat_df, station_df, order_df, customer_df)
+    data = initialize_data(data_df)
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -517,7 +514,7 @@ def test_import():
     order_ids = [ order_id for order_id in data['orders'].keys() if data['orders'][order_id].order_type == TransportType.IMPORT]
     order_ids = order_ids[:1]
     solution = Solution(data)
-    tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
     
     #save csv
     tugboat_df.to_csv('tugboat_df.csv', index=False)
@@ -681,10 +678,10 @@ def test_generate_codes():
     
 def test_algorithm(order_input_ids = None):
     
-    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    data_df = get_data_from_db()
+    order_df = data_df['order']
     print()
-    data = initialize_data(carrier_df, barge_df, 
-                           tugboat_df, station_df, order_df, customer_df)
+    data = initialize_data(data_df)
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -703,8 +700,8 @@ def test_algorithm(order_input_ids = None):
     else  :
         order_ids = order_ids[:]
     print("Order\n", order_df)
-    for order_id in order_ids:
-        print(order_id, orders[order_id])
+    #for order_id in order_ids:
+    #    print(order_id, orders[order_id])
     #total demand of order_ids
     total_demand = sum(orders[order_id].demand for order_id in order_ids)
     print("Total Demand", total_demand)
@@ -747,7 +744,10 @@ def test_algorithm(order_input_ids = None):
        'water_type']
     
     solution = Solution(data)
-    tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
+    if not is_success:
+        print("Failed to generate schedule")
+        exit()
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     
     tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
@@ -766,18 +766,135 @@ def test_algorithm(order_input_ids = None):
     print(cost_results)
     
     
-    print(tugboat_df_grouped)
-    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
     
+    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
+    #filter tugboat_df_grouped by not cost is zero
+    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
+    print(tugboat_df_grouped)
+    
+    
+    #filter tugboat_df by contain "Sea" Word in tugboat id
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_df['total_load']))
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_df['total_load']))
+    
+
+def test_single_solution(order_input_ids = None):
+    
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    barges = data['barges']
+    stations = data['stations']
+    orders = data['orders']
+    tugboats = data['tugboats']
+    
+    order_ids = [ order_id for order_id in orders.keys() ]
+    if order_input_ids is not None:
+        order_ids = order_input_ids
+    else  :
+        order_ids = order_ids[:]
+    print("Order\n", order_df)
+    #for order_id in order_ids:
+    #    print(order_id, orders[order_id])
+    #total demand of order_ids
+    total_demand = sum(orders[order_id].demand for order_id in order_ids)
+    print("Total Demand", total_demand)
+    print("Average Demand", order_ids)
+    
+    average_capacity_barge = sum(b.capacity for b in barges.values()) / len(barges.values())
+    average_tugboat_capacity = sum(t.max_capacity for t in tugboats.values()) / len(tugboats.values())
+    print("Average Capacity Barge", average_capacity_barge)
+    print("Total Demand", total_demand//(average_capacity_barge), len(barges))
+    print("Average Capacity Tugboat", average_tugboat_capacity)
+    print("Total Demand", total_demand//(average_tugboat_capacity), len(tugboats))
+    
+    Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
+    print("Number Code Tugboat", Number_Code_Tugboat)
+    
+    
+  
+    
+    np.random.seed(1)
+    xs = np.random.rand(Number_Code_Tugboat)
+    
+    #tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+    #tugboat_df, barge_df = solution.generate_schedule(order_ids)
+    #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    
+    
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
+       'water_type']
+    
+    solution = Solution(data)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+    if not is_success:
+        print("Failed to generate schedule")
+        exit()
+    cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
+    #tugboat_dfx = tugboat_df
+    
+    print(tugboat_dfx[columns_of_interest])
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+    
+    print(order)
+    print(station_start)
+    print(station_end)
+    print(tugboat_df['tugboat_id'].unique())
+    print(len(tugboat_df))
+    print(cost_results)
+    
+    
+    
+    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
+    #filter tugboat_df_grouped by not cost is zero
+    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
+    print(tugboat_df_grouped)
+    
+    
+    #filter tugboat_df by contain "Sea" Word in tugboat id
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_df['total_load']))
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_df['total_load']))
+    
+    #group tugboat_df by order_id and sum total_load
+    tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
+    print(tugboat_df_grouped)
+
 
 if __name__ == "__main__":
     #result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)
     #test_read_data()
     #test_generate_codes()
     #test_import()
+    #test_algorithm([ "ODR_009"])
+    
     test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
                     "ODR_005", "ODR_006", "ODR_007", "ODR_008",
                     "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
                     "ODR_013", "ODR_014", 
                     ])
+    #test_single_solution
+    #test_single_solution([ "ODR_012" ])
+    
+    # test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    #                 "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+    #                 "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+    #                 "ODR_013", "ODR_014", 
+    #                 ])
 

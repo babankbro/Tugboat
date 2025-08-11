@@ -163,16 +163,19 @@ def assign_barges_to_river_tugboats(solution, appointment_station, order, data, 
     sorted_tugboats = solution.code_info.get_code_next_target_tugboat(order, river_tugboats,
                                                                       target_station,
                                                                       config_problem.MAX_RELAX_DAYS)
-    tugboat_ids = [tugboat.tugboat_id for tugboat in sorted_tugboats]
+    #tugboat_ids = [tugboat.tugboat_id for tugboat in sorted_tugboats]
     
     
-    station_ids = [solution.get_station_id_tugboat(solution.data['tugboats'][tugboat_id]) for tugboat_id in tugboat_ids]
+    #station_ids = [solution.get_station_id_tugboat(solution.data['tugboats'][tugboat_id]) for tugboat_id in tugboat_ids]
     
-    river_tugboats = [tugboat.tugboat_id for tugboat in river_tugboats.values()]
+    #river_tugboats = [tugboat.tugboat_id for tugboat in river_tugboats.values()]
     #print("Sorted tugboats: ",  river_tugboats[:] , station_ids[:])
     #print("River tugboats: ", [tugboat.tugboat_id for tugboat in river_tugboats.values()])
     
     for tugboat in sorted_tugboats:
+        if len(tugboat.assigned_barges) != 0:
+            raise Exception("Tugboat already has assigned barges", tugboat.tugboat_id)
+            continue
         assign_barges_to_tugboat( tugboat, assigned_barges)
         
         if len(assigned_barges) == 0:
@@ -181,6 +184,10 @@ def assign_barges_to_river_tugboats(solution, appointment_station, order, data, 
                 assigned_tugboats.append(tugboat)
             break
         assigned_tugboats.append(tugboat)
+        
+    #give total load to tugboat
+    
+    
     return assigned_tugboats
 
 def order_barges_from_arrival_tugboats(data, lookup_tugboat_results):

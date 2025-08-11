@@ -208,8 +208,8 @@ class TestSchedulingSolution(unittest.TestCase):
     def test_barge_timeline_overlap(self):
         #return
         
-        carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df = get_data_from_db()
-        data = initialize_data(carrier_df, barge_df, tugboat_df, station_df, order_df, customer_df)
+        data_df = get_data_from_db()
+        data = initialize_data(data_df)
         
         if TravelHelper._instance is None:
             TravelHelper()
@@ -219,7 +219,7 @@ class TestSchedulingSolution(unittest.TestCase):
         order_ids = order_ids[:1]
         
         solution = Solution(data)
-        tugboat_df, barge_df = solution.generate_schedule(order_ids)
+        is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids)
         result_df = tugboat_df
         filter_out_type = ['main_point']
     

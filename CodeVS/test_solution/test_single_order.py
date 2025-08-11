@@ -34,10 +34,9 @@ except ImportError as e:
         
         
 def get_tugboat_df():
-    carrier_df, barge_df, tugboat_df, station_df, order_df  , customer_df = get_data_from_db()
+    data_df = get_data_from_db()
     
-    data = initialize_data(carrier_df, barge_df, 
-                           tugboat_df, station_df, order_df, customer_df)
+    data = initialize_data(data_df)
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -72,7 +71,7 @@ def get_tugboat_df():
     np.random.seed(1)
     xs = np.random.rand(Number_Code_Tugboat)
     
-    tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
     return tugboat_df
         
 class TestSingleOrder(unittest.TestCase):
