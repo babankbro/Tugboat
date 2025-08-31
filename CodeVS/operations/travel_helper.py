@@ -1,6 +1,8 @@
 import sys
 import os
 
+from numpy.ma import count
+
 from CodeVS.components.water_enum import WaterBody
 from CodeVS.components.transport_type import TransportType, WaterTravelType
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -8,6 +10,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from CodeVS.components.station import Station
 from CodeVS.utility.helpers import haversine
 import CodeVS.config_problem as config_problem
+from datetime import timedelta
+import numpy as np
 
 # create class TravelInfo
 # travel_infos = {
@@ -19,16 +23,22 @@ import CodeVS.config_problem as config_problem
 #             }
 
 class TravelInfo:
-    def __init__(self, start_location, end_location, speed, start_km, end_km):
+    def __init__(self, start_location, end_location, speed, start_km, end_km, start_id='-', end_id='-'):
         self.start_location = start_location
         self.end_location = end_location
         self.speed = speed
         self.start_km = start_km
         self.end_km = end_km
+        self.start_id = start_id
+        self.end_id = end_id
+        
+    def __str__(self):
+        return f"TravelInfo(start_location={self.start_location}, end_location={self.end_location}, speed={self.speed}, start_km={self.start_km}, end_km={self.end_km}, start_id={self.start_id}, end_id={self.end_id})"
 
 class TravelStep:
     
-    def __init__(self, data, start_location, end_location, start_id, end_id, distance, speed, water_factor1=1, water_factor2=1):
+    def __init__(self, data, start_location, end_location, 
+                 start_id, end_id, distance, speed, water_factor1=1, water_factor2=1):
         self.data = data
         self.start_location = start_location
         self.end_location = end_location
@@ -38,7 +48,7 @@ class TravelStep:
         self.base_speed = speed
         self.rest_time = 0
         self.exit_time = None
-        self.arrival_time = None  
+        self.start_arrival_time = None  
         self.start_time = None   
         self.water_factor1 = water_factor1  
         self.water_factor2 = water_factor2  
@@ -50,7 +60,276 @@ class TravelStep:
             self.travel_time = distance / self.travel_speed
         #start_id: start_time -> travel_time -> end_id:arrival_time + stop_time -> exit_time
     
-    def update_travel_time(self, date_time):
+    
+    def refactor_water_factor(self, lookup, enter_date_time, end_date_time, 
+                              from_station, target_station):
+        time_series = lookup.lookup_time_series_vectorized(
+            enter_date_time.strftime("%Y-%m-%d %H:%M:%S"), end_date_time.strftime("%Y-%m-%d %H:%M:%S"),
+            [from_station.station_id, target_station.station_id]
+        )
+        
+        combine_factor = time_series['stations'][from_station.station_id].copy()
+        
+        combine_factor[len(combine_factor)//2:] = time_series['stations'][target_station.station_id][len(combine_factor)//2:]
+        #print("Combine factor", combine_factor)
+        #print("From station", time_series['stations'][from_station.station_id])
+        #print("Target station", time_series['stations'][target_station.station_id])
+        return combine_factor
+        
+    
+    
+    def update_travel_step_move(self, enter_date_time):
+        target_station = self.data['stations'][self.end_id]
+        from_station = self.data['stations'][self.start_id]
+        direction_station_lookup = self.data['direction_station_lookup']
+        isfromSeaToBar = False
+        if from_station.water_type == WaterBody.SEA and target_station.water_type == WaterBody.RIVER:
+            isfromSeaToBar = True
+            
+        if target_station.water_type == WaterBody.RIVER:
+            
+            from_station = self.data['stations'][self.start_id]
+            key = from_station.station_id + "->" + target_station.station_id
+            if from_station.station_id == target_station.station_id:
+                lookup = self.data['water_level_up']
+            elif direction_station_lookup[key] == WaterTravelType.SEA:
+                lookup = self.data['water_level_down']
+            else:
+                if direction_station_lookup[key] == WaterTravelType.RIVER_UP:
+                    lookup = self.data['water_level_up']
+                else:
+                    lookup = self.data['water_level_down']
+        else:
+            lookup = self.data['water_level_down']
+        
+        
+        factor1 = lookup.lookup_station(enter_date_time.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , from_station.station_id)
+        
+        predict_speed1 = self.base_speed * factor1
+        travel_time1 = self.distance / predict_speed1 if predict_speed1 > 0 else 0
+        
+        predict_date_time_end = enter_date_time + timedelta(hours=travel_time1)
+        des_factor = lookup.lookup_station(predict_date_time_end.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , target_station.station_id)
+        
+        isWait = False
+        if des_factor == 0:
+            isWait = True
+        else:
+            # recompute factor
+            factors = self.refactor_water_factor(lookup, enter_date_time,
+                                                 predict_date_time_end, from_station, target_station)
+            factor2 = np.mean(factors)
+            predict_speed2 = self.base_speed * factor2
+            travel_time2 = self.distance / predict_speed2
+            
+            predict_date_time_end = enter_date_time + timedelta(hours=travel_time2)
+            time_series = lookup.lookup_time_series_vectorized(
+                enter_date_time.strftime("%Y-%m-%d %H:%M:%S"), predict_date_time_end.strftime("%Y-%m-%d %H:%M:%S"),
+                [target_station.station_id]
+            )
+            
+            if time_series['stations'][target_station.station_id][-1] == 0:
+                isWait = True
+                
+        if isfromSeaToBar:
+            factor2 = 1
+            predict_speed2 = self.base_speed * factor2
+            travel_time2 = self.distance / predict_speed2
+            
+            
+        if isWait and not isfromSeaToBar:
+            # predict_date_time_end truncate to hour
+            #predict_date_time_start = predict_date_time_end.replace(minute=0, second=0, microsecond=0)
+            #next_predict_date_time_start = predict_date_time_start + timedelta(hours=1)
+            next_predict_date_time_start = predict_date_time_end
+            next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , target_station.station_id)
+            while next_factor != 0:
+                next_predict_date_time_start = next_predict_date_time_start + timedelta(hours=1)
+                next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , target_station.station_id)
+            
+            count = 0
+            while next_factor < config_problem.START_OUT_WATER_FACTOR:
+                count+= 1
+                next_predict_date_time_start = next_predict_date_time_start + timedelta(hours=1)
+                next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , target_station.station_id)
+                #print("next_factor", next_predict_date_time_start, next_factor)
+            start_exit_time = next_predict_date_time_start
+            predict_out_speed = self.base_speed * next_factor
+            predict_out_time = self.distance / predict_out_speed
+            predict_date_time_end = start_exit_time + timedelta(hours=predict_out_time)
+            factors = self.refactor_water_factor(lookup, start_exit_time,
+                                                 predict_date_time_end, from_station, target_station)
+            
+            factor2 = np.mean(factors)
+            predict_speed2 = self.base_speed * factor2
+            travel_time2 = self.distance / predict_speed2 if predict_speed2 > 0 else 0
+            predict_date_time_end = start_exit_time + timedelta(hours=travel_time2)
+            factors2 = self.refactor_water_factor(lookup, start_exit_time,
+                                                 predict_date_time_end, from_station, target_station)
+            
+            
+            
+            if factors2[-1] > 0:
+                self.water_factor = np.mean(factors2)
+                self.travel_speed = self.base_speed * self.water_factor
+                self.travel_time = self.distance / self.travel_speed
+                self.rest_time = (start_exit_time - enter_date_time).total_seconds() / 3600
+                #print("rest_time", self.rest_time)
+                #print("travel_time", self.travel_time)
+                #print("start_exit_time", start_exit_time)
+                #print("enter_date_time", enter_date_time)
+                
+                self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
+                self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
+                self.start_time = enter_date_time
+            else:
+                
+                factor1 = lookup.lookup_station(enter_date_time.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , from_station.station_id)
+        
+                predict_speed1 = self.base_speed * factor1
+                travel_time1 = self.distance / predict_speed1 if predict_speed1 > 0 else 0
+                predict_date_time_end = enter_date_time + timedelta(hours=travel_time1)
+                des_factor = lookup.lookup_station(predict_date_time_end.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , target_station.station_id)
+                predict_date_time_start = predict_date_time_end.replace(minute=0, second=0, microsecond=0)
+                next_predict_date_time_start = predict_date_time_start + timedelta(hours=1)
+                next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , from_station.station_id)
+                
+                print("enter_date_time", count, enter_date_time, start_exit_time, predict_date_time_start)
+                print("predict_date_time_end", predict_date_time_end)
+                print("travel_time1", travel_time1, predict_speed1, factor1)
+                print("des_factor", des_factor)
+                print("next_factor", next_factor, next_predict_date_time_start)
+                raise Exception("Water factor out should not be 0", from_station.station_id, 
+                                target_station.station_id, enter_date_time, str(self), '\n',
+                                factors,
+                                factors2, predict_date_time_end)
+            
+            
+        else:
+            
+            self.travel_speed = self.base_speed * factor2
+            self.water_factor = factor2
+            self.travel_time = travel_time2
+            self.rest_time = 0
+            self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
+            self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
+            self.start_time = enter_date_time
+        
+        
+        
+            
+    
+    def update_travel_step_move_old(self, enter_date_time):
+        target_station = self.data['stations'][self.end_id]
+        
+        direction_station_lookup = self.data['direction_station_lookup']
+        isfromSeaToBar = False
+        if self.start_id:
+            from_station = self.data['stations'][self.start_id]
+            if from_station.water_type == WaterBody.SEA and target_station.water_type == WaterBody.RIVER:
+                isfromSeaToBar = True
+                
+    
+            
+        if target_station.water_type == WaterBody.RIVER:
+            
+            from_station = self.data['stations'][self.start_id]
+            key = from_station.station_id + "->" + target_station.station_id
+            if from_station.station_id == target_station.station_id:
+                lookup = self.data['water_level_up']
+            elif direction_station_lookup[key] == WaterTravelType.SEA:
+                lookup = self.data['water_level_down']
+            else:
+                if direction_station_lookup[key] == WaterTravelType.RIVER_UP:
+                    lookup = self.data['water_level_up']
+                else:
+                    lookup = self.data['water_level_down']
+        else:
+            lookup = self.data['water_level_down']
+        
+        if self.distance == 0:
+            self.travel_time = 0
+            self.water_factor = 1
+            self.water_factor1 = 1
+            self.water_factor2 = 1
+            return
+        if not isfromSeaToBar:
+            exit_date_time = enter_date_time + timedelta(hours=self.travel_time)
+            time_series = lookup.lookup_time_series_vectorized(
+                exit_date_time.strftime("%Y-%m-%d %H:%M:%S"), exit_date_time.strftime("%Y-%m-%d %H:%M:%S"),
+                [target_station.station_id]
+            )
+            water_factor = np.mean(time_series['stations'][target_station.station_id])
+        else:
+            water_factor = 1
+        predict_speed = self.base_speed * water_factor
+        if predict_speed < config_problem.TRAVEL_FACTOR['RIVER_TUGBOAT_TRAVEL_MIN_SPEED']:
+            # recompute speed 
+            target_travel_time = self.distance/config_problem.TRAVEL_FACTOR['RIVER_TUGBOAT_TRAVEL_MIN_SPEED']
+            target_water_factor = config_problem.TRAVEL_FACTOR['RIVER_TUGBOAT_TRAVEL_MIN_SPEED']/self.base_speed
+            
+        
+            predict_date_time_start = enter_date_time 
+            predict_date_time_end = enter_date_time + timedelta(hours=target_travel_time)
+            
+            time_series = lookup.lookup_time_series_vectorized(
+                predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S"), predict_date_time_end.strftime("%Y-%m-%d %H:%M:%S"),
+                [target_station.station_id]
+            )
+            
+            #print("Recompute speed", predict_date_time_start, predict_date_time_end, time_series)
+            
+            
+            target_rest_time = 0
+            water_factor = np.mean(time_series['stations'][target_station.station_id])
+            while water_factor < target_water_factor:
+                #print("Water factor", water_factor, target_water_factor )
+                target_rest_time += 1
+                predict_date_time_start += timedelta(hours=1)
+                predict_date_time_end += timedelta(hours=1)
+                precheck_water_factor = lookup.lookup_station(predict_date_time_end.strftime("%Y-%m-%d %H:%M:%S")
+                                                              , target_station.station_id)
+                if precheck_water_factor < target_water_factor:
+                    water_factor = precheck_water_factor
+                    continue
+                
+                
+                
+                time_series = lookup.lookup_time_series_vectorized(
+                    predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S"), predict_date_time_end.strftime("%Y-%m-%d %H:%M:%S"),
+                    [target_station.station_id]
+                )
+                water_factor = np.mean(time_series['stations'][target_station.station_id])
+            
+            
+            self.water_factor = water_factor
+            self.travel_speed = self.base_speed * water_factor
+            self.travel_time = self.distance / self.travel_speed
+            self.rest_time = target_rest_time
+            self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
+            self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
+            self.start_time = enter_date_time
+            
+        else:
+            self.travel_speed = predict_speed
+            self.water_factor = water_factor
+            self.travel_time = self.distance / self.travel_speed
+            self.rest_time = 0
+            self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
+            self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
+            self.start_time = enter_date_time
+            
+
+    
+    def update_travel_prev_step_move(self, date_time):
         target_station = self.data['stations'][self.end_id]
         
         lookup = self.data['water_level_down']
@@ -111,7 +390,9 @@ class TravelStep:
                 f"Start ID: {self.start_id}, End ID: {self.end_id}, Distance: {self.distance:.3f}, "
                 f"Travel Time: {self.travel_time:.3f}, Speed: {self.travel_speed:.3f}, "
                 f"Water Factor: {self.water_factor:.3f}, Base Speed: {self.base_speed:.3f}, "
-                f"Water Factor 1: {self.water_factor1:.3f}, Water Factor 2: {self.water_factor2:.3f}")
+                f"Water Factor 1: {self.water_factor1:.3f}, Water Factor 2: {self.water_factor2:.3f}, "
+                f"Rest Time: {self.rest_time:.3f}, Exit Time: {self.exit_time}, "
+                f"Start Arrival Time: {self.start_arrival_time}, Start Time: {self.start_time}")
 
 
 class TravelHelper:
@@ -193,7 +474,15 @@ class TravelHelper:
             for i in range(start_index, end_index - 1, -1):
                 if key_station in self.data['station_ids'][i]:
                     continue
+                
                 result.append(self.data['station_ids'][i])
+                if self.data['station_ids'][i] == config_problem.BAR_STATION_BASE_REFERENCE_ID:
+                    result.append(config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID)
+                    break
+            
+            # if "ST_004" in  result and "ST_003" in result:
+            #     if result.index("ST_004") < result.index("ST_003"):
+            #         raise Exception("ST_004 is before ST_003 Travel Back", result)
                 
         if key_station in end_station_id:
             if key_station not in result:
@@ -333,15 +622,22 @@ class TravelHelper:
                 total_distance += distance
                 total_time += travel_time
             
+            
+            
+            
+            
             td, tt = self._append_travel_steps_for_river_stations(order_stations, steps, info_start_ends.speed)
             # print("order_stations -------------- ",order_stations, td)
             # for step in steps:
             #     print(step['start_location'], step['end_location'], step['distance'], step['travel_time'], step['speed'])
             total_distance += td
             total_time += tt
-            if isContinue:
-                start_location = (sea_station.lat, sea_station.lng)
-                distance = self.get_distance_location(start_location, info_start_ends.end_location)
+            isContinue = True
+            if config_problem.KOH_SI_CHANG_STATION_BASE_REFERENCE_ID != sea_station.station_id:
+                end_location = info_start_ends.end_location
+                koh_si_chang_station = TravelHelper._instance.data['stations'][order_stations[-1]]
+                koh_si_chang_location = (koh_si_chang_station.lat, koh_si_chang_station.lng)
+                distance = self.get_distance_location(koh_si_chang_location, end_location)
                 travel_time = distance/ info_start_ends.speed # t = d / v
                 # steps.append({
                 #     'start_location': start_location,
@@ -354,8 +650,8 @@ class TravelHelper:
                 # })
                 start_id = start_station.station_id if start_station is not None else '-'
                 end_id = sea_station.station_id if sea_station is not None else '-'
-                step = TravelStep(self.data, start_location, info_start_ends.end_location, 
-                                  start_id, end_id, 
+                step = TravelStep(self.data, koh_si_chang_location, end_location, 
+                                  koh_si_chang_station.station_id, sea_station.station_id, 
                                   distance, info_start_ends.speed)
                 steps.append(step)
                 total_distance += distance

@@ -47,7 +47,9 @@ class FastStationLookup:
             else:
                 dt = pd.to_datetime(datetime_input)
             
-            # Convert to hourly format (truncate minutes and seconds)
+            # Convert to hourly format (truncate minutes and seconds) if > 30 minutes round up
+            if dt.minute >= 30:
+                dt = dt + timedelta(hours=1)
             hourly_dt = dt.replace(minute=0, second=0, microsecond=0)
             return hourly_dt.strftime('%Y-%m-%d %H:%M:%S')
             
@@ -149,7 +151,7 @@ class FastStationLookup:
             hourly_datetime = self._convert_to_hourly_format(datetime_input)
             
             # Fast index lookup
-            print("hourly_datetime", hourly_datetime)
+            #print("hourly_datetime", hourly_datetime)
             index = self.datetime_to_index.get(hourly_datetime)
             if index is None:
                 return None
@@ -737,13 +739,13 @@ def example_usage():
         print(list(lookup.datetime_to_index.items())[:10])
         
         print("\n=== Basic lookups ===")
-        # Single station lookup
-        value = lookup.lookup_station('2025-01-01 13:35:00', 'ST_005')
-        print(f"ST_005 at 2025-01-01 12:00: {value}")
+        # Single station lookup 11.00 1 12.00 0.5 13.00 0
+        value = lookup.lookup_station('2025-02-11 05:00:00', 'ST_025')
+        print(f"ST_025 at 2025-02-11 05:00: {value}")
         
         # Multiple stations lookup
         multiple = lookup.lookup_multiple_stations(
-            '2025-01-01 13:35:00',
+            '2025-01-01 12:29:00',
             ['ST_001', 'ST_002', 'ST_003', 'ST_004']
         )
         print(f"Multiple stations: {multiple}")
@@ -751,7 +753,7 @@ def example_usage():
         print("\n=== Vectorized time series ===")
         # Fast time series
         time_series = lookup.lookup_time_series_vectorized(
-            '2025-01-01 00:00', '2025-01-01 23:00',
+            '2025-01-01 11:31', '2025-01-01 13:00',
             ['ST_002', 'ST_005']
         )
         
@@ -762,35 +764,35 @@ def example_usage():
         
         print(f"Time series length: {len(time_series['datetimes'])}")
         print(f"Time series datetimes: {time_series['datetimes']}")
-        print(f"First 3 ST_002 values: {time_series['stations']['ST_005'][:15]}")
+        print(f"First 3 ST_005 values: {time_series['stations']['ST_005'][:]}")
         
-        print("\n=== Fast statistics ===")
-        stats = lookup.get_station_stats_fast('ST_002')
-        print(f"ST_002 stats: mean={stats['mean']:.2f}, min={stats['min']}, max={stats['max']}")
+        # print("\n=== Fast statistics ===")
+        # stats = lookup.get_station_stats_fast('ST_002')
+        # print(f"ST_002 stats: mean={stats['mean']:.2f}, min={stats['min']}, max={stats['max']}")
         
-        print("\n=== Performance info ===")
-        perf_info = lookup.get_performance_info()
-        print(f"Performance: {perf_info}")
+        # print("\n=== Performance info ===")
+        # perf_info = lookup.get_performance_info()
+        # print(f"Performance: {perf_info}")
         
-        print("\n=== Performance benchmark ===")
+        # print("\n=== Performance benchmark ===")
         
         
-        # Get previous 2 days of data for one station
-        result = lookup.lookup_previous_time_series('2025-01-03 15:30', days_back=2, station_ids='ST_002')
-        print(result)
+        # # Get previous 2 days of data for one station
+        # result = lookup.lookup_previous_time_series('2025-01-03 15:30', days_back=2, station_ids='ST_002')
+        # print(result)
 
-        # Get previous 1 day and 12 hours for multiple stations  
-        result = lookup.lookup_previous_time_series('2025-01-03 15:30', days_back=1, hours_back=12, 
-                                                station_ids=['ST_002', 'ST_005'])
-        print(result)
+        # # Get previous 1 day and 12 hours for multiple stations  
+        # result = lookup.lookup_previous_time_series('2025-01-03 15:30', days_back=1, hours_back=12, 
+        #                                         station_ids=['ST_002', 'ST_005'])
+        # print(result)
 
-        # Get previous 48 hours only
-        result = lookup.lookup_previous_time_series('2025-01-01 15:30', hours_back=48, station_ids='ST_002')
-        print(result)
+        # # Get previous 48 hours only
+        # result = lookup.lookup_previous_time_series('2025-01-01 15:30', hours_back=48, station_ids='ST_002')
+        # print(result)
 
-        # Get statistics for the previous time period
-        stats = lookup.get_previous_time_stats('2025-01-01 15:30', days_back=2, station_ids=['ST_002', 'ST_005'])
-        print(stats['stations']['ST_005']['mean'])
+        # # Get statistics for the previous time period
+        # stats = lookup.get_previous_time_stats('2025-01-01 15:30', days_back=2, station_ids=['ST_002', 'ST_005'])
+        # print(stats['stations']['ST_005']['mean'])
         
         
         #performance_benchmark(lookup, 50000)

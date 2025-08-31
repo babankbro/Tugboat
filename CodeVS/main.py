@@ -2,6 +2,7 @@ import sys
 import os
 
 from click.decorators import R
+from pandas.core.tools.datetimes import start_caching_at
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -23,6 +24,7 @@ from pymoo.core.callback import Callback
 from pymoo.optimize import minimize
 from CodeVS.algorithm.AMIS import AMIS
 from CodeVS.problems.tugboat_problem import TugboatProblem
+from connectdb import update_database
 
 
 from enum import Enum
@@ -676,7 +678,7 @@ def test_generate_codes():
     print("After Sorted Barges", [b.barge_id for b in sorted_barges_list][:10])
     print("After Sorted Value Barges", barge_values[sorted_barge_indices][:10])
     
-def test_algorithm(order_input_ids = None):
+def test_algorithm(order_input_ids = None, name='v3'):
     
     data_df = get_data_from_db()
     order_df = data_df['order']
@@ -750,6 +752,9 @@ def test_algorithm(order_input_ids = None):
         exit()
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     
+    tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_algorithm.xlsx', index=False)
+    
+    
     tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     #tugboat_dfx = tugboat_df
     
@@ -779,13 +784,116 @@ def test_algorithm(order_input_ids = None):
     tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
     print("Total Load River", np.sum(tugboat_df['total_load']))
     
-
-def test_single_solution(order_input_ids = None):
+    tugboat_df_o.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.csv', index=False)
     
+def test_single_solution(order_input_ids = None, name='v3'):
     data_df = get_data_from_db()
     order_df = data_df['order']
     print()
     data = initialize_data(data_df)
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
+       'time', 'speed', 'total_load', 'total_load_v2', 'barge_ids', 'tugboat_id', 'order_id',
+       'water_type']
+    
+    
+
+    order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
+    # save as excel
+    tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
+    
+    
+    print(tugboat_df)
+    
+    # tugboat_dfx = tugboat_df[
+    #         ((tugboat_df['tugboat_id'] == 'SeaTB_02') | (tugboat_df['tugboat_id'] == 'SeaTB_02')) 
+    #         &(tugboat_df['order_id'] == 'ODR_001')
+    #     ]
+    #filter type ="Barge Step Collection"
+    #tugboat_dfx = tugboat_df[tugboat_df['type'].str.contains("Barge Step Collection")]
+    #tugboat_dfx = tugboat_df
+    
+    #filter tugboat_df by contain "Sea" Word in barge id
+    #tugboat_dfx = tugboat_df[tugboat_df['barge_ids'].str.contains("B_084")]
+    
+    #print(tugboat_df)
+   
+    
+    
+    
+    
+    #print(np.unique(tugboat_df['type']))
+    
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+    
+    #print(order)
+    #print(station_start)
+    #print(station_end)
+    #print(tugboat_df['tugboat_id'].unique())
+    #print(len(tugboat_df))
+    #print(cost_results)
+    
+ 
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'].str.contains("Sea")) & (tugboat_df['order_id'] == 'ODR_008')]
+    print(tugboat_dfx[columns_of_interest].head(20))
+    
+    
+    
+    #filter tugboat_df by contain "Sea" Word in tugboat id
+    
+    
+    # #group tugboat_df by order_id and sum total_load
+    # tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
+    # print(tugboat_df_grouped)
+    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
+    #filter tugboat_df_grouped by not cost is zero
+    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
+    print(tugboat_df_grouped)
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_df['total_load']))
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_df['total_load']))
+    
+    # for order_id in order_ids:
+    #     #print(order_id, data['orders'][order_id])
+    #     #filter tugboat_df by order_id
+    #     tugboat_dfxt = tugboat_df[(tugboat_df['order_id'] == order_id)
+    #                              & (tugboat_df['tugboat_id'].str.contains("RiverTB_02"))
+    #                              #& (tugboat_df['type'].str.contains("Barge Collection"))
+    #                              ]
+    #     order = data['orders'][order_id]
+    #     print("Order", order_id, order.start_datetime)
+    #     #print(tugboat_dfx)
+    #     for index, row in tugboat_dfxt.iterrows():
+    #         #check if row['enter_datetime'] is less than order.start_datetime
+    #         # row['enter_datetime'] string to datetime TypeError: strptime() argument 1 must be str, not Timestamp
+    #         #temp_enter = row['enter_datetime'].strftime('%Y-%m-%d %H:%M:%S')
+    #         #order_start_datetime= order.start_datetime.strftime('%Y-%m-%d %H:%M:%S')
+    #         # print(row['enter_datetime'], order.start_datetime)
+    #         # temp_enter = datetime.strptime(row['enter_datetime'], '%Y-%m-%d %H:%M:%S')
+    #         # order_start_datetime = datetime.strptime(order.start_datetime, '%Y-%m-%d %H:%M:%S')
+    #         #delta time
+    #         delta_time = row['enter_datetime'] - order.start_datetime
+    #         if delta_time.total_seconds()/3600 > 24*0:
+    #             print("Tugboat", row['tugboat_id'], "is late",row['enter_datetime'], order.start_datetime )
+    #     print("Tugboat++++++++++++++++++++++++++++")
+    #     for tugboat_id, tugboat in data['tugboats'].items():
+    #         #if tugboat._ready_time < order.start_datetime and "Sea" in tugboat.name:
+    #         print("Tugboat", tugboat_id, "is late", tugboat._ready_time, order.start_datetime)
+    
+    
+    
+    print(tugboat_df_grouped)
+    
+    #save to csv
+    update_database(order_ids, tugboat_df_o, tugboat_df_grouped)
+    
+    #barge_df.to_csv('barge_df.csv', index=False)
+
+def _init_test(data, order_df, order_input_ids):
+    data_df = get_data_from_db()
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -832,9 +940,7 @@ def test_single_solution(order_input_ids = None):
     #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     
     
-    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
-       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
-       'water_type']
+    
     
     solution = Solution(data)
     is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
@@ -842,8 +948,83 @@ def test_single_solution(order_input_ids = None):
         print("Failed to generate schedule")
         exit()
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    return order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped 
+
+def test_step_travel():
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    data = initialize_data(data_df)
     
-    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    # print_all_objects(data)
+
+    order = data['orders']['ODR_001']
+    station_start = data['stations']["ST_024"]
+    station_end = data['stations']["ST_025"]
+    base_speed = 8.22
+    distance = 21
+    travel_info = TravelInfo((station_start.lat, station_start.lng), 
+                             (station_end.lat, station_end.lng), 
+                             base_speed, 
+                             station_start.km, station_end.km)
+    travel_step = TravelStep(data, (station_start.lat, station_start.lng), 
+                             (station_end.lat, station_end.lng), 
+                             station_start.station_id, 
+                             station_end.station_id, distance, base_speed)
+    # convert string 2025-01-01 02:00 to datetime
+    travel_info.start_time = datetime.strptime("2025-02-10 08:04", "%Y-%m-%d %H:%M")
+    travel_step.update_travel_step_move(travel_info.start_time)
+    print(travel_step)
+    print("--------------------------------")
+    travel_info.start_time = datetime.strptime("2025-02-10 12:05", "%Y-%m-%d %H:%M")
+    travel_step.update_travel_step_move(travel_info.start_time)
+    print(travel_step)
+
+def test_result_travel_sea_have_break(order_input_ids):
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
+    tugboat_dfx = tugboat_df
+    
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
+       'water_type']
+    print(tugboat_dfx[columns_of_interest])
+    
+    tugboat_dfx = tugboat_df[(tugboat_df['name'] == 'ST_001 to ST_005') 
+                             #& tugboat_df['name'] == 'ST001 to ST005']
+    ]
+    #tugboat_dfx = tugboat_df
+    
+    print(tugboat_dfx[columns_of_interest])
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+
+def test_result_barge_start_collection_is_dash(order_input_ids):
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
+    tugboat_dfx = tugboat_df
+    
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
+       'water_type']
+    print(tugboat_dfx[columns_of_interest])
+    
+    #check string is in name
+    tugboat_dfx = tugboat_df[tugboat_df['name'].str.contains('- to ST_001') & (tugboat_df['type'] == 'Barge Step Collection')]
     #tugboat_dfx = tugboat_df
     
     print(tugboat_dfx[columns_of_interest])
@@ -851,31 +1032,75 @@ def test_single_solution(order_input_ids = None):
     station_start = order.start_object.station
     station_end = order.des_object.station
     
-    print(order)
-    print(station_start)
-    print(station_end)
-    print(tugboat_df['tugboat_id'].unique())
-    print(len(tugboat_df))
-    print(cost_results)
+def use_barge_ready_after_order_start(order_input_ids):
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
     
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
     
+    for order_id in order_ids:
+        odrder_results = tugboat_df[tugboat_df['order_id'] == order_id]
+        order = data['orders'][order_id]
+        #print(order_id)
+        #print(odrder_results)
+        list_barge_ids = []
+        for index, row in odrder_results.iterrows():
+            list_barge_ids.extend(row['barge_ids'].split(','))
+        print(order_id,   order.start_datetime, order.due_datetime, "Barge_ids:", set(list_barge_ids))
+        set_barge_ids = set(list_barge_ids)
+        for barge_id in set_barge_ids:
+            if order.due_datetime < data['barges'][barge_id]._ready_time:
+                print(order.due_datetime, data['barges'][barge_id]._ready_time)
+                break
+        
+def check_delay_out_after_finish_crane_load(order_input_ids):
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
     
-    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
-    #filter tugboat_df_grouped by not cost is zero
-    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
-    print(tugboat_df_grouped)
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
+    tugboat_dfx = tugboat_df
     
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
+       'water_type']
+    print(tugboat_dfx[columns_of_interest])
     
-    #filter tugboat_df by contain "Sea" Word in tugboat id
-    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
-    print("Total Load Sea", np.sum(tugboat_df['total_load']))
-    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
-    print("Total Load River", np.sum(tugboat_df['total_load']))
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_04') 
+                             #& tugboat_df['name'] == 'ST001 to ST005']
+    ]
+    #tugboat_dfx = tugboat_df
     
-    #group tugboat_df by order_id and sum total_load
-    tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
-    print(tugboat_df_grouped)
-
+    print(tugboat_dfx[columns_of_interest].head(20))
+    order = data['orders'][order_ids[0]]
+    station_start = order.start_object.station
+    station_end = order.des_object.station
+    
+def check_all_start_arrival_time(order_input_ids):
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+        
+    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
+       'water_type']
+    print(tugboat_df[columns_of_interest])
+    for index, row in tugboat_df.iterrows():
+        if row['start_arrival_datetime'] > row['exit_datetime']:
+            print(row)
+            print("Error Time start_arrival_datetime > exit_datetime", index)
+            break
+        if row['start_arrival_datetime'] < row['enter_datetime']:
+            print(row)
+            print("Error Time start_arrival_datetime < enter_datetime", index)
+            break
 
 if __name__ == "__main__":
     #result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)
@@ -884,17 +1109,28 @@ if __name__ == "__main__":
     #test_import()
     #test_algorithm([ "ODR_009"])
     
-    test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
-                    "ODR_005", "ODR_006", "ODR_007", "ODR_008",
-                    "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
-                    "ODR_013", "ODR_014", 
-                    ])
-    #test_single_solution
-    #test_single_solution([ "ODR_012" ])
+    #test_step_travel()
     
-    # test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    # test_single_solution(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
     #                 "ODR_005", "ODR_006", "ODR_007", "ODR_008",
     #                 "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
     #                 "ODR_013", "ODR_014", 
     #                 ])
+    #test_single_solution(["ODR_001"])
+    
+    # test_single_solution(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    #                 "ODR_005", "ODR_006", "ODR_007",
+    #                 #"ODR_008",
+    #                 #"ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+    #                 #"ODR_013", "ODR_014", 
+    #                 ])
+    
+    #test_single_solution
+    #test_single_solution([ "ODR_012" ])
+    #test_algorithm
+    test_single_solution(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+                        "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+                        "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+                        "ODR_013", "ODR_014", 
+                        ], name='v4')
 

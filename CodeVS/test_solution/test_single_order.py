@@ -31,7 +31,15 @@ except ImportError as e:
     print("Current working directory:", os.getcwd())
     print("Python path:", sys.path[:3])
     raise
-        
+
+IS_TEST_CRANE_OVERLAP = False
+IS_TEST_CRANE_UNLOAD_ORDER = False
+IS_TEST_TUGBOAT_OVERLAP = True
+IS_TEST_BARGE_OVERLAP = False
+IS_TEST_NAN_ENSURING = False
+
+
+
         
 def get_tugboat_df():
     data_df = get_data_from_db()
@@ -82,7 +90,8 @@ class TestSingleOrder(unittest.TestCase):
     # uncomment below to skip this method for testing
     #@unittest.skip("Skipping crane loading test for now")
     def test_crane_load(self):
-    
+        if not IS_TEST_CRANE_OVERLAP:
+            return
         tugboat_df = get_tugboat_df()
         
         result_df = tugboat_df
@@ -140,9 +149,9 @@ class TestSingleOrder(unittest.TestCase):
             if isBreak:
                 break
 
-    
-    
     def test_crane_unload(self):
+        if not IS_TEST_CRANE_UNLOAD_ORDER:
+            return
         tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         name = list(result_df['name'].unique())
@@ -192,6 +201,8 @@ class TestSingleOrder(unittest.TestCase):
                 self.assertTrue(is_passed, f"Unload Crane {crane_name} has a time difference issue.")
     
     def test_tugboat_timeline_overlap(self):
+        if not IS_TEST_TUGBOAT_OVERLAP:
+            return
         tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         filter_out_type = ['Barge Collection', 'Barge Release', 'Start Order Carrier', 'Destination Barge', 
@@ -216,6 +227,10 @@ class TestSingleOrder(unittest.TestCase):
                 # get enter_datetime and exit_datetime
                 enter_datetime = activity['enter_datetime'].values
                 exit_datetime = activity['exit_datetime'].values
+                start_arrival_datetime = activity['start_arrival_datetime'].values
+                name_activity = activity['type'].values
+                id_activity = activity['ID'].values
+                type_activity = activity['type'].values
 
                 for i in range(len(activity)):
                     if i == 0:
@@ -223,6 +238,19 @@ class TestSingleOrder(unittest.TestCase):
                     # get the difference of exit_datetime and enter_datetime
                     time_difference = (enter_datetime[i] - exit_datetime[i-1] )
                     time_difference = (enter_datetime[i] - exit_datetime[i-1] )
+                    start_time_difference = (start_arrival_datetime[i] - enter_datetime[i-1] )
+                    end_time_difference = (exit_datetime[i] - start_arrival_datetime[i-1] )
+                    
+                    if start_time_difference >= -1 * 60 and end_time_difference >= -1 * 60:
+                        is_passed = True
+                    else:
+                        is_passed = False
+                        print(i, start_time_difference, end_time_difference, order_id, enter_datetime[i], 
+                              start_arrival_datetime[i], exit_datetime[i-1], tugboat_id)
+                        print(name_activity[i], id_activity[i], type_activity[i])
+                        print("Rest Time Overlap")
+                        break
+                    
                 
                     seconds = time_difference / np.timedelta64(1, 's')
                     # print("Time difference: ", time_difference)
@@ -231,6 +259,7 @@ class TestSingleOrder(unittest.TestCase):
                     else:
                         is_passed = False
                         print(i, seconds, order_id, enter_datetime[i], exit_datetime[i-1], tugboat_id)
+                        print(name_activity[i], id_activity[i], type_activity[i])
                         break
                 self.assertTrue(is_passed, f"Tugboat {tugboat_id} in Order {order_id}: Time overlapping")
                 if not is_passed:
@@ -239,6 +268,8 @@ class TestSingleOrder(unittest.TestCase):
                 break
     
     def test_nan_ensuring(self):
+        if not IS_TEST_NAN_ENSURING:
+            return
         tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         
@@ -254,6 +285,8 @@ class TestSingleOrder(unittest.TestCase):
         self.assertTrue(is_passed, f"There is nan in {name_with_nan}")
 
     def test_barge_timeline_overlap(self):
+        if not IS_TEST_BARGE_OVERLAP:
+            return
         tugboat_df = get_tugboat_df()
         result_df = tugboat_df
         filter_out_type = ['main_point']

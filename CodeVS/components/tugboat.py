@@ -77,7 +77,11 @@ class Tugboat:
         self._lng = lng
         self._status = str_to_enum(status)
         self._km = km
-        self._ready_time = datetime.strptime(ready_time, '%Y-%m-%d %H:%M:%S')
+        #check format '%Y-%m-%d %H:%M:%S' or '%Y-%m-%d %H:%M'
+        try:
+            self._ready_time = datetime.strptime(ready_time, '%Y-%m-%d %H:%M:%S')
+        except:
+            self._ready_time = datetime.strptime(ready_time, '%Y-%m-%d %H:%M')
         self.assigned_barges = []
         self.current_load = 0
         self._current_order = None
@@ -176,9 +180,12 @@ class Tugboat:
         current_km = tugboat_info['river_km']
         total_distance = 0
         total_setup_time = 0
+        barge_ids = []
         for barge in barges:
             barge_info =   barge_infos[barge.barge_id][-1]
             barge_river_km = barge_info['river_km']
+            # print("B_084", barge_info['station_id'], barge_info['river_km']) if barge.barge_id == 'B_084' else None
+            
             tugboat_speed = self.calculate_speed(total_weight_barge, nbarge, total_weight_barge)
             # travel_infos = {
             #     'start_location': (current_lat, current_lng),
@@ -189,14 +196,19 @@ class Tugboat:
             # }
             travel_info = TravelInfo((current_lat, current_lng), 
                                      (barge_info['location'][0], barge_info['location'][1]), 
-                                     tugboat_speed, current_km, barge_river_km)
-            
+                                     tugboat_speed, current_km, barge_river_km,
+                                     start_id=tugboat_info['station_id'], end_id=barge_info['station_id'])
+            # print("TravelInfo Display", str(travel_info)) if barge.barge_id == 'B_084' else None
             water_status = barge_info['water_status']
             #print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", TravelHelper._instance)
             distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(current_status, 
                                                                                               water_status, 
                                                                                               travel_info)
             
+            #print("Travel Steps:", str(travel_steps[0])) if self.tugboat_id == 'SeaTB_02' and barge.barge_id == 'B_084' else None
+            # if barge.barge_id == 'B_084' and self.tugboat_id == 'SeaTB_02':
+            #     for travel_step in travel_steps:
+            #         print(travel_step)
             
             #print("Travel Steps:", travel_infos['start_location'], travel_infos['end_location'], travel_steps) if self.tugboat_id == 'SeaTB_05' and barge.barge_id == 'B_150' else None
                 
@@ -209,6 +221,7 @@ class Tugboat:
             current_lng = barge_info['location'][1]
             
             current_km = barge_river_km
+            barge_ids.append(barge.barge_id)
             #if len(travel_steps) > 0:
                 #print("Travel Steps TTTTTTTTTTTTTTTTTTTTT:", travel_steps)
             barge_collect_info = {
@@ -219,7 +232,8 @@ class Tugboat:
                 "location": barge_info['location'],
                 'travel_steps': travel_steps,
                 'start_status': current_status,
-                'end_status':water_status
+                'end_status':water_status,
+                'barge_ids': list(barge_ids)
             }
             
             total_distance += distance
@@ -371,7 +385,7 @@ class Tugboat:
         
         travel_infos = TravelInfo((start_station.lat, start_station.lng), 
                                   (end_station.lat, end_station.lng), 
-                                  speed_tug, start_station.km, end_station.km)
+                                  speed_tug, start_station.km, end_station.km, start_station.station_id, end_station.station_id)
         
         distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(WaterBody.RIVER, WaterBody.RIVER, travel_infos)
         #print("Speed Tugboat", speed_tug, base_weight_barges)

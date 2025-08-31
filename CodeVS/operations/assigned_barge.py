@@ -202,8 +202,8 @@ def order_barges_from_arrival_tugboats(data, lookup_tugboat_results):
                 'barge': barge,
                 'barge_id': barge.barge_id,
                 'tugboat_id': tugboat.tugboat_id,
-                'location': result_tugboat['data_points'][-1]["ID"],
-                'arrival_appointment_datetime': result_tugboat['data_points'][-1]['enter_datetime']
+                'location': result_tugboat['data_points'][-1].ID,
+                'arrival_appointment_datetime': result_tugboat['data_points'][-1].enter_datetime
             }
             order_barges.append(info)
             lookup_order_barges[barge.barge_id] = info

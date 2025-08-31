@@ -113,7 +113,9 @@ def initialize_data(data_df):
     # Create a dictionary of Tugboat objects with 'ID' as the key
     tugboats = {
         row['ID']: Tugboat(row['ID'], row['NAME'], row['MAX CAP'], row['MAX BARGE'], row['MAX FUEL CON'],
-                        row['TYPE'], row['MAX SPEED'], row['MIN SPEED'], row['LAT'], row['LNG'], row['STATUS'], row['KM'],
+                        row['TYPE'], row['MAX SPEED'], row['MIN SPEED'], stations[row['STATION']].lat, 
+                        stations[row['STATION']].lng,
+                        row['STATUS'], stations[row['STATION']].km,
                         stations[row['STATION']],
                         row.get('READY DATETIME', None))
         for _, row in tugboat_df.iterrows()

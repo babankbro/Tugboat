@@ -350,7 +350,7 @@ def calculate_multiple_schedules():
             order_ids = order_input_ids
         else  :
             order_ids = order_ids[:]
-        print("Order\n", order_df)
+        #print("Order\n", order_df)
         for order_id in order_ids:
             print(order_id, orders[order_id])
         #total demand of order_ids
@@ -444,124 +444,131 @@ def calculate_multiple_schedules():
                     "error": "Order not found or could not be processed"
                 })
         
-        # Connect to database for updates
-        try:
-            conn = mysql.connector.connect(
-                host=HOST,
-                port=PORT,
-                user=USER,
-                password=PASSWORD,
-                database=DATABASE_NAME
-            )
+        # # Connect to database for updates
+        # try:
+        #     conn = mysql.connector.connect(
+        #         host=HOST,
+        #         port=PORT,
+        #         user=USER,
+        #         password=PASSWORD,
+        #         database=DATABASE_NAME
+        #     )
 
-            if conn.is_connected():
-                print("Connected to DB Successfully")
-                cursor = conn.cursor()
+        #     if conn.is_connected():
+        #         print("Connected to DB Successfully")
+        #         cursor = conn.cursor()
                 
-                # Clear all results in Schedule and Cost tables before calculating new schedules
-                query_clear_schedule = "DELETE FROM `Schedule`"
-                query_clear_cost = "DELETE FROM `Cost`"
-                cursor.execute(query_clear_schedule)
-                cursor.execute(query_clear_cost)
-                print("All previous schedule and cost records cleared")
+        #         # Clear all results in Schedule and Cost tables before calculating new schedules
+        #         query_clear_schedule = "DELETE FROM `Schedule`"
+        #         query_clear_cost = "DELETE FROM `Cost`"
+        #         cursor.execute(query_clear_schedule)
+        #         cursor.execute(query_clear_cost)
+        #         print("All previous schedule and cost records cleared")
                 
-                # Filter order_ids that were successfully processed
-                valid_order_ids = [order_id for order_id in order_ids if order_id in tugboat_df["order_id"].unique()]
+        #         # Filter order_ids that were successfully processed
+        #         valid_order_ids = [order_id for order_id in order_ids if order_id in tugboat_df["order_id"].unique()]
                 
-                if valid_order_ids:
-                    # No need to delete specific records as we've cleared all tables already
+        #         if valid_order_ids:
+        #             # No need to delete specific records as we've cleared all tables already
                     
-                    # Prepare batch inserts for Schedule table
-                    insert_schedule_query = """
-                        INSERT INTO `Schedule`(`ID`, `type`, `name`, `enter_datetime`, 
-                            `exit_datetime`, `distance`, `time`, `speed`, `type_point`, `order_trip`, 
-                            `total_load`, `barge_ids`, `order_distance`, `order_time`, `barge_speed`, 
-                            `order_arrival_time`, `tugboat_id`, `order_id`, `water_type`) 
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                    """
+        #             # Prepare batch inserts for Schedule table
+        #             insert_schedule_query = """
+        #                 INSERT INTO `Schedule`(`ID`, `type`, `name`, `enter_datetime`, 
+        #                     `exit_datetime`, `rest_time`,  `distance`, `time`, `speed`, `type_point`, `order_trip`, 
+        #                     `total_load`, `barge_ids`, `order_distance`, `order_time`, `barge_speed`, 
+        #                     `tugboat_id`, `order_id`, `water_type`) 
+        #                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        #             """
                     
-                    # Filter and prepare all schedule records
-                    schedule_records = []
-                    for order_id in valid_order_ids:
-                        temp_tugboat_df = tugboat_df[tugboat_df["order_id"]==order_id]
-                        temp_tugboat_df = temp_tugboat_df.replace([np.nan], [None])
-                        # Before your batch insert, check for null time values
+        #             # Filter and prepare all schedule records
+        #             schedule_records = []
+        #             for order_id in valid_order_ids:
+        #                 temp_tugboat_df = tugboat_df[tugboat_df["order_id"]==order_id]
+        #                 temp_tugboat_df = temp_tugboat_df.replace([np.nan], [None])
+        #                 # Before your batch insert, check for null time values
                         
                         
-                        for _, row in temp_tugboat_df.iterrows():
-                            #print(row)
-                            schedule_records.append((
-                                row['ID'] if row["ID"] else None,
-                                row['type'] if row["type"] else None,
-                                row['name'] if row["name"] else None,
-                                row['enter_datetime'] if row["enter_datetime"] else None,
-                                row['exit_datetime'] if row["exit_datetime"] else None,
-                                row['distance'] if row["distance"] is not None else 0.0,
-                                row['time'] if row["time"] is not None else 0.0,
-                                row['speed'] if row["speed"] is not None else 0.0,
-                                row['type_point'] if row["type_point"] else None,
-                                row['order_trip'] if row["order_trip"] else None,
-                                row['total_load'] if row["total_load"] is not None else 0.0,
-                                row['barge_ids'] if row["barge_ids"] else None,
-                                row['order_distance'] if row["order_distance"] is not None else 0.0,
-                                row['order_time'] if row["order_time"] is not None else 0.0,
-                                row['barge_speed'] if row["barge_speed"] is not None else 0.0,
-                                row['order_arrival_time'] if not row["order_arrival_time"] else None,
-                                row['tugboat_id'] if row["tugboat_id"] else None,
-                                row['order_id'] if row["order_id"] else None,
-                                row['water_type'] if row["water_type"] else None,
-                            ))
+        #                 for _, row in temp_tugboat_df.iterrows():
+        #                     #print(row)
+        #                     schedule_records.append((
+        #                         row['ID'] if row["ID"] else None,
+        #                         row['type'] if row["type"] else None,
+        #                         row['name'] if row["name"] else None,
+        #                         row['enter_datetime'] if row["enter_datetime"] else None,
+        #                         row['exit_datetime'] if row["exit_datetime"] else None,
+        #                         row['rest_time'] if row["rest_time"] else None,
+        #                         row['distance'] if row["distance"] is not None else 0.0,
+        #                         row['time'] if row["time"] is not None else 0.0,
+        #                         row['speed'] if row["speed"] is not None else 0.0,
+        #                         row['type_point'] if row["type_point"] else None,
+        #                         row['order_trip'] if row["order_trip"] else None,
+        #                         row['total_load'] if row["total_load"] is not None else 0.0,
+        #                         row['barge_ids'] if row["barge_ids"] else None,
+        #                         row['order_distance'] if row["order_distance"] is not None else 0.0,
+        #                         row['order_time'] if row["order_time"] is not None else 0.0,
+        #                         row['barge_speed'] if row["barge_speed"] is not None else 0.0,
+        #                         row['order_arrival_time'] if not row["order_arrival_time"] else None,
+        #                         row['tugboat_id'] if row["tugboat_id"] else None,
+        #                         row['order_id'] if row["order_id"] else None,
+        #                         row['water_type'] if row["water_type"] else None,
+        #                     ))
                     
-                    # Batch insert schedule records
-                    if schedule_records:
-                        cursor.executemany(insert_schedule_query, schedule_records)
+        #             # Batch insert schedule records
+        #             if schedule_records:
+        #                 cursor.executemany(insert_schedule_query, schedule_records)
                     
-                    # Prepare batch inserts for Cost table
-                    insert_cost_query = """
-                        INSERT INTO `Cost`(`TugboatId`, `OrderId`, `Time`, `Distance`, 
-                            `ConsumptionRate`, `Cost`, `TotalLoad`) 
-                        VALUES (%s,%s,%s,%s,%s,%s,%s)
-                    """
+        #             # Prepare batch inserts for Cost table
+        #             insert_cost_query = """
+        #                 INSERT INTO `Cost`(`TugboatId`, `OrderId`, `Time`, `Distance`, 
+        #                     `ConsumptionRate`, `Cost`, `TotalLoad`) 
+        #                 VALUES (%s,%s,%s,%s,%s,%s,%s)
+        #             """
                     
-                    # Filter and prepare all cost records
-                    cost_records = []
-                    for order_id in valid_order_ids:
-                        temp_cost_df = cost_df[cost_df["order_id"]==order_id]
-                        temp_cost_df = temp_cost_df.replace([np.nan], [None])
+        #             # Filter and prepare all cost records
+        #             cost_records = []
+        #             for order_id in valid_order_ids:
+        #                 temp_cost_df = cost_df[cost_df["order_id"]==order_id]
+        #                 temp_cost_df = temp_cost_df.replace([np.nan], [None])
                         
-                        for _, row in temp_cost_df.iterrows():
-                            cost_records.append((
-                                row['tugboat_id'] if row["tugboat_id"] else None,
-                                row['order_id'] if row["order_id"] else None,
-                                row['time'] if row["time"] is not None else 0.0,
-                                row['distance'] if row["distance"] is not None else 0.0,
-                                row['consumption_rate'] if row["consumption_rate"] is not None else 0.0,
-                                row['cost'] if row["cost"] is not None else 0.0,
-                                row['total_load'] if row["total_load"] is not None else 0.0,
-                            ))
+        #                 for _, row in temp_cost_df.iterrows():
+        #                     cost_records.append((
+        #                         row['tugboat_id'] if row["tugboat_id"] else None,
+        #                         row['order_id'] if row["order_id"] else None,
+        #                         row['time'] if row["time"] is not None else 0.0,
+        #                         row['distance'] if row["distance"] is not None else 0.0,
+        #                         row['consumption_rate'] if row["consumption_rate"] is not None else 0.0,
+        #                         row['cost'] if row["cost"] is not None else 0.0,
+        #                         row['total_load'] if row["total_load"] is not None else 0.0,
+        #                     ))
                     
-                    # Batch insert cost records
-                    if cost_records:
-                        cursor.executemany(insert_cost_query, cost_records)
+        #             # Batch insert cost records
+        #             if cost_records:
+        #                 cursor.executemany(insert_cost_query, cost_records)
                     
-                    conn.commit()
+        #             conn.commit()
                 
-                cursor.close()
+        #         cursor.close()
                 
-            return jsonify({
-                "message": "schedules created",
-                "detail": detail
-            }), 201
+        #     return jsonify({
+        #         "message": "schedules created",
+        #         "detail": detail
+        #     }), 201
             
-        except Error as e:
-            return jsonify({
-                "message": "error",
-                "detail": str(e)
-            }), 400
-        finally:
-            if conn and conn.is_connected():
-                conn.close()
-
+        # except Error as e:
+        #     return jsonify({
+        #         "message": "error",
+        #         "detail": str(e)
+        #     }), 400
+        # finally:
+        #     if conn and conn.is_connected():
+        #         conn.close()
+         
+    #save to csv
+        update_database(order_ids, tugboat_df_o, cost_df)
+        return jsonify({
+            "message": "schedules created",
+            "detail": detail
+        }), 201
     except Exception as e:
         return jsonify({
             "message": "error",
