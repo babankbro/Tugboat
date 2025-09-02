@@ -37,7 +37,6 @@ class Order:
         if 1 <= crane_num <= config_problem.MAX_CRANES:
             return self.crane_ready_times[crane_num - 1]
         return 0
-
     def __str__(self):
         #raise Exception("Order __str__")
         return (f"Order ID: {self.order_id}\n"

@@ -351,8 +351,8 @@ def calculate_multiple_schedules():
         else  :
             order_ids = order_ids[:]
         #print("Order\n", order_df)
-        for order_id in order_ids:
-            print(order_id, orders[order_id])
+        #for order_id in order_ids:
+        #    print(order_id, orders[order_id])
         #total demand of order_ids
         total_demand = sum(orders[order_id].demand for order_id in order_ids)
         print("Total Demand", total_demand)
@@ -385,7 +385,7 @@ def calculate_multiple_schedules():
         algorithm = AMIS(problem,
             pop_size=5,
             CR=0.3,
-            max_iter = 5,
+            max_iter = 1,
             #dither="vector",
             #jitter=False
         )
@@ -397,7 +397,7 @@ def calculate_multiple_schedules():
         solution = Solution(data)
         is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
         cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
-        
+        cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
         
         #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
         tugboat_dfx = tugboat_df
@@ -564,7 +564,7 @@ def calculate_multiple_schedules():
         #         conn.close()
          
     #save to csv
-        update_database(order_ids, tugboat_df_o, cost_df)
+        update_database(order_ids, tugboat_df_o, cost_df_result)
         return jsonify({
             "message": "schedules created",
             "detail": detail

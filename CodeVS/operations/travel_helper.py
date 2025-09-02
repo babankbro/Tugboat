@@ -222,10 +222,7 @@ class TravelStep:
             self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
             self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
             self.start_time = enter_date_time
-        
-        
-        
-            
+          
     
     def update_travel_step_move_old(self, enter_date_time):
         target_station = self.data['stations'][self.end_id]
@@ -237,8 +234,6 @@ class TravelStep:
             if from_station.water_type == WaterBody.SEA and target_station.water_type == WaterBody.RIVER:
                 isfromSeaToBar = True
                 
-    
-            
         if target_station.water_type == WaterBody.RIVER:
             
             from_station = self.data['stations'][self.start_id]
@@ -326,7 +321,6 @@ class TravelStep:
             self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
             self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
             self.start_time = enter_date_time
-            
 
     
     def update_travel_prev_step_move(self, date_time):

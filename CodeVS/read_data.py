@@ -351,8 +351,6 @@ def get_table_from_db(table_name, order_id=None):
 
 def get_data_from_db(table_name=False, order_id=False):
     
-    water_level_up_df = pd.read_csv(f'{INPUT_FOLDER}level_up.csv')
-    water_level_down_df = pd.read_csv(f'{INPUT_FOLDER}level_down.csv')
     
     if LOAD_TEMP:
         carrier_df = pd.read_csv(f'{INPUT_FOLDER}Carrier.csv')
@@ -361,6 +359,8 @@ def get_data_from_db(table_name=False, order_id=False):
         station_df = pd.read_csv(f'{INPUT_FOLDER}Station.csv')
         order_df = pd.read_csv(f'{INPUT_FOLDER}Order.csv')
         customer_df = pd.read_csv(f'{INPUT_FOLDER}Customer.csv')
+        water_level_up_df = pd.read_csv(f'{INPUT_FOLDER}level_up.csv')
+        water_level_down_df = pd.read_csv(f'{INPUT_FOLDER}level_down.csv')
         
         # create dic to collect all df to return single one
         data = {
@@ -379,6 +379,12 @@ def get_data_from_db(table_name=False, order_id=False):
     # print(carrier_df)
     
     if not table_name:
+        water_df = get_water_level_data('level_up')
+        water_level_up_df = water_df
+        water_df = get_water_level_data('level_down')
+        water_level_down_df = water_df
+        
+        
         carrier_df = get_table_from_db('Carrier')
         # print(carrier_df)
 

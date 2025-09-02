@@ -492,8 +492,7 @@ def test_mixed():
     print(station_end)
     print(tugboat_df['tugboat_id'].unique())
     print(len(tugboat_df))
-    
-    
+     
 def test_import():
     data_df = get_data_from_db()
     
@@ -521,7 +520,6 @@ def test_import():
     #save csv
     tugboat_df.to_csv('tugboat_df.csv', index=False)
     barge_df.to_csv('barge_df.csv', index=False)
-    
 
 def test_generate_codes():
     
@@ -718,7 +716,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
     
     Number_Code_Tugboat = 4*int(2*max(total_demand//(average_tugboat_capacity), 20)) #for barge and tugboat
     print("Number Code Tugboat", Number_Code_Tugboat)
-    
+
     
     solution = Solution(data)
     
@@ -736,13 +734,13 @@ def test_algorithm(order_input_ids = None, name='v3'):
     algorithm = AMIS(problem,
         pop_size=5,
         CR=0.3,
-        max_iter = 5,
+        max_iter = 1,
         #dither="vector",
         #jitter=False
     )
     algorithm.iterate()
     columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
-       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 'order_trip',
        'water_type']
     
     solution = Solution(data)
@@ -750,7 +748,14 @@ def test_algorithm(order_input_ids = None, name='v3'):
     if not is_success:
         print("Failed to generate schedule")
         exit()
+    
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
+    cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+    tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
+        
+        
+    #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
     
     tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_algorithm.xlsx', index=False)
     
@@ -772,17 +777,16 @@ def test_algorithm(order_input_ids = None, name='v3'):
     
     
     
-    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
+    print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
     #filter tugboat_df_grouped by not cost is zero
-    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
+    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['Cost'] != 0]
     print(tugboat_df_grouped)
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_df['TotalLoad']))
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_df['TotalLoad']))
     
-    
-    #filter tugboat_df by contain "Sea" Word in tugboat id
-    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
-    print("Total Load Sea", np.sum(tugboat_df['total_load']))
-    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
-    print("Total Load River", np.sum(tugboat_df['total_load']))
+    update_database(order_ids, tugboat_df_o, tugboat_df_grouped)
     
     tugboat_df_o.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.csv', index=False)
     
@@ -795,9 +799,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
        'time', 'speed', 'total_load', 'total_load_v2', 'barge_ids', 'tugboat_id', 'order_id',
        'water_type']
     
-    
-
-    order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
     #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
     # save as excel
     tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
@@ -847,14 +849,14 @@ def test_single_solution(order_input_ids = None, name='v3'):
     # #group tugboat_df by order_id and sum total_load
     # tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
     # print(tugboat_df_grouped)
-    print("Total Cost", np.sum(tugboat_df_grouped['cost']))
+    print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
     #filter tugboat_df_grouped by not cost is zero
-    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['cost'] != 0]
+    tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['Cost'] != 0]
     print(tugboat_df_grouped)
-    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("Sea")]
-    print("Total Load Sea", np.sum(tugboat_df['total_load']))
-    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['tugboat_id'].str.contains("River")]
-    print("Total Load River", np.sum(tugboat_df['total_load']))
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_df['TotalLoad']))
+    tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_df['TotalLoad']))
     
     # for order_id in order_ids:
     #     #print(order_id, data['orders'][order_id])
@@ -885,12 +887,15 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
     
     
-    print(tugboat_df_grouped)
+    print(cost_df_result)
     
     #save to csv
     update_database(order_ids, tugboat_df_o, tugboat_df_grouped)
     
     #barge_df.to_csv('barge_df.csv', index=False)
+
+
+
 
 def _init_test(data, order_df, order_input_ids):
     data_df = get_data_from_db()
@@ -947,8 +952,9 @@ def _init_test(data, order_df, order_input_ids):
     if not is_success:
         print("Failed to generate schedule")
         exit()
-    cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
-    return order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped 
+    cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
+    cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
+    return order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, cost_df_result 
 
 def test_step_travel():
     data_df = get_data_from_db()
@@ -1102,7 +1108,193 @@ def check_all_start_arrival_time(order_input_ids):
             print("Error Time start_arrival_datetime < enter_datetime", index)
             break
 
+def test_after_prosess():
+    import pandas as pd
+    from pathlib import Path
+    # ---- Example usage ----
+
+    # 1) Read your file
+    excel_path = Path("data/output/tugboat_schedule_v4.xlsx")  # <- your uploaded file
+    # If your data is on a specific sheet, set sheet_name="Sheet1" (or the correct sheet)
+    df = pd.read_excel(excel_path)  # , sheet_name="Sheet1"
+
+    # 2) Insert stop rows
+    df_with_stops = insert_stop_rows(
+        df,
+        travel_col="name",      # change if your column is named differently
+        type_col="type",
+        rest_col="rest_time",
+        speed_col="speed",        # set to None if you don't have a speed column
+        valid_travel_values=("Sea-River", "River-River", "River-Sea"),
+        stop_type_value="stop",
+        keep_rest_time_in_stop=True,  # True: keep same rest_time in the new stop row; False: set to 0
+        stop_speed_value=0,           # set what speed the stop row should have (e.g., 0)
+    )
+    print(df_with_stops[((df_with_stops['type'].str.contains("stop")) | (df_with_stops['type'] == 'River-River')) & 
+                        (df_with_stops['tugboat_id'] == 'RiverTB_02')].head(50))
+
+def insert_stop_rows(
+    df: pd.DataFrame,
+    travel_col: str = "travel",
+    type_col: str = "type",
+    rest_col: str = "rest_time",
+    speed_col: str | None = "speed",
+    valid_travel_values: tuple[str, ...] = ("Sea-River", "River-River", "River-Sea"),
+    stop_type_value: str = "stop",
+    keep_rest_time_in_stop: bool = True,
+    stop_speed_value: int | float | None = 0,
+) -> pd.DataFrame:
+    """
+    Insert a 'stop' row after any row satisfying:
+      rest_time > 0 and travel in valid_travel_values.
+    The inserted row copies all columns by default, then overrides:
+      - type -> stop_type_value
+      - (optional) speed -> stop_speed_value
+      - rest_time -> keep or clear (based on keep_rest_time_in_stop)
+    """
+
+    # Work on a copy
+    df = df.copy()
+
+    # Ensure required columns exist
+    required = {travel_col, type_col, rest_col}
+    missing = [c for c in required if c not in df.columns]
+    if missing:
+        raise ValueError(f"Missing required columns: {missing}")
+
+    # Build condition mask
+    mask = (
+        df[rest_col].fillna(0).astype(float).gt(0)
+        & df[type_col].isin(valid_travel_values)
+    )
+    print(df[df['tugboat_id'] == 'RiverTB_02'][mask].head(50))
+    # Rows that need a stop inserted
+    original_rows = df[mask]
+    to_insert = original_rows.copy()
+
+    if to_insert.empty:
+        # Nothing to insert — return original as-is
+        return df.reset_index(drop=True)
+
+    # Prepare the stop rows by copying matched rows, then overriding fields
+    stop_rows = to_insert.copy()
+
+    # Set 'type' to stop
+  
+    first_token = (
+    df[travel_col]
+      .fillna("")                # avoid NaN -> "nan"
+      .astype(str)
+      .str.strip()
+      .str.split()
+      .str.get(0)                # first word or NaN if empty
+      .fillna("")                # back to empty string if missing
+    )
+    df.loc[mask, travel_col] = stop_type_value + " at " + first_token[mask]
+    df.loc[mask, 'distance'] = 0
+    df.loc[mask, 'time'] = 0
+    df.loc[mask, 'speed'] = 0
+    df.loc[mask, 'exit_datetime'] = df[mask]['start_arrival_datetime']
+
+    # Optionally set speed
+    if speed_col is not None and speed_col in df.columns:
+        stop_rows[speed_col] = stop_speed_value
+
+    stop_rows[rest_col] = 0
+    stop_rows['enter_datetime'] = stop_rows['start_arrival_datetime']
+
+    # If you want the stop row to keep only certain columns, modify here.
+    # For now, we keep all columns and only override fields above.
+
+    # We’ll interleave: original rows keep integer order;
+    # new stop rows get order + 0.5 to come right after the originals.
+    df = df.reset_index(drop=False).rename(columns={"index": "_orig_pos"})
+    to_insert_pos = df.loc[mask, ["_orig_pos"]]  # original positions for matched rows
+
+    stop_rows = stop_rows.merge(
+        to_insert_pos,
+        left_index=True,
+        right_index=True,
+        how="left"
+    )
+
+    # Create order keys
+    df["_order_key"] = df["_orig_pos"].astype(float)
+    stop_rows["_order_key"] = stop_rows["_orig_pos"].astype(float) + 0.5
+
+    # Align columns (in case stop_rows is missing some cols)
+    stop_rows = stop_rows[df.columns.intersection(stop_rows.columns)]
+    # And also add any missing columns to stop_rows with NaN so concat aligns
+    for col in df.columns:
+        if col not in stop_rows.columns:
+            stop_rows[col] = pd.NA
+    # Reorder columns like df
+    stop_rows = stop_rows[df.columns]
+
+    # Combine and sort
+    out = pd.concat([df, stop_rows], ignore_index=True)
+    out = out.sort_values("_order_key", kind="mergesort").drop(columns=["_orig_pos", "_order_key"])
+    out = out.reset_index(drop=True)
+    return out
+
+def test_generate_all_cost():
+    import pandas as pd
+    from pathlib import Path
+    # 1) Read your file
+    excel_path = Path("data/output/tugboat_schedule_algorithm.xlsx")  # <- your uploaded file
+    # If your data is on a specific sheet, set sheet_name="Sheet1" (or the correct sheet)
+    df = pd.read_excel(excel_path)  # , sheet_name="Sheet1"
+    
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    solution = Solution(data)
+    cost_df = solution.calculate_full_cost(df)
+    cost_results, tugboat_df_o, barge_df, tugboat_df_grouped=  solution.calculate_cost(df, None)
+    print("Original Total Load: ", tugboat_df_grouped['total_load'].sum())
+    print("Original Total Distance: ", tugboat_df_grouped['distance'].sum())
+    print("Original Total Time: ", tugboat_df_grouped['time'].sum())
+    print("Original Total Cost: ", tugboat_df_grouped['cost'].sum())
+    
+    print("Custom Total Load: ", cost_df['TotalLoad'].sum())
+    print("Total Cost", np.sum(cost_df['Cost']))
+    #filter tugboat_df_grouped by not cost is zero
+    cost_df = cost_df[cost_df['Cost'] != 0]
+    print(cost_df)
+    tugboat_df = cost_df[cost_df['TugboatId'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_df['TotalLoad']))
+    tugboat_df = cost_df[cost_df['TugboatId'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_df['TotalLoad']))
+    
+def test_generate_all_barge_cost():
+    import pandas as pd
+    from pathlib import Path
+    # 1) Read your file
+    excel_path = Path("data/output/tugboat_schedule_algorithm.xlsx")  # <- your uploaded file
+    # If your data is on a specific sheet, set sheet_name="Sheet1" (or the correct sheet)
+    df = pd.read_excel(excel_path)  # , sheet_name="Sheet1"
+    
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    if TravelHelper._instance is None:
+        TravelHelper()
+    
+    TravelHelper._set_data(TravelHelper._instance,  data)
+    solution = Solution(data)
+    solution.calculate_full_barge_cost(df)
+    
+
 if __name__ == "__main__":
+    
     #result_df = main(testing=False, testing_result=TestingResult.TUGBOAT)
     #test_read_data()
     #test_generate_codes()
@@ -1128,9 +1320,10 @@ if __name__ == "__main__":
     #test_single_solution
     #test_single_solution([ "ODR_012" ])
     #test_algorithm
-    test_single_solution(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
                         "ODR_005", "ODR_006", "ODR_007", "ODR_008",
                         "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
                         "ODR_013", "ODR_014", 
                         ], name='v4')
-
+    #test_after_prosess()
+    #test_generate_all_barge_cost()

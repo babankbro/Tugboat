@@ -437,26 +437,41 @@ def update_database(order_ids, tugboat_df, cost_df):
                 # Prepare batch inserts for Cost table
                 insert_cost_query = """
                     INSERT INTO `Cost`(`TugboatId`, `OrderId`, `Time`, `Distance`, 
-                        `ConsumptionRate`, `Cost`, `TotalLoad`) 
-                    VALUES (%s,%s,%s,%s,%s,%s,%s)
+                        `ConsumptionRate`, `Cost`, `TotalLoad`, `StartDatetime`, `StartPointDatetime`, 
+                        `FinishDatetime`, `StartStationId`, `StartPointStationId`, `EndPointStationId`, 
+                        `UnloadLoadTime`, `ParkingTime`, `MoveTime`, `OrderTrip`, `AllTime`) 
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """
-                
+                # StartDatetime  StartPointDatetime          FinishDatetime StartStationId StartPointStationId EndPointStationId  UnloadLoadTime  ParkingTime   MoveTime     AllTime
                 # Filter and prepare all cost records
                 cost_records = []
                 for order_id in valid_order_ids:
-                    temp_cost_df = cost_df[cost_df["order_id"]==order_id]
+                    temp_cost_df = cost_df[cost_df["OrderId"]==order_id]
                     temp_cost_df = temp_cost_df.replace([np.nan], [None])
                     
                     for _, row in temp_cost_df.iterrows():
                         cost_records.append((
-                            row['tugboat_id'] if row["tugboat_id"] else None,
-                            row['order_id'] if row["order_id"] else None,
-                            row['time'] if row["time"] is not None else 0.0,
-                            row['distance'] if row["distance"] is not None else 0.0,
-                            row['consumption_rate'] if row["consumption_rate"] is not None else 0.0,
-                            row['cost'] if row["cost"] is not None else 0.0,
-                            row['total_load'] if row["total_load"] is not None else 0.0,
+                            row['TugboatId'] if row["TugboatId"] else None,
+                            row['OrderId'] if row["OrderId"] else None,
+                            row['Time'] if row["Time"] is not None else 0.0,
+                            row['Distance'] if row["Distance"] is not None else 0.0,
+                            row['ConsumptionRate'] if row["ConsumptionRate"] is not None else 0.0,
+                            row['Cost'] if row["Cost"] is not None else 0.0,
+                            row['TotalLoad'] if row["TotalLoad"] is not None else 0.0,
+                            row['StartDatetime'] if row["StartDatetime"] else None,
+                            row['StartPointDatetime'] if row["StartPointDatetime"] else None,
+                            row['FinishDatetime'] if row["FinishDatetime"] else None,
+                            row['StartStationId'] if row["StartStationId"] else None,
+                            row['StartPointStationId'] if row["StartPointStationId"] else None,
+                            row['EndPointStationId'] if row["EndPointStationId"] else None,
+                            row['UnloadLoadTime'] if row["UnloadLoadTime"] else 0,
+                            row['ParkingTime'] if row["ParkingTime"] else 0,
+                            row['MoveTime'] if row["MoveTime"] else 0,
+                            row['OrderTrip'] if row["OrderTrip"] else 1,
+                            row['AllTime'] if row["AllTime"] else None,
                         ))
+                
+                print(insert_cost_query.format(cost_records[0]))
                 
                 # Batch insert cost records
                 if cost_records:
@@ -475,6 +490,93 @@ def update_database(order_ids, tugboat_df, cost_df):
 
 
 
+def get_water_level_data(table_type='level_up'):
+    """
+    Load water level data from database.
+    
+    Args:
+        table_type: 'level_up' or 'level_down' to specify which water level data to load
+        
+    Returns:
+        pandas.DataFrame: Water level data or None if not found
+    """
+    conn = None
+    try:
+        conn = mysql.connector.connect(
+            host=HOST,
+            port=PORT,
+            user=USER,
+            password=PASSWORD,
+            database=DATABASE_NAME
+        )
+        
+        if conn.is_connected():
+            cursor = conn.cursor(dictionary=True)
+            
+            # Try different possible table names for water level data
+            possible_queries = [
+               # f"SELECT * FROM water_{table_type}",
+                #f"SELECT * FROM {table_type}",
+                #f"SELECT * FROM WaterLevel WHERE type = '{table_type}'",
+                #"SELECT * FROM WaterLevel",
+                #"SHOW TABLES LIKE '%water%'",
+                #"SHOW TABLES LIKE '%level%'",
+                f"SELECT * FROM {table_type}_status"
+            ]
+            
+            water_df = None
+            
+            for query in possible_queries:
+                try:
+                    print(f"Trying query: {query}")
+                    cursor.execute(query)
+                    
+                    if query.startswith("SHOW TABLES"):
+                        # List available tables for debugging
+                        tables = cursor.fetchall()
+                        print(f"Available tables matching pattern: {tables}")
+                        continue
+                        
+                    results = cursor.fetchall()
+                    
+                    if results:
+                        import pandas as pd
+                        water_df = pd.DataFrame(results)
+                        print(f"Successfully loaded data with query: {query}")
+                        #print(f"Data shape: {water_df.shape}")
+                        #print(f"Columns: {list(water_df.columns)}")
+                        break
+                        
+                except Error as e:
+                    print(f"Query failed: {query} - Error: {e}")
+                    continue
+            
+            cursor.close()
+            
+            if water_df is not None and not water_df.empty:
+                # Process the data to match expected format
+                if 'DATETIME' not in water_df.columns:
+                    # Look for datetime-like columns
+                    datetime_cols = [col for col in water_df.columns if 'time' in col.lower() or 'date' in col.lower()]
+                    if datetime_cols:
+                        water_df = water_df.rename(columns={datetime_cols[0]: 'DATETIME'})
+                
+                print(f"Water level data loaded successfully from database")
+                return water_df
+            else:
+                print(f"No water level data found in database.")
+                return None
+                    
+    except Error as e:
+        print(f"Database connection error: {e}")
+        return None
+        
+    finally:
+        if conn and conn.is_connected():
+            conn.close()
+            
+    return None
+
 if __name__ == '__main__':
     #connect_to_mysql_and_list_databases() # Lists all databases
     #list_tables_in_database('spinterdb') # Initial list if needed
@@ -486,7 +588,15 @@ if __name__ == '__main__':
     #create_schedule_table()
     
     print("\nListing tables in 'spinterdb' after operations:")
-    list_tables_in_database()
+    #list_tables_in_database()
+    water_df = get_water_level_data('level_up')
+    print(water_df.head())
+    print(water_df.shape)
+    print("---------")
+    water_df = get_water_level_data('level_down')
+    print(water_df.head())
+    print(water_df.shape)
+    print(water_df.shape)
 
     # Example usage for query_table_to_json:
     # table_data_json = query_table_to_json('spinterdb', 'Schedule') 
