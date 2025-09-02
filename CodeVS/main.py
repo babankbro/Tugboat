@@ -753,6 +753,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
     cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
+    barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
         
         
     #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
@@ -786,7 +787,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
     tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River")]
     print("Total Load River", np.sum(tugboat_df['TotalLoad']))
     
-    update_database(order_ids, tugboat_df_o, tugboat_df_grouped)
+    update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
     
     tugboat_df_o.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.csv', index=False)
     
@@ -799,7 +800,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
        'time', 'speed', 'total_load', 'total_load_v2', 'barge_ids', 'tugboat_id', 'order_id',
        'water_type']
     
-    order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
     #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
     # save as excel
     tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
@@ -890,7 +891,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
     print(cost_df_result)
     
     #save to csv
-    update_database(order_ids, tugboat_df_o, tugboat_df_grouped)
+    update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
     
     #barge_df.to_csv('barge_df.csv', index=False)
 
@@ -898,7 +899,6 @@ def test_single_solution(order_input_ids = None, name='v3'):
 
 
 def _init_test(data, order_df, order_input_ids):
-    data_df = get_data_from_db()
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -954,7 +954,8 @@ def _init_test(data, order_df, order_input_ids):
         exit()
     cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
     cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
-    return order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, cost_df_result 
+    barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
+    return order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, cost_df_result, barge_cost_df 
 
 def test_step_travel():
     data_df = get_data_from_db()
@@ -995,7 +996,7 @@ def test_result_travel_sea_have_break(order_input_ids):
     print()
     data = initialize_data(data_df)
     
-    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
     #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     tugboat_dfx = tugboat_df
     
@@ -1020,7 +1021,7 @@ def test_result_barge_start_collection_is_dash(order_input_ids):
     print()
     data = initialize_data(data_df)
     
-    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
     #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     tugboat_dfx = tugboat_df
     
@@ -1044,7 +1045,7 @@ def use_barge_ready_after_order_start(order_input_ids):
     print()
     data = initialize_data(data_df)
     
-    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
     
     for order_id in order_ids:
         odrder_results = tugboat_df[tugboat_df['order_id'] == order_id]
@@ -1067,7 +1068,7 @@ def check_delay_out_after_finish_crane_load(order_input_ids):
     print()
     data = initialize_data(data_df)
     
-    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
     #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     tugboat_dfx = tugboat_df
     
@@ -1092,7 +1093,7 @@ def check_all_start_arrival_time(order_input_ids):
     print()
     data = initialize_data(data_df)
     
-    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped = _init_test(data, order_df, order_input_ids)
+    order_ids, cost_results, tugboat_df, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
         
     columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
@@ -1290,7 +1291,8 @@ def test_generate_all_barge_cost():
     
     TravelHelper._set_data(TravelHelper._instance,  data)
     solution = Solution(data)
-    solution.calculate_full_barge_cost(df)
+    output_df = solution.calculate_full_barge_cost(df)
+    print(output_df.head(40))
     
 
 if __name__ == "__main__":

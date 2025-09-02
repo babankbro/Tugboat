@@ -344,7 +344,7 @@ def insert_data_into_schedule(json_data_string):
 
 
   
-def update_database(order_ids, tugboat_df, cost_df):
+def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
     
     print("Updating database", tugboat_df.columns)
     try:
@@ -471,11 +471,75 @@ def update_database(order_ids, tugboat_df, cost_df):
                             row['AllTime'] if row["AllTime"] else None,
                         ))
                 
-                print(insert_cost_query.format(cost_records[0]))
+                #print(insert_cost_query.format(cost_records[0]))
                 
                 # Batch insert cost records
                 if cost_records:
                     cursor.executemany(insert_cost_query, cost_records)
+                    
+                    
+                #do insert barge cost
+                 #create pandas df with 
+                # columns = [
+                #     "BargeId",
+                #     "TugboatId",
+                #     "OrderId",
+                #     "Time",
+                #     "Distance",
+                #     "Cost",
+                #     "Load",
+                #     "StartDatetime",
+                #     "StartPointDatetime",
+                #     "FinishDatetime",
+                #     "StartStationId",
+                #     "StartPointStationId",
+                #     "EndPointStationId",
+                #     "UnloadLoadTime",
+                #     "ParkingTime",
+                #     "MoveTime",
+                #     "OrderTrip",
+                #     "AllTime",
+                # ]
+                # Insert barge cost data
+                insert_barge_cost_query = """
+                    INSERT INTO `cost_barge`(`BargeId`, `TugboatId`, `OrderId`, `Time`, `Distance`, 
+                        `Cost`, `Load`, `StartDatetime`, `StartPointDatetime`, `FinishDatetime`, 
+                        `StartStationId`, `StartPointStationId`, `EndPointStationId`, `UnloadLoadTime`, 
+                        `ParkingTime`, `MoveTime`, `OrderTrip`, `AllTime`) 
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """
+
+                barge_cost_records = []
+                for order_id in valid_order_ids:
+                    temp_barge_df = barge_cost_df[barge_cost_df["OrderId"]==order_id]
+                    temp_barge_df = temp_barge_df.replace([np.nan], [None])
+                    
+                    for _, row in temp_barge_df.iterrows():
+                        barge_cost_records.append((
+                            row['BargeId'] if row["BargeId"] else None,
+                            row['TugboatId'] if row["TugboatId"] else None,
+                            row['OrderId'] if row["OrderId"] else None,
+                            row['Time'] if row["Time"] is not None else 0.0,
+                            row['Distance'] if row["Distance"] is not None else 0.0,
+                            row['Cost'] if row["Cost"] is not None else 0.0,
+                            row['Load'] if row["Load"] is not None else 0.0,
+                            row['StartDatetime'] if row["StartDatetime"] else None,
+                            row['StartPointDatetime'] if row["StartPointDatetime"] else None,
+                            row['FinishDatetime'] if row["FinishDatetime"] else None,
+                            row['StartStationId'] if row["StartStationId"] else None,
+                            row['StartPointStationId'] if row["StartPointStationId"] else None,
+                            row['EndPointStationId'] if row["EndPointStationId"] else None,
+                            row['UnloadLoadTime'] if row["UnloadLoadTime"] else 0,
+                            row['ParkingTime'] if row["ParkingTime"] else 0,
+                            row['MoveTime'] if row["MoveTime"] else 0,
+                            row['OrderTrip'] if row["OrderTrip"] else 1,
+                            row['AllTime'] if row["AllTime"] else None,
+                        ))
+
+                # Batch insert barge cost records
+                if barge_cost_records:
+                    cursor.executemany(insert_barge_cost_query, barge_cost_records)
+                    
                 
                 conn.commit()
             

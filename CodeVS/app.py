@@ -398,6 +398,7 @@ def calculate_multiple_schedules():
         is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
         cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
         cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
+        barge_cost_df = solution.calculate_barge_cost(barge_df)
         
         #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'RiverTB_01') | (tugboat_df['tugboat_id'] == 'SeaTB_06')]
         tugboat_dfx = tugboat_df
@@ -564,7 +565,7 @@ def calculate_multiple_schedules():
         #         conn.close()
          
     #save to csv
-        update_database(order_ids, tugboat_df_o, cost_df_result)
+        update_database(order_ids, tugboat_df_o, cost_df_result, barge_cost_df)
         return jsonify({
             "message": "schedules created",
             "detail": detail

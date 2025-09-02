@@ -2182,6 +2182,7 @@ class Solution:
 
         stop_rows[rest_col] = 0
         stop_rows['enter_datetime'] = stop_rows['start_arrival_datetime']
+        stop_rows['type_point'] = 'water_level_point'
 
         # If you want the stop row to keep only certain columns, modify here.
         # For now, we keep all columns and only override fields above.
@@ -2216,6 +2217,35 @@ class Solution:
         out = out.sort_values("_order_key", kind="mergesort").drop(columns=["_orig_pos", "_order_key"])
         out = out.reset_index(drop=True)
         return out
+    
+    def insert_wating_load_unload_rows(self, df):
+        type_col = 'type'
+        valid_travel_values = ('Crane-Carrier')
+        # Work on a copy
+        df = df.copy()
+
+        # Ensure required columns exist
+        required = { type_col}
+        missing = [c for c in required if c not in df.columns]
+        if missing:
+            raise ValueError(f"Missing required columns: {missing}")
+
+        # Build condition mask
+        mask = (
+            df[type_col].isin(valid_travel_values)
+        )
+        
+        original_rows = df[mask]
+        to_insert_after = original_rows.copy()
+        to_insert_before = original_rows.copy()
+
+        if to_insert_after.empty:
+            # Nothing to insert — return original as-is
+            return df.reset_index(drop=True)
+        
+        
+        
+        
     
     
     def generate_schedule(self, order_ids , xs = None):
@@ -2814,13 +2844,21 @@ class Solution:
             startPointDatetime = group[group['type'] == 'Start Order Carrier']['enter_datetime'].min()
             #print(startPointDatetime, None)
             #if NaT when start order carrier is empty
+            
+            
+            
       
             if startPointDatetime is pd.NaT:
                 startPointDatetime = group[group['type'] == 'Barge Change']['enter_datetime'].min()
-            if startPointDatetime is None:
-                startPointDatetime = group[group['type'] == 'Barge Change']['enter_datetime'].min()
+            if startPointDatetime is pd.NaT:
+                startPointDatetime = group[group['type'] == 'Destination Barge']['enter_datetime'].min()
+            if startPointDatetime is pd.NaT:
+                print(group)
+                raise Exception("Start Point Datetime is None")
             
             barge_ids = object_element['barge_ids'].split(',')
+            total_barge_weight = group[(group['type'] == 'Customer Station') | 
+                                  (group['type'] == 'Appointment') ]['total_load'].sum()
             for barge_id in barge_ids: 
                 sub_mask = ((tugboat_df['order_id'] == name[0]) &
                         (tugboat_df['tugboat_id']   == name[1]) &
@@ -2828,39 +2866,89 @@ class Solution:
                         (tugboat_df['barge_ids'].str.contains(barge_id)))    
                 time_consumption =  0
                 
-                items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Step Collection')]
+                items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Step Collection') ]
                 if len(items) > 0:
                     startDatetime = items['enter_datetime'].iloc[0]
+                    startStationId = items['name'].iloc[0].split(' ')[-1].replace(')', '')
                     finishDatetime = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Step Release')]['exit_datetime'].max()
                 else:
                     items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Change Collection')]
-                    startDatetime = items['enter_datetime'].iloc[0]
-                    finishDatetime = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Loader-Customer')]['exit_datetime'].max()
+                    if len(items) > 0:
+                        startDatetime = items['enter_datetime'].iloc[0]
+                        startStationId = items['name'].iloc[0].split(' ')[-1].replace(')', '')
+                        finishDatetime = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Loader-Customer')]['exit_datetime'].max()
+                    else:
+                        print(group)
+                        items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Change Collection')]
+                        startDatetime = items['enter_datetime'].iloc[0]
+                        startStationId = items['name'].iloc[0].split(' ')[-1].replace(')', '')
+                        finishDatetime = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Loader-Customer')]['exit_datetime'].max()
+                        
+                        
+                items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Crane-Carrier')]
+                if len(items) > 0:
+                    startPointStationId = order.start_object.station.station_id
+                    endPointStationId = group[(group['type'] == 'Appointment')]['ID'].iloc[0]
+                else:
+                    items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Change Collection')]
+                    if len(items) == 0:
+                        items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Step Collection')]
+                    
+                    startPointStationId = items['name'].iloc[0].split(' ')[-1].replace(')', '')
+                    endPointStationId = order.des_object.station.station_id
+                
                 
                 #delta time hours between startDatetime and finishDatetime
                 delta_time = (finishDatetime - startDatetime).total_seconds() / 3600
+                
+                
+                load_unload = 0
+                items = group[(group['type'] == 'Crane-Carrier') & (group['name'].str.contains(barge_id))]
+                if len(items) > 0:
+                    element = items.iloc[0]
+                    load_unload = (element['exit_datetime'] - element['enter_datetime']).total_seconds() / 3600 
+                
+                items = group[(group['type'] == 'Loader-Customer') & (group['name'].str.contains(barge_id))]
+                if len(items) > 0:
+                    element = items.iloc[0]
+                    load_unload += (element['exit_datetime'] - element['enter_datetime']).total_seconds() / 3600 
+                
+                
+                load_unload +=  group[(group['type'] == 'Barge Step Release') & (group['barge_ids'].str.contains(barge_id))]['time'].sum()
+                        
+                            
+                
+                parkingTime = group[(group['name'].str.contains('stop at')) & (group['barge_ids'].str.contains(barge_id))]['rest_time'].sum()
+                #time_move = 0
+                
+                havy_time_move = group[((group['type'] == 'Customer Station') | 
+                                    (group['type'] == 'Appointment') & (group['barge_ids'].str.contains(barge_id))) ]['time'].sum()
+                soft_time_move = group[((group['type'] == 'Barge Collection') | 
+                                (group['type'] == 'Travel To Carrier') |
+                                (group['type'] == 'Barge Change')) & (group['barge_ids'].str.contains(barge_id))]['time'].sum()
+                
                        
                 output_df = output_df._append({
                     "BargeId": barge_id,
                     "TugboatId": name[1],
                     "OrderId": name[0],
-                    "Time": time_consumption,
+                    "Time": havy_time_move,
                     "Distance": distance,
-                    "Cost": time_consumption*tugboat.max_fuel_con,
+                    "Cost": havy_time_move*tugboat.max_fuel_con*load_barge/total_barge_weight,
                     "Load": load_barge,
                     "StartDatetime": startDatetime,
                     "StartPointDatetime": startPointDatetime,
                     "FinishDatetime": finishDatetime,
-                    # "StartStationId": group[mask]['start_station_id'].iloc[0],
-                    # "StartPointStationId": group[mask]['start_point_station_id'].iloc[0],
-                    # "EndPointStationId": group[mask]['end_point_station_id'].iloc[0],
-                    # "UnloadLoadTime": group[mask]['unload_load_time'].sum(),
-                    # "ParkingTime": group[mask]['parking_time'].sum(),
-                    # "MoveTime": group[mask]['move_time'].sum(),
+                    "StartStationId": startStationId,
+                    "StartPointStationId": startPointStationId,
+                    "EndPointStationId": endPointStationId,
+                    "UnloadLoadTime": load_unload,
+                    "ParkingTime": parkingTime,
+                    "MoveTime": soft_time_move,
                     "OrderTrip": name[2],
                     "AllTime": delta_time,
                 }, ignore_index=True)
-        print(output_df.head(40))
+        
             
         return output_df
                 

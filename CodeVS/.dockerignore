@@ -4,5 +4,5 @@
 .qodo
 **/desktop.ini 
 **/.DS_Store
-data/
+#data/
 html/
