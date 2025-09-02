@@ -749,8 +749,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
         print("Failed to generate schedule")
         exit()
     
-    cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
-    cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
+
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
     barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
@@ -1322,10 +1321,12 @@ if __name__ == "__main__":
     #test_single_solution
     #test_single_solution([ "ODR_012" ])
     #test_algorithm
-    test_algorithm(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
-                        "ODR_005", "ODR_006", "ODR_007", "ODR_008",
-                        "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
-                        "ODR_013", "ODR_014", 
+    test_algorithm([
+        # "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    #                     "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+    #                     "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+    #                     "ODR_013",
+                        "ODR_011", 
                         ], name='v4')
     #test_after_prosess()
     #test_generate_all_barge_cost()
