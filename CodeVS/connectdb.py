@@ -342,7 +342,6 @@ def insert_data_into_schedule(json_data_string):
             conn.close()
             print(f'MySQL connection for inserting data into Schedule table in {DATABASE_NAME} is closed')
 
-
   
 def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
     
@@ -364,8 +363,10 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
             # Clear all results in Schedule and Cost tables before calculating new schedules
             query_clear_schedule = "DELETE FROM `Schedule`"
             query_clear_cost = "DELETE FROM `Cost`"
+            query_clear_barge_cost = "DELETE FROM `cost_barge`"
             cursor.execute(query_clear_schedule)
             cursor.execute(query_clear_cost)
+            cursor.execute(query_clear_barge_cost)
             print("All previous schedule and cost records cleared")
             
             # Filter order_ids that were successfully processed

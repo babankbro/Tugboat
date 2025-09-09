@@ -1276,7 +1276,7 @@ def test_generate_all_barge_cost():
     import pandas as pd
     from pathlib import Path
     # 1) Read your file
-    excel_path = Path("data/output/tugboat_schedule_algorithm.xlsx")  # <- your uploaded file
+    excel_path = Path("data/output/tugboat_schedule_algorithm_v2.xlsx")  # <- your uploaded file
     # If your data is on a specific sheet, set sheet_name="Sheet1" (or the correct sheet)
     df = pd.read_excel(excel_path)  # , sheet_name="Sheet1"
     
@@ -1319,14 +1319,14 @@ if __name__ == "__main__":
     #                 ])
     
     #test_single_solution
-    #test_single_solution([ "ODR_012" ])
+    test_single_solution([ "ODR_015" ])
     #test_algorithm
-    test_algorithm([
-        # "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    # test_algorithm([
+    #     "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
     #                     "ODR_005", "ODR_006", "ODR_007", "ODR_008",
     #                     "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
     #                     "ODR_013",
-                        "ODR_011", 
-                        ], name='v4')
+    #                     "ODR_014", 
+    #                     ], name='v4')
     #test_after_prosess()
     #test_generate_all_barge_cost()

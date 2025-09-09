@@ -2218,7 +2218,7 @@ class Solution:
         out = out.reset_index(drop=True)
         return out
     
-    def insert_wating_load_unload_rows(self, df):
+    def insert_waiting_load_unload_rows(self, df):
         type_col = 'type'
         valid_travel_values = ('Crane-Carrier')
         # Work on a copy
@@ -2243,11 +2243,6 @@ class Solution:
             # Nothing to insert — return original as-is
             return df.reset_index(drop=True)
         
-        
-        
-        
-    
-    
     def generate_schedule(self, order_ids , xs = None):
         data = self.data
         barges = data['barges']
@@ -2657,7 +2652,6 @@ class Solution:
         
         return cost_results, tugboat_df_o, barge_df, tugboat_df_grouped
     
-    
     def calculate_full_cost(self, tugboat_df, barge_df=None):
         #group tugboat_df by tugboat_id and order_id and order_trip
         tugboat_df_grouped = tugboat_df.groupby(['order_id','tugboat_id',  'order_trip'], as_index=False)
@@ -2822,20 +2816,24 @@ class Solution:
             order = orders[name[0]]
         
             appointment = group[group['type'] == 'Appointment']
+            total_load_barge = 0
             if len(appointment) > 0:
                 #print appointment single first row
                 object_element = appointment.iloc[0]
+                total_load_barge = object_element['total_load']
             else:
                 ids = group[group['type'] == 'Barge Change']
                 if len(ids) > 0:
                     object_element = ids.iloc[0]
+                    total_load_barge = object_element['total_load']
                 else:
                     #print(group)
                     object_element = group[group['type'] == 'Destination Barge'].iloc[0]
+                    total_load_barge = object_element['total_load']
             
             
             time_consumption = 0
-            load_barge = 0
+            
             time_consumption = group[(group['type'] == 'Customer Station') | 
                                   (group['type'] == 'Appointment') ]['time'].sum()
             distance = group[(group['type'] == 'Customer Station') | 
@@ -2904,15 +2902,23 @@ class Solution:
                 
                 load_unload = 0
                 items = group[(group['type'] == 'Crane-Carrier') & (group['name'].str.contains(barge_id))]
+                load_barge = 0
                 if len(items) > 0:
                     element = items.iloc[0]
+                    load_barge = element['total_load']
                     load_unload = (element['exit_datetime'] - element['enter_datetime']).total_seconds() / 3600 
                 
                 items = group[(group['type'] == 'Loader-Customer') & (group['name'].str.contains(barge_id))]
                 if len(items) > 0:
                     element = items.iloc[0]
+                    load_barge = element['total_load']
                     load_unload += (element['exit_datetime'] - element['enter_datetime']).total_seconds() / 3600 
                 
+                # if load_barge == 0:
+                #     print("0000000000000000")
+                #     print(group)
+                #     print("0000000000000000")
+                #     raise Exception("Load barge is 0")
                 
                 load_unload +=  group[(group['type'] == 'Barge Step Release') & (group['barge_ids'].str.contains(barge_id))]['time'].sum()
                         
@@ -2952,5 +2958,4 @@ class Solution:
             
         return output_df
                 
-                
-    
+          
