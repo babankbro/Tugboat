@@ -789,7 +789,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
     tugboat_df_o.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.csv', index=False)
     update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
     
-    tb = tugboat_df_o[tugboat_df_o['tugboat_id'] == 'RiverTB_11' & (tugboat_df_o['order_id'] == 'ODR_015')]
+    tb = tugboat_df_o[(tugboat_df_o['tugboat_id'] == 'RiverTB_11') & (tugboat_df_o['order_id'] == 'ODR_015')]
     #sort by enter_datetime
     tb = tb.sort_values(by='enter_datetime')
     print(tb)
@@ -1331,14 +1331,14 @@ if __name__ == "__main__":
     
     #test_single_solution([ "ODR_015"], name='_order_15_v2')
     #test_algorithm([ "ODR_001", "ODR_005", 'ODR_015'], name='_3order')
-    test_algorithm([ "ODR_001", "ODR_005", 'ODR_015'], name='_3order')
+    test_single_solution([ "ODR_001", "ODR_005", 'ODR_015', 'Orid16'], name='_3order')
     #test_algorithm
     # test_algorithm([
     #     "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
     #                     "ODR_005", "ODR_006", "ODR_007", "ODR_008",
     #                     "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
     #                     "ODR_013",
-    #                     "ODR_014", 
+    #                     "ODR_014", 'ODR_015', 'Orid16'
     #                     ], name='v4')
     #test_after_prosess()
     #test_generate_all_barge_cost()

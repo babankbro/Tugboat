@@ -1,5 +1,5 @@
 ID,NAME,EMAIL,ADDRESS,STATION,LAT,LNG
-Cust_001,customer01,customer01@gmail.com,Address customer01,ST_001,13.1885,100.815
+Cust_001,customer01,customer01@gmail.com,Address customer01 TEST,ST_001,13.1885,100.815
 Cust_002,customer02,customer02@gmail.com,Address customer02,ST_007,13.5724,100.569
 Cust_003,customer03,customer03@gmail.com,Address customer03,ST_010,27.2183,201.14
 Cust_004,customer04,customer04@gmail.com,Address customer04,ST_012,13.6154,100.555
