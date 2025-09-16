@@ -245,8 +245,8 @@ def create_station_points(stations):
     #     {"ID": "s23", "name": "Wat Bandai Pier", "enter_datetime": datetime(2025, 3, 8, 17, 0), "exit_datetime": datetime(2025, 3, 8, 18, 0)},
     #     {"ID": "s24", "name": "Wat Sam Makan", "enter_datetime": datetime(2025, 3, 8, 20, 30), "exit_datetime": datetime(2025, 3, 8, 21, 30)},
     # ]
-
-
+    
+    
     data_points = []
     distances = []
     travel_times = []
@@ -306,9 +306,7 @@ def create_station_points(stations):
             else:
                 direction_station_lookup[key] = WaterTravelType.RIVER_DOWN
         
-        
-        
-    
+    print(direction_station_lookup.keys())
     #distances[0] = 0
     #print("Data points:", data_points)
     #print("Distances:", distances)

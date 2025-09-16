@@ -325,6 +325,24 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
             #print("\t", 'BBBBBBBBBBBBBBBBBB',crane) if tugboat_id == 'tbs1' else None
             min_start_loader = min(min_start_loader, loader['start_time'])
         
+        # tugboat_result = lookup_tugboat_results[tugboat_schedule['tugboat_id']]
+        # #print('Appointment Tugboat Result: XXXXXXXXXXXXXXXX', tugboat_result) if tugboat_id == 'tbs1' and order.order_id == 'o1' else None 
+      
+        # #last_point = tugboat_result['data_points'][-1]
+        # last_point = next((point for point in reversed(tugboat_result['data_points']) if point.type_point == "main_point"), None)
+        # #print("last_point", tugboat_id, last_point) if (tugboat_id == 'tbs1' or tugboat_id == 'tbs2') and order.order_id == 'o1' else None
+        # #order_arrival_time = last_point['order_arrival_time'] 
+        # last_point_exit_datetime = last_point.exit_datetime
+        
+        # travel_time = last_point.distance / last_point.speed if last_point.speed != 0 else 0
+        # arrival_datetime = last_point_exit_datetime + timedelta(hours=travel_time)
+        # #print("Fixed Error Time Start ==========================")
+        # #print ("RiverTB_01 Travel Time:", travel_time,  last_point_exit_datetime) if tugboat_id == 'RiverTB_01' else None
+        # #print ("RiverTB_01 Travel Time:", arrival_datetime,  order.start_datetime) if tugboat_id == 'RiverTB_01' else None
+        # data = solution.data
+        # tugboat = data["tugboats"][tugboat_id]
+        
+        
         tugboat_result = lookup_tugboat_results[tugboat_schedule['tugboat_id']]
         #print('Appointment Tugboat Result: XXXXXXXXXXXXXXXX', tugboat_result) if tugboat_id == 'tbs1' and order.order_id == 'o1' else None 
       
@@ -334,12 +352,41 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
         #order_arrival_time = last_point['order_arrival_time'] 
         last_point_exit_datetime = last_point.exit_datetime
         
-        travel_time = last_point.distance / last_point.speed if last_point.speed != 0 else 0
-        arrival_datetime = last_point_exit_datetime + timedelta(hours=travel_time)
-        #print("Fixed Error Time Start ==========================")
-        #print ("RiverTB_01 Travel Time:", travel_time,  last_point_exit_datetime) if tugboat_id == 'RiverTB_01' else None
-        #print ("RiverTB_01 Travel Time:", arrival_datetime,  order.start_datetime) if tugboat_id == 'RiverTB_01' else None
+        tugboat = solution.data['tugboats'][tugboat_id]
+        barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
         
+        arrival_datetime = last_point_exit_datetime
+        trave_steps = generate_travel_steps(last_point.exit_datetime, last_point.travel_info, order_trip, barge_ids)
+        last_point_exit_datetime = max(trave_steps, key=lambda x: x.exit_datetime).exit_datetime
+        #travel time to hours
+        travel_time = last_point_exit_datetime - arrival_datetime
+        travel_time = travel_time.total_seconds() / 3600 
+        speed= last_point.order_distance / travel_time if travel_time != 0 else 0
+        
+        rest_time = sum([point.rest_time for point in trave_steps])
+        
+        travel_to_customer = DataPoint(
+            ID=order.start_object.order_id,
+            type="Travel To Customer",
+            name=order.start_object.name,
+            enter_datetime=arrival_datetime,
+            #exit_datetime=tugboat_schedule['end_datetime'],
+            distance=last_point.order_distance,
+            time=travel_time,
+            speed=speed,
+            type_point='main_point',
+            rest_time=rest_time,
+            barge_ids= barge_ids,
+            order_trip = order_trip,
+        )
+        
+        tugboat_result['data_points'].append(travel_to_customer)
+        tugboat_result['data_points'].extend(trave_steps)
+        travel_to_customer.exit_datetime = last_point_exit_datetime
+        
+        arrival_datetime = last_point_exit_datetime
+        
+        barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
         order_location = DataPoint(
                 ID=order.start_object.order_id,
                 type="Start Order Customer",
@@ -387,7 +434,7 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
                 
             
             loader_location = DataPoint(
-                ID=order.start_object.order_id,
+                ID=order.order_id,
                 type="Loader-Customer",
                 name=loader['loader_id'] + ' - ' + loader['barge'].barge_id,
                 enter_datetime=loader_start_time,
@@ -407,7 +454,7 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
         
     data = TravelHelper._instance.data
     for tugboat_id, appoint_info in appointment_infos.items():
-        tugboat = appoint_info["sea_tugboat"]
+        tugboat = appoint_info["river_tugboat"]
         tugboat_id = tugboat.tugboat_id
         tugboat_result = lookup_tugboat_results[tugboat_id]
         schedule_result = lookup_schedule_results[tugboat_id]
@@ -416,10 +463,13 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
         appointment_station = data['stations'][appoint_info['appointment_station']]
         
         travel_info = tugboat.calculate_travel_to_appointment(appoint_info)
-       
-        # print("Travel Info:", travel_info) if tugboat_id == 'tbs1' and order.order_id == 'o1' else None
-        # for step in travel_info['steps']:
-        #      print(step)  if tugboat_id == 'tbs1' and order.order_id == 'o1' else None
+        
+        
+        
+        
+        #print("Travel Info:", travel_info, tugboat_id)
+        #for step in travel_info['travel_steps']:
+              #print(step)  
         #print(travel_info)
        #print()
         
@@ -477,6 +527,59 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
             #print("Update barge schedule ##################### ", appointment_station.station_id, solution.barge_scheule[barge_ids[i]][-1])
         
         tugboat_result['data_points'].extend(release_steps)
+
+
+def generate_travel_steps_for_barge_collection(arrival_datetime, barge_collection_info, order_trip, barge_ids=[]):
+    trave_steps = []
+    start_travel_time = arrival_datetime
+    # print(travel_info['steps'][0]['start_id'])
+    # print(travel_info['steps'][-1]['end_id'])
+    start_station = TravelHelper._instance.data['stations'][barge_collection_info['travel_steps'][0].start_id]
+    end_station = TravelHelper._instance.data['stations'][barge_collection_info['travel_steps'][-1].end_id]
+    if (start_station.water_type == WaterBody.SEA) and (end_station.water_type == WaterBody.SEA):
+        travel_type = 'Sea-Sea'
+    elif(start_station.water_type == WaterBody.RIVER) and (end_station.water_type == WaterBody.SEA):
+        travel_type = 'River-Sea'
+    elif(start_station.water_type == WaterBody.SEA) and (end_station.water_type == WaterBody.RIVER):
+        travel_type = 'Sea-River'
+    elif(start_station.water_type == WaterBody.RIVER) and (end_station.water_type == WaterBody.RIVER):
+        travel_type = 'River-River'
+
+    data = TravelHelper._instance.data
+    # print("\n")
+
+    # print(data['stations']['c1'])
+    # print("\n")
+    # eeeeee
+    for step in barge_collection_info['travel_steps']:
+        finish_travel_time = start_travel_time + timedelta(minutes=(step.travel_time)*60)
+        start_station_step = data['stations'][step.start_id]
+        end_station_step = data['stations'][step.end_id]
+        step.update_travel_step_move(start_travel_time)
+        travel_step = DataPoint(
+                ID="Travel",
+                type=travel_type,
+                name=start_station_step.station_id + ' to ' + end_station_step.station_id,
+                enter_datetime=start_travel_time,
+                #exit_datetime=finish_travel_time,
+                distance=step.distance,
+                speed=step.travel_speed,
+                time=step.travel_time,
+                type_point='travel_point',
+                rest_time=step.rest_time,
+                barge_ids= barge_ids,
+                order_trip = order_trip,
+            )
+  
+            
+        
+        start_travel_time = travel_step.exit_datetime
+            #print(collection_info)
+        trave_steps.append(travel_step)
+        
+            
+    return trave_steps
+
 
 
 def generate_travel_steps(arrival_datetime, travel_info, order_trip, barge_ids=[]):
@@ -627,6 +730,7 @@ def travel_trought_sea_export_to_customer(order, lookup_sea_tugboat_results, ord
         arrival_datetime = previous_location.exit_datetime
 
         carrier_station = order.des_object.station
+        barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
         customer_location = DataPoint(
             ID=carrier_station.station_id,
             name=f'From {travel_info["start_object"].name} To {carrier_station.name}',
@@ -638,9 +742,11 @@ def travel_trought_sea_export_to_customer(order, lookup_sea_tugboat_results, ord
             time=travel_info['travel_time'],
             type_point='main_point',
             rest_time=0,
+            barge_ids= barge_ids,
             order_trip = order_trip,
         )
         tugboat_result['data_points'].append(customer_location) # add result data points
+        
         
         travel_steps = generate_travel_steps(arrival_datetime, travel_info, order_trip, barge_ids)
         tugboat_result['data_points'].extend(travel_steps)
@@ -735,7 +841,7 @@ def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_s
             
             
             crane_location = DataPoint(
-                ID=order.start_object.order_id,
+                ID=order.order_id,
                 type="Loader-Customer",
                 name=loader["loader_id"] + " - " + loader['barge'].barge_id,
                 enter_datetime=loader_start,
@@ -758,7 +864,7 @@ def update_river_travel_tugboats(order, first_arrival_customer_datetime, river_s
 
 
 
-def update_export_sea_travel_tugboats(order, first_arrival_carrier_datetime, lookup_sea_schedule_results, 
+def update_export_sea_travel_tugboats(solution, order, first_arrival_carrier_datetime, lookup_sea_schedule_results, 
                                          lookup_sea_tugboat_results, temp_sea_tugboat_results, round_trip_order):
     
     for tugboat_id, tugboat_result in lookup_sea_tugboat_results.items():
@@ -778,7 +884,7 @@ def update_export_sea_travel_tugboats(order, first_arrival_carrier_datetime, loo
         #     print(point)
         
         
-        if carrier_location['type'] != "Carrier Station":
+        if carrier_location.type != "Carrier Station":
             raise Exception("Carrier Station not found")
         
         end_date_last = arrival_carrier_time
@@ -834,15 +940,15 @@ def update_export_sea_travel_tugboats(order, first_arrival_carrier_datetime, loo
             
             order_id = order.order_id
             last_crane_info = solution.crane_order_scheule[order_id][crane['crane_id']][-1]
-            crane_start = max(crane_start, last_crane_info.end_datetime)
+            crane_start = max(crane_start, last_crane_info["end_datetime"])
             
             
             crane_end = crane_start + timedelta(minutes=int((crane['crane_schedule'] - crane['start_time'])*60))
             
             
+            tugboat = solution.data['tugboats'][tugboat_id]
             
-            
-            
+            barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
             crane_location = DataPoint(
                 ID=order.start_object.order_id,
                 type="Crane-Carrier",
@@ -854,7 +960,8 @@ def update_export_sea_travel_tugboats(order, first_arrival_carrier_datetime, loo
                 time=crane['time_consumed'],
                 type_point='loading_point',
                 rest_time=0,
-                order_trip = order_trip,
+                barge_ids= barge_ids,
+                order_trip = round_trip_order,
             )
             crane_location.exit_datetime = crane_end
             tugboat_result['data_points'].append(crane_location) # add result data points

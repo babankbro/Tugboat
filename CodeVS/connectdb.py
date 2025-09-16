@@ -516,7 +516,7 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                     temp_barge_df = temp_barge_df.replace([np.nan], [None])
                     
                     for _, row in temp_barge_df.iterrows():
-                        barge_cost_records.append((
+                        temp_row_data = (
                             row['BargeId'] if row["BargeId"] else None,
                             row['TugboatId'] if row["TugboatId"] else None,
                             row['OrderId'] if row["OrderId"] else None,
@@ -535,7 +535,11 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                             row['MoveTime'] if row["MoveTime"] else 0,
                             row['OrderTrip'] if row["OrderTrip"] else 1,
                             row['AllTime'] if row["AllTime"] else None,
-                        ))
+                        )
+                        if temp_row_data[0] is None:
+                            print("Error---------------------------------------------------------------")
+                            print("temp_row_data", temp_row_data)
+                        barge_cost_records.append(temp_row_data)
 
                 # Batch insert barge cost records
                 if barge_cost_records:
