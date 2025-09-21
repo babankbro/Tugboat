@@ -739,9 +739,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
         #jitter=False
     )
     algorithm.iterate()
-    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
-       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 'order_trip',
-       'water_type']
+
     
     solution = Solution(data)
     is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
@@ -757,13 +755,13 @@ def test_algorithm(order_input_ids = None, name='v3'):
         
     #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
     
-    tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_algorithm.xlsx', index=False)
+    tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_algorithm_{name}.xlsx', index=False)
     
     
     tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     #tugboat_dfx = tugboat_df
     
-    print(tugboat_dfx[columns_of_interest])
+    print(tugboat_dfx[  COLUMN_OF_INTEREST])
     order = data['orders'][order_ids[0]]
     station_start = order.start_object.station
     station_end = order.des_object.station
@@ -802,9 +800,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
     order_df = data_df['order']
     print()
     data = initialize_data(data_df)
-    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
-       'time', 'speed', 'total_load', 'total_load_v2', 'barge_ids', 'tugboat_id', 'order_id',
-       'water_type']
+ 
     
     order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
     #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
@@ -846,7 +842,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
  
     tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'].str.contains("Sea")) & (tugboat_df['order_id'] == 'ODR_008')]
-    print(tugboat_dfx[columns_of_interest].head(20))
+    print(tugboat_dfx[COLUMN_OF_INTEREST].head(20))
     
     
     
@@ -903,8 +899,11 @@ def test_single_solution(order_input_ids = None, name='v3'):
     # unique tugboat_id
     print(tugboat_df_o['tugboat_id'].unique())
     print(tugboat_df_o[(tugboat_df_o['tugboat_id'] == "RiverTB_11") |
-                       (tugboat_df_o['order_id'] == "ODR_015")][columns_of_interest].head(40))
+                       (tugboat_df_o['order_id'] == "ODR_015")][COLUMN_OF_INTEREST].head(40))
 
+COLUMN_OF_INTEREST = ['ID',"station_id" , 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
+       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
+       'water_type']
 
 def _init_test(data, order_df, order_input_ids):
     
@@ -1008,10 +1007,8 @@ def test_result_travel_sea_have_break(order_input_ids):
     #tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'] == 'SeaTB_05') & (tugboat_df['order_id'] == 'ODR_001')]
     tugboat_dfx = tugboat_df
     
-    columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
-       'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
-       'water_type']
-    print(tugboat_dfx[columns_of_interest])
+    
+    print(tugboat_dfx[COLUMN_OF_INTEREST])
     
     tugboat_dfx = tugboat_df[(tugboat_df['name'] == 'ST_001 to ST_005') 
                              #& tugboat_df['name'] == 'ST001 to ST005']
@@ -1302,6 +1299,26 @@ def test_generate_all_barge_cost():
     output_df = solution.calculate_full_barge_cost(df)
     print(output_df.head(40))
     
+def generate_test_result():
+    
+    order_list = [
+        # "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+        #                 "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+        #                 "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+        #                 "ODR_013",
+        #                 "ODR_014", 'ODR_015', 
+                        #'ODR_016', 
+                        #'ODR_020',
+                        # 'ODR_021',
+                        'ODR_022', 
+                        ]
+    
+    for order_name in order_list:
+        test_algorithm([order_name], name=order_name)
+    
+    
+
+
 
 if __name__ == "__main__":
     
@@ -1331,14 +1348,24 @@ if __name__ == "__main__":
     
     #test_single_solution([ "ODR_015"], name='_order_15_v2')
     #test_algorithm([ "ODR_001", "ODR_005", 'ODR_015'], name='_3order')
-    test_single_solution([ "ODR_001", "ODR_005", 'ODR_015', 'Orid16'], name='_3order')
+    #test_algorithm([ "ODR_001", "ODR_005", 'ODR_015', 'Orid16'], name='_3order')
     #test_algorithm
+    
+    #generate_test_result()
+    
+    # test_algorithm(["ODR_020", 'ODR_021', 'ODR_022'
+    #                     ], name='ORDER_20_21_22')
+    
+    test_single_solution(["ODR_020", 'ODR_021', 'ODR_022',
+                        ], name='ORDER_20_21_22')
+    
+    
     # test_algorithm([
     #     "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
     #                     "ODR_005", "ODR_006", "ODR_007", "ODR_008",
     #                     "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
     #                     "ODR_013",
-    #                     "ODR_014", 'ODR_015', 'Orid16'
+    #                     "ODR_014", 'ODR_015', 'ODR_016'
     #                     ], name='v4')
     #test_after_prosess()
     #test_generate_all_barge_cost()

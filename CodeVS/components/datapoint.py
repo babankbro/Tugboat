@@ -2,7 +2,7 @@ from datetime import timedelta
 
 class DataPoint:
     def __init__(self, ID, type, name, enter_datetime, distance, time, 
-                 speed, type_point, rest_time, order_trip, barge_ids=None):
+                 speed, type_point, rest_time, order_trip, barge_ids, station_id):
         """
         DataPoint class to replace appointment_location dictionary structure.
         
@@ -16,6 +16,7 @@ class DataPoint:
             speed: Travel speed
             type_point: Type of point (e.g., 'main_point')
             rest_time: Rest time at the data point
+            station_id: Station ID
         """
         self.ID = ID
         self.type = type
@@ -41,6 +42,7 @@ class DataPoint:
         self.order_time = 0
         self.travel_info = None
         self.order_trip = None
+        self.station_id = station_id
         
         
         
@@ -67,7 +69,8 @@ class DataPoint:
             'order_time': self.order_time,
             'barge_speed': self.barge_speed,
             'order_arrival_time': self.order_arrival_time,
-            'travel_info': self.travel_info
+            'travel_info': self.travel_info,
+            'station_id': self.station_id
         }
     
     def __repr__(self):

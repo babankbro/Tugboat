@@ -377,11 +377,11 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                 
                 # Prepare batch inserts for Schedule table
                 insert_schedule_query = """
-                    INSERT INTO `Schedule`(`ID`, `type`, `name`, `enter_datetime`, 
+                    INSERT INTO `Schedule`(`ID`, `type`, `name`, `station_id`,  `enter_datetime`, 
                         `exit_datetime`, `rest_time`,  `distance`, `time`, `speed`, `type_point`, `order_trip`, 
                         `total_load`, `barge_ids`, `order_distance`, `order_time`,  `barge_speed`, order_arrival_time,
                         `tugboat_id`, `order_id`, `water_type`) 
-                    VALUES (%s,%s,%s,%s,
+                    VALUES (%s,%s,%s,%s,%s,
                             %s,%s,%s,%s,%s,%s,%s,
                             %s,%s,%s,%s,%s,%s,
                             %s,%s,%s)"""
@@ -401,6 +401,7 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                             row['ID'] if row["ID"] else None,
                             row['type'] if row["type"] else None,
                             row['name'] if row["name"] else None,
+                            row['station_id'] if row["station_id"] else None,
                             row['enter_datetime'] if row["enter_datetime"] else None,
                             row['exit_datetime'] if row["exit_datetime"] else None,
                             row['rest_time'] if row["rest_time"] else 0,
