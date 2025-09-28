@@ -181,6 +181,8 @@ class Tugboat:
         total_distance = 0
         total_setup_time = 0
         barge_ids = []
+        start_id = tugboat_info['station_id']
+        #print("Station iD:######################", start_id)
         for barge in barges:
             barge_info =   barge_infos[barge.barge_id][-1]
             barge_river_km = barge_info['river_km']
@@ -197,7 +199,7 @@ class Tugboat:
             travel_info = TravelInfo((current_lat, current_lng), 
                                      (barge_info['location'][0], barge_info['location'][1]), 
                                      tugboat_speed, current_km, barge_river_km,
-                                     start_id=tugboat_info['station_id'], end_id=barge_info['station_id'])
+                                     start_id=start_id, end_id=barge_info['station_id'])
             # print("TravelInfo Display", str(travel_info)) if barge.barge_id == 'B_084' else None
             water_status = barge_info['water_status']
             #print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", TravelHelper._instance)
@@ -241,7 +243,7 @@ class Tugboat:
             
             total_distance += distance
             total_setup_time += setup_time
-            
+            start_id = barge_info['station_id']
             current_status = water_status
             barge_collect_infos.append(barge_collect_info)
             #print(f"Barge {barge.barge_id} - Travel Time: {travel_time:.2f} hours, Setup Time: {setup_time:.2f} hours")
@@ -250,7 +252,7 @@ class Tugboat:
                 'total_setup_time': total_setup_time,
                 'barge_collect_infos': barge_collect_infos }
     
-    def calculate_travel_to_start_object(self, barge_scheule):
+    def calculate_travel_to_start_object(self, tugboat_info, barge_scheule):
         # travel to carriers
         # compute time grab product
         # -start time
@@ -272,17 +274,27 @@ class Tugboat:
         #         'end_km': start_object.km if isinstance(start_object, Customer) else None
         #     }
         # check instance carrier is Carrier
-        travel_infos = TravelInfo(blocation, 
-                                  (start_object.lat, start_object.lng), 
-                                  speed_tug, barge_info["river_km"], start_object.km if isinstance(start_object, Customer) else None,
-                                  )
+        
         
         if (isinstance(start_object, Carrier) and order.order_type == TransportType.IMPORT):
+            travel_infos = TravelInfo(blocation, 
+                                  (start_object.lat, start_object.lng), 
+                                  speed_tug, barge_info["river_km"], start_object.km if isinstance(start_object, Customer) else None,
+                                  start_id=barge_info["station_id"], end_id=start_object.station_id
+                                  )
+            end_status = start_object.station.water_type
             distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(barge_info["water_status"], 
-                                                                                     WaterBody.SEA, travel_infos)
+                                                                                     end_status, travel_infos)
         elif (isinstance(start_object, Customer) and order.order_type == TransportType.EXPORT):
+            travel_infos = TravelInfo(blocation, 
+                                  (start_object.lat, start_object.lng), 
+                                  speed_tug, barge_info["river_km"], start_object.km if isinstance(start_object, Customer) else None,
+                                  start_id=barge_info["station_id"], end_id=start_object.station_id
+                                  )
+            end_status = start_object.station.water_type
+            #print("Start Object: #######################", start_object.station_id, barge_info["station_id"], barge_info["water_status"], end_status)
             distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(barge_info["water_status"], 
-                                                                                     WaterBody.RIVER, travel_infos)
+                                                                                     end_status, travel_infos)
         else:
             raise Exception("Start object is not a Carrier or Customer")
         

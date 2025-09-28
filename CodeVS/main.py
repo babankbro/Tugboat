@@ -955,7 +955,7 @@ def _init_test(data, order_df, order_input_ids):
     
     
     solution = Solution(data)
-    is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=xs)
+    is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=xs)
     if not is_success:
         print("Failed to generate schedule")
         exit()
@@ -1302,22 +1302,20 @@ def test_generate_all_barge_cost():
 def generate_test_result():
     
     order_list = [
-        # "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
-        #                 "ODR_005", "ODR_006", "ODR_007", "ODR_008",
-        #                 "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
-        #                 "ODR_013",
-        #                 "ODR_014", 'ODR_015', 
-                        #'ODR_016', 
-                        #'ODR_020',
-                        # 'ODR_021',
-                        'ODR_022', 
+        "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+        "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+        "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+        "ODR_013", "ODR_014", "ODR_015", 
+        'ODR_016', 
+        'ODR_020', 'ODR_021', 'ODR_022', 
                         ]
     
     for order_name in order_list:
         test_algorithm([order_name], name=order_name)
     
     
-
+    test_algorithm(["ODR_020", 'ODR_021', 'ODR_022',
+                        ], name='ORDER_20_21_22')
 
 
 if __name__ == "__main__":
@@ -1352,12 +1350,21 @@ if __name__ == "__main__":
     #test_algorithm
     
     #generate_test_result()
+    #test_single_solution(["ODR_022"], name='ORDER_22')
+    
+    test_single_solution(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+                         "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+                         "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+                         "ODR_013",
+                         "ODR_014", 'ODR_015', 'ODR_016',
+                          'ODR_020', 'ODR_021', 'ODR_022'], name='ORDER_1_22')
+    
+    #test_algorithm(["ODR_022"], name='ORDER_22')
     
     # test_algorithm(["ODR_020", 'ODR_021', 'ODR_022'
     #                     ], name='ORDER_20_21_22')
     
-    test_single_solution(["ODR_020", 'ODR_021', 'ODR_022',
-                        ], name='ORDER_20_21_22')
+    
     
     
     # test_algorithm([

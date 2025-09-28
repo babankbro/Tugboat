@@ -560,6 +560,12 @@ class TravelHelper:
             travel_time = distance/ info_start_ends.speed # t = d / v
             start_sea_station = self.get_sea_station(info_start_ends.start_location)
             end_sea_station = self.get_sea_station(info_start_ends.end_location)
+            
+            start_sea_station = self.data['stations'][info_start_ends.start_id] if info_start_ends.start_id in self.data['stations'] else start_sea_station
+            end_sea_station = self.data['stations'][info_start_ends.end_id] if info_start_ends.end_id in self.data['stations'] else end_sea_station
+                
+            
+            
             # first_point = {
             #     'start_location': info_start_ends['start_location'],
             #     'end_location': info_start_ends['end_location'],
@@ -573,6 +579,8 @@ class TravelHelper:
             end_location = info_start_ends.end_location
             start_id = start_sea_station.station_id if start_sea_station is not None else '-'
             end_id = end_sea_station.station_id if end_sea_station is not None else '-'
+            
+            #print("Start-end #####################", start_id, end_id, info_start_ends.start_id, info_start_ends.end_id)
                 
             first_step = TravelStep(self.data, start_location, end_location, 
                                     start_id, end_id, 
@@ -588,11 +596,13 @@ class TravelHelper:
             isContinue = False
             if sea_station is None:
                 sea_station, min_distance = self.get_closest_sea_station(info_start_ends.end_location)
-                order_stations = self.get_order_stations(start_station.station_id, sea_station.station_id)
-                isContinue = True
-            else:
-                order_stations = self.get_order_stations(start_station.station_id, sea_station.station_id)
+                
             
+            sea_station = self.data['stations'][info_start_ends.end_id] if info_start_ends.end_id in self.data['stations'] else sea_station
+            
+            #print("Sea station: ", sea_station)
+                
+            order_stations = self.get_order_stations(start_station.station_id, sea_station.station_id)
             delta = start_station.km - info_start_ends.start_km
             if delta != 0:
                 distance = abs(delta)
@@ -707,6 +717,11 @@ class TravelHelper:
             end_station = self.get_next_river_station(TransportType.IMPORT, info_start_ends.end_km)
             bar_station = self.data['lookup_station_km'][0]
             closest_station, min_distance = self.get_closest_sea_station(info_start_ends.start_location)
+            
+            closest_station = self.data['stations'][info_start_ends.start_id] if info_start_ends.start_id in self.data['stations'] else closest_station
+            
+            #print("Closest station:", closest_station, info_start_ends.start_id)
+            #raise Exception("Closest station not found")
             
             distance_to_bar = haversine(closest_station.lat, closest_station.lng, bar_station.lat, bar_station.lng)
             distance_from_start_to_bar = haversine(info_start_ends.start_location[0], 

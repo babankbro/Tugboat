@@ -9,11 +9,18 @@ from flask import jsonify
 
 load_dotenv()
 
-HOST=os.getenv('HOST')
-PORT=os.getenv('PORT')
-USER=os.getenv('USERDB')
-PASSWORD=os.getenv('PASSWORD')
-DATABASE_NAME=os.getenv('DATABASE_NAME')
+#HOST=os.getenv('HOST')
+#PORT=os.getenv('PORT')
+#USER=os.getenv('USERDB')
+#PASSWORD=os.getenv('PASSWORD')
+#DATABASE_NAME=os.getenv('DATABASE_NAME')
+
+HOST = "45.82.72.96"
+PORT = 3306
+USER = "spmarine_maria"
+PASSWORD =  "P@ssw0rd12345"
+DATABASE_NAME = "spmarine_db"
+
 
 # print(f"{HOST} {PORT} {USER} {PASSWORD} {DATABASE_NAME}")
 def connect_to_mysql_and_list_databases():

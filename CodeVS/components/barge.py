@@ -3,7 +3,7 @@ from datetime import datetime
 from CodeVS.components.water_enum import *
 
 class Barge:
-    def __init__(self, barge_id, name, weight_barge, capacity, lat, lng, water_type, station_id, km, setup_time, ready_time=None):
+    def __init__(self, barge_id, name, weight_barge, capacity, lat, lng, water_type, station_id, km, setup_time, station, ready_time=None):
         self.barge_id = barge_id
         self.name = name
         self.capacity = capacity
@@ -21,6 +21,7 @@ class Barge:
         self.weight_barge = weight_barge
         self._station_id = station_id
         self._river_km = km
+        self.start_station = station
         
     def get_load(self, is_only_load=False):
         if is_only_load:

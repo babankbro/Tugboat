@@ -1,3 +1,4 @@
+from sys import path
 from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.transport_order import *
 import config_problem 
@@ -11,6 +12,7 @@ import random
 warnings.filterwarnings("ignore")
 from CodeVS.problems.code_info import CodeInfo
 from CodeVS.components.datapoint import DataPoint
+from datetime import timedelta
 
 
 class Solution:
@@ -70,8 +72,12 @@ class Solution:
             
             
         for barge_id, barge in data['barges'].items():
-            closeset_station, _ = TravelHelper._instance.get_closest_sea_station((barge._lat, barge._lng))
+           
             
+            closeset_station =barge.start_station
+            station_id = closeset_station.station_id
+            
+            if station_id == "ST_002": raise Exception("Closest station is ST_002", barge._km)
             
             info = {
                 'barge_id': barge.barge_id,
@@ -79,9 +85,9 @@ class Solution:
                 'start_datetime': barge._ready_time,
                 'end_datetime': barge._ready_time,
                 'river_km': closeset_station.km,
-                'water_status': barge._water_status, 
+                'water_status': closeset_station.water_type, 
                 'location': (closeset_station.lat, closeset_station.lng),
-                'station_id': closeset_station.station_id if barge._water_status == WaterBody.SEA else barge._station_id,
+                'station_id': station_id,
                     
             }
             self.barge_scheule[barge_id] = [info]
@@ -353,7 +359,12 @@ class Solution:
             self.update_collection_barge_time(order, tugboat, collection_time_info)
             
             
-            travel_info = tugboat.calculate_travel_to_start_object(self.barge_scheule)
+            travel_info = tugboat.calculate_travel_to_start_object(tugboat_info, self.barge_scheule)
+            
+            #print("arrival_step_transport_order ########################")
+            #print(tugboat_info)
+            #for travel_step in travel_info['travel_steps']:
+            #    print(travel_step)
             
             #print("Travel info", travel_info)
             self.update_travel_info(order, tugboat, travel_info)
@@ -1044,11 +1055,6 @@ class Solution:
                     start_travel_barge = travel_steps[-1].exit_datetime
                 finish_barge_time = start_travel_barge + timedelta(minutes=collection_info['setup_time']*60)
                 
-                    
-                
-                
-                
-                
                 name = "Collecting Barge - " + collection_info['barge_id'] + " - " 
                 name += f"({end_barge_station_id} to {str(end_barge_station_id)})"
                 
@@ -1091,6 +1097,11 @@ class Solution:
                                                                                         end_status= WaterBody.RIVER)
             else:
                 raise Exception("Order type not supported", start_info,end_info)
+            
+            
+            # for barge_step in barge_steps:
+            #     print(barge_step)
+            # print(start_barge_station_id, end_barge_station_id, travel_river_info['travel_steps'][0])
                 
             self.update_travel_info(order, tugboat, travel_river_info)
             #print("River info", river_station.km, travel_river_info)
@@ -3280,4 +3291,187 @@ class Solution:
             
         return output_df
                 
-          
+    
+    def generate_schedule_v2(self, order_ids , xs = None):
+        data = self.data
+        barges = data['barges']
+        orders = data['orders']
+        tugboats = data['tugboats']
+        
+        # total barge capacity
+        total_barge_capacity = sum(b.capacity for b in barges.values())
+        print("Total barge capacity", total_barge_capacity)
+        
+        # total load demand
+        total_load_demand = sum(o.demand for o in orders.values())
+        print("Total load demand", total_load_demand)
+        
+        all_orders = [orders[oid] for oid in order_ids]
+        start_date = min(order.start_datetime.date() for order in all_orders)
+        end_date = max(order.due_datetime.date() for order in all_orders)
+        
+        
+        #จัดลำดับสลับไปจน barge หมด
+        #ทำสลับ order import export ดูจำนวน barge ที่ว่าง
+        #Step 5 days assign
+        #rate assign 2000 tun/days/order
+        
+        #check first is import or export
+        is_do_import = True
+        start_travel_datetime = start_date
+        #next start 5 days
+        target_travel_datetime = start_travel_datetime + timedelta(days=5)
+        
+        
+        assigned_orders = set()
+        remaining_orders = set(order_ids)
+        step_count = 0
+        MAX_ORDER_RATE_DEMAND = 500
+        print("MAX_ORDER_RATE_DEMAND:", MAX_ORDER_RATE_DEMAND)
+        
+        remaining_load_demand_order_ids = {}
+        for order_id in order_ids:
+            order = orders[order_id]
+            remaining_load_demand_order_ids[order_id] = order.demand
+        
+        
+        while remaining_orders:
+            step_count += 1
+            
+            
+            # Get orders in current time window
+            current_window_orders = []
+            remain_time_orders = {}
+            for order_id in remaining_orders:
+                order = orders[order_id]
+                if start_travel_datetime <= order.start_datetime.date() <= target_travel_datetime:
+                    #delta time
+                    #convert target_travel_datetime date to datetime
+                    target_travel_datetimev2 = datetime.combine(target_travel_datetime, datetime.min.time())
+                    
+                    
+                    delta_time = (target_travel_datetimev2 - order.start_datetime).total_seconds() / 3600
+                    print(delta_time)
+                    current_window_orders.append(order_id)
+                    remain_time_orders[order_id] = delta_time
+                elif order.start_datetime.date() <= target_travel_datetime:
+                    delta_time = 5*24
+                    current_window_orders.append(order_id)
+                    remain_time_orders[order_id] = delta_time
+                    
+            if len(current_window_orders) == 0:
+                target_travel_datetime += timedelta(days=5)
+                start_travel_datetime += timedelta(days=5)
+                continue
+                    
+            print(f"\n=== STEP {step_count}: {start_travel_datetime} to {target_travel_datetime} ===")
+            print(f"Orders in window: {len(current_window_orders)}")
+            
+            # Process by type preference
+            if is_do_import:
+                import_orders = [oid for oid in current_window_orders 
+                                if orders[oid].order_type == TransportType.IMPORT]
+                export_orders = [oid for oid in current_window_orders 
+                                if orders[oid].order_type == TransportType.EXPORT]
+                process_list = import_orders + export_orders
+            else:
+                export_orders = [oid for oid in current_window_orders 
+                                if orders[oid].order_type == TransportType.EXPORT]
+                import_orders = [oid for oid in current_window_orders 
+                                if orders[oid].order_type == TransportType.IMPORT]
+                process_list = export_orders + import_orders
+            
+            # Iterate assign barge until all orders assigned
+            for order_id in process_list:
+                order = orders[order_id]
+                
+                before_remain = remaining_load_demand_order_ids[order_id]
+                # Check available capacity
+                available_barges = [b for b in barges.values() 
+                                if self.get_ready_barge(b) <= order.start_datetime]
+                total_capacity = sum(b.capacity for b in available_barges)
+                max_assign_order_demand = remain_time_orders[order_id]*MAX_ORDER_RATE_DEMAND
+                if total_capacity >= max_assign_order_demand:
+                    remaining_load_demand_order_ids[order_id] -= max_assign_order_demand
+                else:
+                    remaining_load_demand_order_ids[order_id] -= total_capacity
+                
+                
+                if remaining_load_demand_order_ids[order_id] <= 0:
+                    remaining_load_demand_order_ids[order_id] = 0
+                    print(f"  ✓ {order_id} [{order.order_type.name}]  {before_remain} ")
+                    remaining_orders.remove(order_id)
+                
+                elif remaining_load_demand_order_ids[order_id] > 0:
+                    print(f"  ✓ {order_id} [{order.order_type.name}]  {remaining_load_demand_order_ids[order_id]}")
+                    print(f"  ✗ {order_id} - Nex round", order.demand - remaining_load_demand_order_ids[order_id])
+                    
+                else:
+                    print(f"  ✗ {order_id} - Insufficient capacity")
+            
+            # Move to next window
+            start_travel_datetime = target_travel_datetime + timedelta(days=1)
+            target_travel_datetime = start_travel_datetime + timedelta(days=5)
+            is_do_import = not is_do_import
+            
+            # Safety breaks
+            if step_count > 50 or start_travel_datetime > end_date:
+                break
+
+        print(f"\nAssigned: {len(assigned_orders)}, Remaining: {len(remaining_orders)}")
+            
+        
+        
+        
+                
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        print(f"\nTimeline from {start_date} to {end_date}")
+
+        # Create date list
+        date_list = []
+        current_date = start_date
+        while current_date <= end_date:
+            date_list.append(current_date)
+            current_date += timedelta(days=1)
+
+        # Print timeline for each order
+        for order_id in order_ids:
+            order = orders[order_id]
+            order_start = order.start_datetime.date()
+            order_end = order.due_datetime.date()
+            
+            timeline = ""
+            for date in date_list:
+                timeline += "###" if order_start <= date <= order_end else " "
+            
+            type_char = "I" if order.order_type == TransportType.IMPORT else "E"
+            print(f"{order_id} [{type_char}] {order.demand:>6} |{timeline}|")
+
+        # Print date markers every 5 days
+        print(" " * 20 + "|", end="")
+        for i, date in enumerate(date_list):
+            if i % 5 == 0:
+                print(date.strftime("%d"), end="")
+            else:
+                print(" ", end="")
+        print("|")
+        
+        pass
+    

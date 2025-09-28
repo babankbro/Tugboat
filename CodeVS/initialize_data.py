@@ -129,7 +129,7 @@ def initialize_data(data_df):
     barges = {
         row['ID']: Barge(row['ID'], row['NAME'], row['WEIGHT'], row['CAP'], 
                          row['LAT'], row['LNG'], row['WATER STATUS'],row['STATION'], stations[row['STATION']].km  ,row['SETUP TIME'],
-                         row.get('READY DATETIME', None))
+                         stations[row['STATION']], row.get('READY DATETIME', None))
         for _, row in barge_df.iterrows()
     }
     
