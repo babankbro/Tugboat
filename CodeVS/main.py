@@ -1352,6 +1352,9 @@ if __name__ == "__main__":
     #generate_test_result()
     #test_single_solution(["ODR_022"], name='ORDER_22')
     
+    #test_algorithm(["ODR_001", "ODR_002", "ODR_003","ODR_022"], name='ORDER_1_2_3_22')
+    
+    
     test_single_solution(["ODR_001", "ODR_002", "ODR_003", "ODR_004", 
                          "ODR_005", "ODR_006", "ODR_007", "ODR_008",
                          "ODR_009", "ODR_010", "ODR_011", "ODR_012", 

@@ -58,6 +58,7 @@ class TravelStep:
             self.travel_time = 0
         else:
             self.travel_time = distance / self.travel_speed
+        self.order_id = None
         #start_id: start_time -> travel_time -> end_id:arrival_time + stop_time -> exit_time
     
     

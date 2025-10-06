@@ -252,12 +252,17 @@ class Tugboat:
                 'total_setup_time': total_setup_time,
                 'barge_collect_infos': barge_collect_infos }
     
-    def calculate_travel_to_start_object(self, tugboat_info, barge_scheule):
+    def calculate_travel_first_barge(self, barge_scheule):
         # travel to carriers
         # compute time grab product
         # -start time
         # cr1 b1 b3  cr2 b2 b4  
         order = self.assigned_barges[0].current_order
+        return self.calculate_travel_to_single_start_object(order, barge_scheule)
+    
+    
+    def calculate_travel_to_single_start_object(self, order, barge_scheule):
+        
         start_object = order.start_object
         lastbarge = self.assigned_barges[-1]
         barge_info = barge_scheule[lastbarge.barge_id][-1]
@@ -279,7 +284,7 @@ class Tugboat:
         if (isinstance(start_object, Carrier) and order.order_type == TransportType.IMPORT):
             travel_infos = TravelInfo(blocation, 
                                   (start_object.lat, start_object.lng), 
-                                  speed_tug, barge_info["river_km"], start_object.km if isinstance(start_object, Customer) else None,
+                                  speed_tug, barge_info["river_km"], start_object.station.km if isinstance(start_object, Carrier) else None,
                                   start_id=barge_info["station_id"], end_id=start_object.station_id
                                   )
             end_status = start_object.station.water_type
@@ -309,8 +314,91 @@ class Tugboat:
                 "speed": speed_tug,  
                 "start_object": start_object,
                 'travel_distance': distance,
-                'travel_steps': travel_steps}
+                'travel_steps': travel_steps,
+                'order_id': order.order_id}
     
+    
+    def calculate_travel_to_multiple_start_objects(self, barge_scheule):
+        orders  =[ ]
+        for barge in self.assigned_barges:
+            if barge.current_order in orders:
+                continue
+            orders.append(barge.current_order)
+        start_order = orders[0]
+        result = self.calculate_travel_to_single_start_object(start_order, barge_scheule)
+        if len(set(orders)) == 1:
+            return result
+        Nbarge = len(self.assigned_barges)
+        base_weight_barges = 0
+        for barge in self.assigned_barges:
+            if barge.current_order == start_order:
+                Nbarge -= 1
+            else:
+                base_weight_barges += barge.weight_barge 
+        
+        order_ids = [order.order_id for order in orders]
+        print("Tugboat calculate_travel_to_multiple_start_objects", order_ids)
+        for step in result['travel_steps']:
+            step.order_id = start_order.order_id
+        result['order_ids'] = [result['order_id']]
+        last_order = start_order
+        for order in orders[1:]:
+            start_object = order.start_object
+            speed_tug = self.calculate_speed(base_weight_barges, Nbarge, base_weight_barges)
+            start_location = (last_order.start_object.lat, last_order.start_object.lng)
+            
+            if (isinstance(start_object, Carrier) and order.order_type == TransportType.IMPORT):
+                travel_infos = TravelInfo(start_location, 
+                                    (start_object.lat, start_object.lng), 
+                                    speed_tug, last_order.start_object.station.km ,start_object.station.km if isinstance(start_object, Carrier) else None,
+                                    start_id=last_order.start_object.station.station_id, end_id=start_object.station.station_id
+                                    )
+                end_status = start_object.station.water_type
+                distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(last_order.start_object.station.water_type, 
+                                                                                        end_status, travel_infos)
+            elif (isinstance(start_object, Customer) and order.order_type == TransportType.EXPORT):
+                travel_infos = TravelInfo(start_location, 
+                                    (start_object.lat, start_object.lng), 
+                                    speed_tug, last_order.start_object.station.km ,start_object.km if isinstance(start_object, Customer) else None,
+                                    start_id=last_order.start_object.station.station_id, end_id=start_object.station.station_id
+                                    )
+                end_status = start_object.station.water_type
+                #print("Start Object: #######################", start_object.station_id, barge_info["station_id"], barge_info["water_status"], end_status)
+                distance, travel_time, travel_steps = TravelHelper._instance.process_travel_steps(last_order.start_object.station.water_type, 
+                                                                                        end_status, travel_infos)
+            else:
+                raise Exception("Start object is not a Carrier or Customer")
+            
+
+            carrier_distance = distance
+            for barge in self.assigned_barges:
+                if barge.current_order == order:
+                    Nbarge -= 1
+                    base_weight_barges -= barge.weight_barge 
+            
+            for step in travel_steps:
+                step.order_id = order.order_id
+            
+            #print("Speed Tugboat", speed_tug, base_weight_barges)
+            travel_time = carrier_distance / speed_tug
+            result2 = {"travel_time":travel_time, 
+                    "last_location": (start_object.lat, start_object.lng),
+                    "speed": speed_tug,  
+                    "start_object": start_object,
+                    'travel_distance': distance,
+                    'travel_steps': travel_steps,
+                    'order_id': order.order_id}
+            #combine result and result2 by adding the values of the same keys
+            result['travel_time'] += result2['travel_time']
+            result['travel_distance'] += result2['travel_distance']
+            result['travel_steps'] += result2['travel_steps']
+            result['speed'] = result['travel_distance']/result['travel_time'] if result['travel_time'] != 0 else 0
+            result['order_ids'].append(result2['order_id'])
+            
+        
+        return result
+            
+
     def calculate_travel_start_to_end_river_location(self, start_info, end_info, 
                                                      start_status=WaterBody.RIVER, end_status= WaterBody.RIVER):
         data = TravelHelper._instance.data
@@ -508,7 +596,6 @@ class Tugboat:
         return {'total_time': max_time_grab + travel_time, 'time_grab': max_time_grab, 'travel_time': travel_time}
 
     def calculate_travel_to_estuary_river():
-
         pass
 
     def assign_barge(self, barge):

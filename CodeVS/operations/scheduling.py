@@ -144,7 +144,6 @@ def schedule_carrier_order_tugboats(order: Order, tugboats: List[Tugboat],  acti
     
     return schedules
 
-
 def schedule_customer_order_single_tugboat(order: Order, tugboat: Tugboat, 
                                  active_cranes: List[Dict] = None,
                                  tugboat_ready_time: int = 0) -> Dict:
@@ -245,3 +244,7 @@ def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat],
        # print("len(schedules) != 0", tugboats)
     
     return schedules
+
+# def schedule_carrier_order_single_tugboat(order: Order, tugboat: Tugboat, 
+#                                  active_loadings: List[Dict] = None,
+#                                  tugboat_ready_time: int = 0) -> Dict:

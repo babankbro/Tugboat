@@ -24,6 +24,9 @@ class Order:
         self.start_object = None
         self.des_object = None
 
+    def get_total_rate_hours(self):
+        return sum(self.crane_rates)
+
     def get_crane_rate(self, crane_name):
         """Get crane rate by crane number (1-7)"""
         crane_num = int(crane_name.replace('cr', ''))

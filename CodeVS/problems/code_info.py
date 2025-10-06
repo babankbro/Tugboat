@@ -143,10 +143,8 @@ class CodeInfo:
         return sorted_barges_list
         
         
-    def get_code_next_tugboat(self, order, tugboats, days):
-        self.start_station = order.start_object.station
-        order_start = order.start_datetime
-        order_end = order.due_datetime
+    def get_code_next_tugboat(self, start_station, order_start, order_end, tugboats, days):
+        self.start_station = start_station
         available_tugboats = [
             t for t in tugboats.values() 
             #if (self.get_ready_tugboat(t)is None or self.get_ready_tugboat(t) < order_end - timedelta(days=4) ) 
