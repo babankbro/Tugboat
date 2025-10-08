@@ -1,7 +1,8 @@
 from sys import path
-from CodeVS.components import barge, order
+from CodeVS.components import barge
 from CodeVS.operations.assigned_barge import *
 from CodeVS.operations.transport_order import *
+from CodeVS.operations.scheduling import *
 import config_problem 
 from CodeVS.utility.helpers import *
 import string
@@ -1656,6 +1657,7 @@ class Solution:
         active_cranes_infos = []
         active_cranes = []
         for i in range(7):
+            #print(order)
             rate = order.get_crane_rate(f'cr{i+1}')
             if rate > 0:
                 active_cranes.append({
@@ -3455,7 +3457,9 @@ class Solution:
         while len(barges ) > 0:
             #print("Barges remain:", len(barges))
             order = orders[assigned_barges[len(assigned_barges)-len(barges)]["assigned_order"]] 
-            is_completed, assigned_tugboats = self.assign_barges_to_tugboats(order, tugboats, barges)
+            is_completed, assigned_tugboats = self.assign_barges_to_tugboats_non_order(order.order_id, order.start_object.station, 
+                                                                                       order.start_datetime, order.due_datetime, 
+                                                                                        tugboats, order_assigned_barges)
             
             print("DEBUG ASSIGN BARGES TO TUGBOATS")
             for tugboat in assigned_tugboats:
@@ -4042,7 +4046,8 @@ class Solution:
             print("Skip Export")
             return None, None
     
-    def arrival_step3_barges_orders_to_appointment(self, assigned_barges, lookup_order_barges,  is_do_import):
+    def arrival_step3_barges_orders_to_appointment(self, assigned_barges, lookup_order_barges, 
+                                                        lookup_order_crane_infos, is_do_import):
         if not is_do_import:
             print("Skip Export")
             return None, None
@@ -4057,12 +4062,22 @@ class Solution:
             tugboat_key = 'river_tugboats'
         
         schedule_results = []
+        barge_schedules = []
         for order_id, barge_infos in lookup_order_barges.items():
             barge_ids = [barge_info['barge'].barge_id for barge_info in barge_infos]
             print("Order Lookup Barge DEBUG:", order_id, len(barge_ids), "Barges", barge_ids)
-            active_cranes_infos, active_loadings_infos = self._init_active_cranes(order)   
-            schedule_carrier_order_barges(order, barge_infos, active_cranes_infos, late_time)
+            order = orders[order_id]
+            active_cranes_infos = lookup_order_crane_infos[order_id]
+            activate_crane_info = active_cranes_infos[-1]
+            shedule_result = schedule_carrier_order_barges(self, order, barge_infos, activate_crane_info)
+            barge_schedules.extend(shedule_result['barge_schedule'])
         
+        
+        for barge_schedule in barge_schedules:
+            
+            barge_id = barge_schedule['barge_id']
+            barge = self.data['barges'][barge_id]
+            print(barge.barge_id, barge_schedule)
         
         
         #crane schedules each order
@@ -4255,12 +4270,12 @@ class Solution:
         remaining_load_demand_order_ids = {order_id: orders[order_id].demand for order_id in order_ids}
         lookup_order_crane_infos = {}
         lookup_order_loading_infos = {}
-        for order in orders:
+        for order in all_orders:
             active_cranes_infos, active_loadings_infos = self._init_active_cranes(order)
             lookup_order_crane_infos[order.order_id] = active_cranes_infos
             lookup_order_loading_infos[order.order_id] = active_loadings_infos
             
-        self._init_active_cranes(order)   
+        #self._init_active_cranes(order)   
         total_load_demand = 0
         
         next_orders = set()
@@ -4294,11 +4309,12 @@ class Solution:
                 barges.append(assigned_barge)
                 
             if len(assigned_barges) != 0 and is_do_import:
-                #self.__display_update_barges(assigned_barges, "Before Appointment")
+                self.__display_update_barges(assigned_barges, "Before Appointment")
                 tugboat_results, arrived_barges = self.arrival_step1_barges_orders_to_appointment(assigned_barges, is_do_import)
-                #self.__display_update_barges(assigned_barges, "After Appointment")
+                self.__display_tugboat_results(tugboat_results, "Tugboat Arrival Barge ##########################")
+                self.__display_update_barges(assigned_barges, "After Appointment")
                 step2_tugboat_results, arrived_barges = self.arrival_step2_barges_orders_to_start_points(assigned_barges, assigned_barge_order_ids, is_do_import)
-                #self.__display_update_barges(arrived_barges, "After Start Point")
+                self.__display_update_barges(arrived_barges, "After Start Point " + str(orders['ODR_001'].start_datetime) )
                 step3_tugboat_results, arrived_barges = self.arrival_step3_barges_orders_to_appointment(assigned_barges, lookup_order_barges, 
                                                                                                         lookup_order_crane_infos, is_do_import)
                 #self.__display_tugboat_results(step2_tugboat_results, "After Start Point")
