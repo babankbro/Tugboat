@@ -267,12 +267,13 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
     #sort barge_infos by ready_time
     barge_infos.sort(key=lambda x: solution.get_ready_barge(x['barge']))
     sorted_barges = [barge_info['barge'] for barge_info in barge_infos]
+   
     for barge_info in barge_infos:
         barge = barge_info['barge']
         ready_time = solution.get_ready_barge(barge)
         #delta time from order start to ready_time
         delta_time = (ready_time - order.start_datetime).total_seconds() / 3600
-        print(barge_info['barge'].barge_id, ready_time, delta_time)
+        #print(barge_info['barge'].barge_id, ready_time, delta_time)
         
     # Initialize schedules
     crane_schedule = []
@@ -293,6 +294,7 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
         
         # Assign barge load to crane
         assign_amount = sorted_barges[barge_index].get_load(is_only_load=True)
+        barge = sorted_barges[barge_index]
         next_crane['assigned_product'] += assign_amount
         remaining_product -= assign_amount
         time_consumed = assign_amount / next_crane['rate']
@@ -300,15 +302,19 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
         # Update crane's time ready
         next_crane['time_ready'] += time_consumed
         
+        start_time = next_crane['time_ready'] - time_consumed
+        ready_time = solution.get_ready_barge(barge)
+        delta_time = (ready_time - order.start_datetime).total_seconds() / 3600
         # Record crane assignment
         crane_schedule.append({
             'crane_id': next_crane['crane_id'],
             'product': assign_amount,
             'rate': next_crane['rate'],
             'barge': sorted_barges[barge_index],
-            'start_time': next_crane['time_ready'] - time_consumed,
+            'start_time': start_time,
             'crane_schedule': next_crane['time_ready'],
-            'time_consumed': time_consumed
+            'time_consumed': time_consumed,
+            
         })
         
         # Record barge assignment
@@ -316,7 +322,11 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
             'barge_id': sorted_barges[barge_index].barge_id,
             'product': assign_amount,
             'start_time': next_crane['time_ready'] - time_consumed,
-            'end_time': next_crane['time_ready']
+            'end_time': next_crane['time_ready'],
+            'delta_time': delta_time,
+            'time_consumed': time_consumed,
+            'start_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*delta_time)),
+            'end_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*(delta_time+time_consumed)))
         })
         
         barge_index += 1

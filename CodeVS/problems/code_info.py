@@ -148,7 +148,7 @@ class CodeInfo:
         available_tugboats = [
             t for t in tugboats.values() 
             #if (self.get_ready_tugboat(t)is None or self.get_ready_tugboat(t) < order_end - timedelta(days=4) ) 
-            if (self.solution.get_ready_time_tugboat(t)is None or self.solution.get_ready_time_tugboat(t) < order_start + timedelta(days=days)) 
+            if (self.solution.get_ready_time_tugboat(t) is None or self.solution.get_ready_time_tugboat(t) < order_start + timedelta(days=days)) 
         ]
         
         #check tugboat is available
