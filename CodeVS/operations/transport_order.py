@@ -750,7 +750,8 @@ def travel_trought_river_import_to_customer(order, lookup_river_tugboat_results,
         )
         tugboat_result['data_points'].append(customer_location) # add result data points
         
-        travel_steps = generate_travel_steps(order.order_id, tugboat.tugboat_id, arrival_datetime, travel_info, round_order_trip, barge_ids, extra=" Load Barges")
+        travel_steps = generate_travel_steps(order.order_id, tugboat.tugboat_id, arrival_datetime, 
+                                             travel_info, round_order_trip, barge_ids, extra=" Load Barges")
         tugboat_result['data_points'].extend(travel_steps)
         
         

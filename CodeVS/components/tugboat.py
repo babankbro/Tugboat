@@ -317,7 +317,6 @@ class Tugboat:
                 'travel_steps': travel_steps,
                 'order_id': order.order_id}
     
-    
     def calculate_travel_to_multiple_start_objects(self, barge_scheule):
         orders  =[ ]
         for barge in self.assigned_barges:
@@ -398,7 +397,11 @@ class Tugboat:
         
         return result
             
-
+            
+    def calculate_travel_to_multiple_end_objects(self, barge_scheule):
+        pass
+             
+    
     def calculate_travel_start_to_end_river_location(self, start_info, end_info, 
                                                      start_status=WaterBody.RIVER, end_status= WaterBody.RIVER):
         data = TravelHelper._instance.data

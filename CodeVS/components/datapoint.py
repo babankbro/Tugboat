@@ -1,4 +1,5 @@
 from datetime import timedelta
+import re
 
 class DataPoint:
     def __init__(self, ID, type, name, enter_datetime, distance, time, 
@@ -77,6 +78,13 @@ class DataPoint:
     def get_end_station_id(self):
         if self.ID == "Travel":
             return self.name.split(" ")[-1]   
+        if self.type == "Barge Change Collection":
+            #how to get ST_014 last pattern from example string "(ST_014 to ST_014)"
+            match = re.findall(r"ST_\d+", self.name)
+            if match:
+                last_pattern = match[-1]
+                #print(self.name, last_pattern)  # Output: ST_014
+            return last_pattern
         
         raise Exception("DataPoint ID is not Travel", self.ID)
     
