@@ -685,7 +685,7 @@ def generate_release_steps(order_id, tugboat_id, arrival_datetime, order_trip, b
         finish_travel_time = start_travel_time + timedelta(minutes=(config_problem.BARGE_RELEASE_MINUTES))
         temp_barge_ids.remove(barge_id)
         travel_step = DataPoint(
-                ID="Travel",
+                ID="Barge Release",
                 type="Barge Step Release",
                 name="Barge Releasing (" + barge_id + ")",
                 enter_datetime=start_travel_time,

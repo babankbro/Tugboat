@@ -398,8 +398,46 @@ class Tugboat:
         return result
             
             
-    def calculate_travel_to_multiple_end_objects(self, barge_scheule):
-        pass
+    def calculate_travel_to_multiple_end_objects(self,start_station, barge_scheule):
+        target_station_ids = []
+        target_orders = {}
+        order_ids = []
+        data = TravelHelper._instance.data
+        for barge in self.assigned_barges:
+            station_id = barge.current_order.des_object.station.station_id
+            target_station_ids.append(station_id)
+            target_orders[station_id] = barge.current_order
+            order_ids.append(barge.current_order.order_id)
+
+        # if len(set(order_ids)) != len(set(target_station_ids)):
+        #     raise Exception("Order ids are not unique", order_ids, target_station_ids)
+        
+        start_info = {'station': start_station, 'location': (start_station.lat, start_station.lng)}
+        first_end_station_id = target_station_ids[0]
+        #sorted station by river km
+        target_station_ids = list(set(target_station_ids))
+        target_station_ids.sort(key=lambda x: data['stations'][x].km)
+        end_station = target_orders[first_end_station_id].des_object.station
+        end_info = {'station': end_station, 'location': (end_station.lat, end_station.lng)}
+        
+        result = self.calculate_travel_start_to_end_river_location(start_info, end_info, 
+                                                                    WaterBody.RIVER, end_status = WaterBody.RIVER)
+        result_list = [ (target_orders[first_end_station_id], result)]
+        if len(set(target_station_ids)) == 1:
+            return result_list
+        
+        
+        for i in range(1, len(target_station_ids)):
+            start_station = target_orders[target_station_ids[i-1]].des_object.station
+            end_station = target_orders[target_station_ids[i]].des_object.station
+            start_info = {'station': start_station, 'location': (start_station.lat, start_station.lng)}
+            end_info = {'station': end_station, 'location': (end_station.lat, end_station.lng)}
+            result = self.calculate_travel_start_to_end_river_location(start_info, end_info, 
+                                                                        WaterBody.RIVER, end_status = WaterBody.RIVER)
+            result_list.append((target_orders[target_station_ids[i]], result))
+        
+        return result_list
+        
              
     
     def calculate_travel_start_to_end_river_location(self, start_info, end_info, 

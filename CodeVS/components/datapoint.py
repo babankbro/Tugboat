@@ -85,8 +85,10 @@ class DataPoint:
                 last_pattern = match[-1]
                 #print(self.name, last_pattern)  # Output: ST_014
             return last_pattern
-        
+        if self.ID == "Release Barges" or self.ID == "Barge Release":
+            return self.station_id
+        print(self.station_id)
         raise Exception("DataPoint ID is not Travel", self.ID)
     
     def __repr__(self):
-        return f"DataPoint(ID={self.ID}, type='{self.type}', name='{self.name} order_ids={self.order_ids} tugboat_id={self.tugboat_id}')"
+        return f"DataPoint(ID={self.ID}, type='{self.type}', name='{self.name} order_ids={self.order_ids} tugboat_id={self.tugboat_id}') Station ID: {self.station_id}"
