@@ -96,6 +96,7 @@ class CodeInfo:
             self.n_code_tugboat = 0
             self.n_code_barge = 0
         else:
+            #raise Exception("xs is not None")
             self.code_tugboat = xs[:len(xs)//2]
             self.code_barge = xs[len(xs)//2:]
             self.index_code_tugboat = 0
@@ -138,7 +139,8 @@ class CodeInfo:
         
         self.index_code_barge += 1
         if self.index_code_barge >= self.n_code_barge:
-            raise Exception("Index code barge out of range")
+            self.index_code_barge = 0
+            #raise Exception("Index code barge out of range", self.n_code_barge)
         
         return sorted_barges_list
         

@@ -72,7 +72,8 @@ class DataPoint:
             'travel_info': self.travel_info,
             'station_id': self.station_id,
             'order_ids': self.order_ids,
-            'tugboat_id': self.tugboat_id
+            'tugboat_id': self.tugboat_id,
+            'order_id': self.order_ids
         }
     
     def get_end_station_id(self):

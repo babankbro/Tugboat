@@ -851,7 +851,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
     # #group tugboat_df by order_id and sum total_load
     # tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
-    # print(tugboat_df_grouped)
+    print(tugboat_df_grouped)
     print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
     #filter tugboat_df_grouped by not cost is zero
     tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['Cost'] != 0]
@@ -860,6 +860,31 @@ def test_single_solution(order_input_ids = None, name='v3'):
     print("Total Load Sea", np.sum(tugboat_df['TotalLoad']))
     tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River")]
     print("Total Load River", np.sum(tugboat_df['TotalLoad']))
+    
+    order_ids_mix = tugboat_df_grouped['OrderId'].unique()
+    
+    total_load_sea = 0
+    total_load_river = 0
+    for order_id in order_ids_mix:
+        order_demand = None
+        if order_id in data['orders']:
+            order_demand = data['orders'][order_id].demand
+        
+        
+        sea_total_order_load = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("Sea") & (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'].sum()
+        river_total_order_load = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River") & (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'].sum()
+        
+        total_load_sea += sea_total_order_load
+        total_load_river += river_total_order_load
+        
+        
+        
+        print("Order", order_id, order_demand, sea_total_order_load, river_total_order_load)
+    
+    
+    print("Total Load Sea", total_load_sea)
+    print("Total Load River", total_load_river)
+    
     
     # for order_id in order_ids:
     #     #print(order_id, data['orders'][order_id])
@@ -890,16 +915,16 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
     
     
-    print(cost_df_result)
+    #print(cost_df_result)
     
     #save to csv
-    update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
+    #update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
     
     #barge_df.to_csv('barge_df.csv', index=False)
     # unique tugboat_id
-    print(tugboat_df_o['tugboat_id'].unique())
-    print(tugboat_df_o[(tugboat_df_o['tugboat_id'] == "RiverTB_11") |
-                       (tugboat_df_o['order_id'] == "ODR_015")][COLUMN_OF_INTEREST].head(40))
+    # print(tugboat_df_o['tugboat_id'].unique())
+    # print(tugboat_df_o[(tugboat_df_o['tugboat_id'] == "RiverTB_11") |
+    #                    (tugboat_df_o['order_id'] == "ODR_015")][COLUMN_OF_INTEREST].head(40))
 
 COLUMN_OF_INTEREST = ['ID',"station_id" , 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
@@ -953,7 +978,8 @@ def _init_test(data, order_df, order_input_ids):
     
     
     
-    
+    print("sum xs", np.sum(xs))
+    print(xs)
     solution = Solution(data)
     is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=xs)
     if not is_success:
@@ -1361,6 +1387,12 @@ if __name__ == "__main__":
                          "ODR_013",
                          "ODR_014", 'ODR_015', 'ODR_016',
                           'ODR_020', 'ODR_021', 'ODR_022'], name='ORDER_1_22')
+    
+    
+    #test_single_solution([ "ODR_001", "ODR_002", "ODR_003"], name='ODR_001_2_3')
+    #test_single_solution([ "ODR_002"], name='ODR_002')
+    #test_single_solution([ "ODR_001"], name='ODR_001')
+
     
     #test_algorithm(["ODR_022"], name='ORDER_22')
     

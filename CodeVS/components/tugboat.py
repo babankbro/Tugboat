@@ -91,7 +91,10 @@ class Tugboat:
         self.assigned_barges = []
         
     #def update_last_status(self, status):
-        
+    
+    def get_type(self):
+        return self.tug_type
+    
         
     def get_total_load(self, is_only_load=False):
         return sum(barge.get_load(is_only_load=is_only_load) for barge in self.assigned_barges)
@@ -336,7 +339,7 @@ class Tugboat:
                 base_weight_barges += barge.weight_barge 
         
         order_ids = [order.order_id for order in orders]
-        print("Tugboat calculate_travel_to_multiple_start_objects", order_ids)
+        #print("Tugboat calculate_travel_to_multiple_start_objects", order_ids)
         for step in result['travel_steps']:
             step.order_id = start_order.order_id
         result['order_ids'] = [result['order_id']]
@@ -412,11 +415,17 @@ class Tugboat:
         # if len(set(order_ids)) != len(set(target_station_ids)):
         #     raise Exception("Order ids are not unique", order_ids, target_station_ids)
         
+        #sort target_station_ids by km
+        #target_station_ids.sort(key=lambda x: data['stations'][x].km)
+        #print("Target Station IDs", target_station_ids)
+        target_station_ids = list(set(target_station_ids))
+        target_station_ids.sort(key=lambda x: data['stations'][x].km)
         start_info = {'station': start_station, 'location': (start_station.lat, start_station.lng)}
         first_end_station_id = target_station_ids[0]
         #sorted station by river km
-        target_station_ids = list(set(target_station_ids))
-        target_station_ids.sort(key=lambda x: data['stations'][x].km)
+        
+        #print("Target Station IDs", target_station_ids)
+        
         end_station = target_orders[first_end_station_id].des_object.station
         end_info = {'station': end_station, 'location': (end_station.lat, end_station.lng)}
         
@@ -424,6 +433,7 @@ class Tugboat:
                                                                     WaterBody.RIVER, end_status = WaterBody.RIVER)
         result_list = [ (target_orders[first_end_station_id], result)]
         if len(set(target_station_ids)) == 1:
+            
             return result_list
         
         
@@ -436,6 +446,8 @@ class Tugboat:
                                                                         WaterBody.RIVER, end_status = WaterBody.RIVER)
             result_list.append((target_orders[target_station_ids[i]], result))
         
+        
+        #print("Result List", len(result_list))
         return result_list
         
              

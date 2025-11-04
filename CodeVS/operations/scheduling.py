@@ -251,17 +251,26 @@ def shecdule_customer_order_tugboats(order: Order, tugboats: List[Tugboat],
 
 def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict], 
                                   active_cranes_infos: List[Dict]):
+    return schedule_load_barge(solution, order, barge_infos, active_cranes_infos, key='crane_id')
     
-    if active_cranes_infos is None:
-        active_cranes_infos = [{
-            'crane_id': f'cr{i+1}',
+
+def schedule_customer_order_barges(solution, order: Order, barge_infos: List[Dict], 
+                                  active_loader_infos: List[Dict], key = 'loader_id'):
+    return schedule_load_barge(solution, order, barge_infos, active_loader_infos, key)
+
+    
+def schedule_load_barge(solution, order: Order, barge_infos: List[Dict], 
+                                  active_loader_infos: List[Dict], key = 'loader_id'):
+    if active_loader_infos is None:
+        active_loader_infos = [{
+            key: f'cr{i+1}',
             'rate': order.get_crane_rate(f'cr{i+1}'),
             'time_ready': max(order.start_datetime, order.get_crane_ready_time(f'cr{i+1}')),
             'assigned_product': 0
-        } for i in range(7)]
+        } for i in range(9)]
     else:
         
-        for crane in active_cranes_infos:
+        for crane in active_loader_infos:
             crane['time_ready'] = max(0, crane['time_ready'])
     
     #sort barge_infos by ready_time
@@ -281,16 +290,29 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
     
     total_demand = sum([b.get_load(is_only_load=True) for b in sorted_barges])
     # Assign product to cranes
+    
+    #print("Total demand", total_demand)
+    
+   
+    barge = sorted_barges[0]
+    ready_time = solution.get_ready_barge(barge)
+    if key == 'crane_id':
+        start_datetime = order.start_datetime
+    else:
+        start_datetime = get_next_quarter_hour(ready_time)
+    
+    
+    
     remaining_product = total_demand
     barge_index = 0
     while remaining_product > 0:
         # Find next available crane considering both time_ready and rate
         def crane_score(crane):
             time_score = 1 / (crane['time_ready'] + 1)
-            rate_score = crane['rate'] / max(c['rate'] for c in active_cranes_infos)
+            rate_score = crane['rate'] / max(c['rate'] for c in active_loader_infos)
             return 100 * time_score + 0.1 * rate_score
             
-        next_crane = max(active_cranes_infos, key=crane_score)
+        next_crane = max(active_loader_infos, key=crane_score)
         
         # Assign barge load to crane
         assign_amount = sorted_barges[barge_index].get_load(is_only_load=True)
@@ -302,37 +324,53 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
         # Update crane's time ready
         next_crane['time_ready'] += time_consumed
         
+        
         start_time = next_crane['time_ready'] - time_consumed
         ready_time = solution.get_ready_barge(barge)
-        delta_time = (ready_time - order.start_datetime).total_seconds() / 3600
-        # Record crane assignment
-        crane_schedule.append({
-            'crane_id': next_crane['crane_id'],
+        delta_time = (ready_time - start_datetime).total_seconds() / 3600
+        
+        
+        name_schedule = 'crane_schedule' if key == 'crane_id' else 'loader_schedule'
+        
+        schedule = {
+            key: next_crane[key],
             'product': assign_amount,
             'rate': next_crane['rate'],
             'barge': sorted_barges[barge_index],
             'start_time': start_time,
-            'crane_schedule': next_crane['time_ready'],
+            name_schedule: next_crane['time_ready'],
             'time_consumed': time_consumed,
-            
-        })
+        }
+        
+        temp_start_datetime = get_next_quarter_hour( start_datetime + timedelta(minutes=60*start_time))
+        
+        #print(schedule)
+        #print(next_crane)
+        
+        
+        # Record crane assignment
+        crane_schedule.append(schedule)
         
         # Record barge assignment
         barge_schedule.append({
+            key:next_crane[key],
             'barge_id': sorted_barges[barge_index].barge_id,
             'product': assign_amount,
             'start_time': next_crane['time_ready'] - time_consumed,
             'end_time': next_crane['time_ready'],
             'delta_time': delta_time,
             'time_consumed': time_consumed,
-            'start_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*delta_time)),
-            'end_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*(delta_time+time_consumed)))
+            'start_datetime': get_next_quarter_hour( temp_start_datetime + timedelta(minutes=60*delta_time)),
+            'end_datetime': get_next_quarter_hour( temp_start_datetime + timedelta(minutes=60*(delta_time+time_consumed)))
         })
         
         barge_index += 1
     
+    
+    
+    
     # Calculate total time for this tugboat
-    total_time = max(crane['crane_schedule'] for crane in crane_schedule)
+    total_time = max(crane[name_schedule] for crane in crane_schedule)
     start_time = min(crane['start_time'] for crane in crane_schedule)
     max_time_barge_shedule = max(barge_info['end_time'] for barge_info in barge_schedule)
     
@@ -341,7 +379,7 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
         'order_id': order.order_id,
         #'tugboat_id': tugboat.tugboat_id,
         'total_time': total_time,
-        'crane_schedule': crane_schedule,
+        name_schedule: crane_schedule,
         'barge_schedule': barge_schedule,
         'total_product': total_demand,
         'tugboat_schedule': {
@@ -349,8 +387,9 @@ def schedule_carrier_order_barges(solution, order: Order, barge_infos: List[Dict
             'total_time': total_time,
             'start_time': start_time,
             'end_time': max_time_barge_shedule,
-            'start_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*start_time)),
-            'end_datetime': get_next_quarter_hour( order.start_datetime + timedelta(minutes=60*max_time_barge_shedule))
+            'start_datetime': get_next_quarter_hour( start_datetime + timedelta(minutes=60*start_time)),
+            'end_datetime': get_next_quarter_hour( start_datetime + timedelta(minutes=60*max_time_barge_shedule))
             
         }
     }
+    

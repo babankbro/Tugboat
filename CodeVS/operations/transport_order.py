@@ -387,7 +387,7 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
         
         travel_to_customer = DataPoint(
             ID=order.start_object.order_id,
-            type="Travel To Customer",
+            type="",
             name=order.start_object.name,
             enter_datetime=arrival_datetime,
             #exit_datetime=tugboat_schedule['end_datetime'],
