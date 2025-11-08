@@ -5794,6 +5794,10 @@ class Solution:
         
         for order_id in order_ids:
             order = orders[order_id]
+            if order.order_type != TransportType.IMPORT:
+                continue
+            
+            
             if start_travel_datetime <= order.start_datetime.date() <= target_travel_datetime:
                 #delta time
                 #convert target_travel_datetime date to datetime
@@ -6045,11 +6049,11 @@ class Solution:
                 
                 
                 total_arrived_barges = sum(b['load'] for b in arrived_barges)
-                print("#### Arrived 1", total_arrived_barges)
+                print("#### Arrived 1", total_arrived_barges, len(assigned_barges))
                 
                 #self.__display_tugboat_results(step2_tugboat_results, "Tugboat Step 2 To Carriers ##########################", False)
                 
-                self.__display_update_barges(arrived_barges, "After Start Point " + str(orders['ODR_001'].start_datetime) )
+                #self.__display_update_barges(arrived_barges, "After Start Point " + str(orders['ODR_001'].start_datetime) )
                 step3_tugboat_results, arrived_barges, all_lookup_order_barges = self.arrival_step3_barges_orders_to_appointment(assigned_barges, assigned_barge_order_ids, 
                                                                                                                                   lookup_order_barges, 
                                                                                                         lookup_order_crane_infos, is_do_import)
@@ -6136,7 +6140,7 @@ class Solution:
             if len(assigned_barges) != 0:
                 #print("Assigned", assigned_barges[0])
                 total_load = sum(b['load'] for b in assigned_barges)
-                print(f"\n=== STEP {step_count}: {start_travel_datetime} to {target_travel_datetime}  {total_load} ===") if DEBUG_SCHEDULE else None
+                print(f"\n=== STEP {step_count}: {start_travel_datetime} to {target_travel_datetime}  {total_load} {len(assigned_barges)} ===") if DEBUG_SCHEDULE else None
                 
                 tugboat_release_load = 0
                 
@@ -6156,7 +6160,7 @@ class Solution:
                 print(f"\n=== Tugboat Release Load: {tugboat_release_load} ===") if DEBUG_SCHEDULE else None
                  
                 if tugboat_release_load != total_load:
-                    print("Tugboat release load not equal to total load")
+                    print("Tugboat release load not equal to total load", tugboat_release_load, total_load, len(assigned_barges))
                     raise Exception("Tugboat release load not equal to total load")
                 
                 
@@ -6211,4 +6215,4 @@ class Solution:
         return True, df_with_stops, pd.concat(barge_dfs, ignore_index=True)
 
 
-DEBUG_SCHEDULE = True
+DEBUG_SCHEDULE = False

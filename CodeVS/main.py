@@ -807,6 +807,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
     # save as excel
     tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
     
+    to_check_tugboat_df = tugboat_df
     
     print(tugboat_df)
     
@@ -823,6 +824,11 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
     #print(tugboat_df)
    
+    
+    
+    for i, order_id in enumerate(order_ids):
+        print(i, order_id)
+    
     
     
     
@@ -884,6 +890,28 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
     print("Total Load Sea", total_load_sea)
     print("Total Load River", total_load_river)
+    
+    
+    
+    pair_check_keys = (['exit_datetime', 'enter_datetime'], ["start_arrival_datetime", "enter_datetime"] )
+    
+    for pair_check_key in pair_check_keys:
+        to_check_tugboat_df[pair_check_key[0]] = pd.to_datetime(to_check_tugboat_df[pair_check_key[0]])
+        to_check_tugboat_df[pair_check_key[1]] = pd.to_datetime(to_check_tugboat_df[pair_check_key[1]])
+        
+        to_check_tugboat_df['delta_time'] = to_check_tugboat_df[pair_check_key[0]] - to_check_tugboat_df[pair_check_key[1]]
+        
+        to_check_tugboat_df['delta_time'] = to_check_tugboat_df['delta_time'].dt.total_seconds() / 3600
+        
+        to_check_tugboat_df2 = to_check_tugboat_df[to_check_tugboat_df['delta_time'] < 0 ]
+        if len(to_check_tugboat_df2) > 0:
+            print(to_check_tugboat_df2.iloc[0])
+            raise Exception("Tugboat is late")
+        else:
+            print("Tugboat is on time", len(to_check_tugboat_df), to_check_tugboat_df['delta_time'].sum())
+        
+    
+    
     
     
     # for order_id in order_ids:
@@ -1390,7 +1418,7 @@ if __name__ == "__main__":
     
     
     #test_single_solution([ "ODR_001", "ODR_002", "ODR_003"], name='ODR_001_2_3')
-    #test_single_solution([ "ODR_002"], name='ODR_002')
+    #test_single_solution([ "ODR_001", "ODR_002"], name='ODR_001_2')
     #test_single_solution([ "ODR_001"], name='ODR_001')
 
     
