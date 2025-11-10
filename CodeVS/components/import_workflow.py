@@ -85,12 +85,26 @@ class ImportWorkflow(BaseTransportWorkflow):
             if not isCompleted:
                 # If failed, try to continue with remaining barges
                 print(f"Import Step 1: Warning - Could not bring all {len(copy_bring_down_barges)} barges in trip {round_trip_order}")
-                if iteration == 1:
+                if len(tugboat_results) == 0:
                     # If first attempt fails completely, raise exception
                     raise Exception(
                         f"Import Step 1 failed: Could not bring any barges down to appointment"
                     )
-                break
+                #break
+           
+                #get all barges that are not in the list
+            arrived_barge_ids = []
+            for tugboat_result in tugboat_results:
+                tugboat_id = tugboat_result['tugboat_id']
+                for data_point in tugboat_result['data_points']:
+                    #print(data_point)
+                    if data_point.type == "Destination Barge":
+                        arrived_barge_ids.extend(data_point.barge_ids)
+                    
+            #remove barge_id from copy_bring_down_barges
+            copy_bring_down_barges = [barge_info for barge_info in copy_bring_down_barges if barge_info['barge'].barge_id not in arrived_barge_ids]
+            
+                
             
             if len(tugboat_results) == 0:
                 break

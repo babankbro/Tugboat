@@ -82,10 +82,10 @@ class ExportWorkflow(BaseTransportWorkflow):
             copy_bring_up_barges = all_bring_up_barges.copy()
             
             # Bring barges from sea to river
-            isCompleted, tugboat_results = self.solution._bring_barges_orders_travel(
-                copy_bring_up_barges, order_trip=round_trip_order, is_import=False
+            isCompleted, tugboat_results = self.solution._bring_barge_orders_travel_export(
+                copy_bring_up_barges, order_trip=round_trip_order
             )
-            
+            print("Iteration", iteration, isCompleted, len(tugboat_results), len(all_bring_up_barges), len(copy_bring_up_barges))
             if not isCompleted:
                 # If failed, try to continue with remaining barges
                 print(f"Export Step 1: Warning - Could not bring all {len(copy_bring_up_barges)} barges in trip {round_trip_order}")
@@ -95,6 +95,20 @@ class ExportWorkflow(BaseTransportWorkflow):
                         f"Export Step 1 failed: Could not bring any barges from sea to river"
                     )
                 break
+            else:
+                #get all barges that are not in the list
+                arrived_barge_ids = []
+                for tugboat_result in tugboat_results:
+                    tugboat_id = tugboat_result['tugboat_id']
+                    for data_point in tugboat_result['data_points']:
+                        #print(data_point)
+                        if data_point.type == "Destination Barge":
+                            arrived_barge_ids.extend(data_point.barge_ids)
+                        
+                #remove barge_id from copy_bring_up_barges
+                copy_bring_up_barges = [barge_info for barge_info in copy_bring_up_barges if barge_info['barge'].barge_id not in arrived_barge_ids]
+                
+                    
             
             if len(tugboat_results) == 0:
                 break
@@ -125,6 +139,10 @@ class ExportWorkflow(BaseTransportWorkflow):
             barge.set_load(save_load[barge_id])
         
         print(f"    Successfully positioned {len(bring_up_sea_barges)} barges")
+        
+        
+        
+        
         return all_tugboat_results, bring_up_sea_barges
     
     def execute_step2(self, assigned_barges, assigned_barge_order_ids):
@@ -219,6 +237,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             )
         
         print(f"    Successfully delivered {len(arrived_barges)} barges to customers")
+        #self.solution._display_update_barges(arrived_barges, "After deliver to customer" )
         return all_tugboat_results, arrived_barges
     
     def execute_step3(self, assigned_barges, assigned_barge_order_ids,
@@ -283,7 +302,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             order = self.orders[barge_info['assigned_order']]
             arrived_barges.append(lookup_barge_schedules[barge_id])
             # For export, loading happens at customer (des_object for export is customer)
-            station = order.des_object.station
+            station = order.start_object.station
             self.solution.update_single_barge_scheule(
                 order, barge_id, barge_schedule['start_datetime'], barge_schedule['end_datetime'],
                 station.km, station.water_type, (station.lat, station.lng), station.station_id
@@ -297,7 +316,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             order_id, active_loader_info = order_barge_lookup[barge_id]
             barge_info = lookup_barge_schedules[barge_id]
             order = self.orders[barge_info['assigned_order']]
-            station = order.des_object.station
+            station = order.start_object.station
             loader_info = active_loader_info[0]
             
             loader_location = DataPoint(
@@ -334,6 +353,8 @@ class ExportWorkflow(BaseTransportWorkflow):
         round_trip_order = 1
         all_tugboat_results = []
         all_lookup_order_barges = {}
+        
+        self.solution._display_update_barges(assigned_barges, "After deliver to customer" )
         
         while len(all_assigned_barges) > 0:
             iteration += 1
@@ -453,6 +474,12 @@ class ExportWorkflow(BaseTransportWorkflow):
                 all_lookup_order_barges, round_trip_order
             )
             
+            for tugboat_result in tugboat_results:
+                tugboat_id = tugboat_result['tugboat_id']
+                tugboat = self.data['tugboats'][tugboat_id]
+                print(tugboat.tugboat_id)
+            
+            
             all_assigned_barges = copy_all_assigned_barges
             round_trip_order += 1
             
@@ -524,7 +551,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             order = self.orders[barge_info['assigned_order']]
             arrived_barges.append(lookup_barge_schedules[barge_id])
             # For export, unloading happens at carrier (start_object for export is carrier)
-            station = order.start_object.station
+            station = order.des_object.station
             self.solution.update_single_barge_scheule(
                 order, barge_id, barge_schedule['start_datetime'], barge_schedule['end_datetime'],
                 station.km, station.water_type, (station.lat, station.lng), station.station_id

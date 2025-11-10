@@ -243,7 +243,7 @@ class Solution:
                 barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
                 #print("Assigned tugboat", tugboat_id, barge_ids)
             if len(tugboat.assigned_barges) == 0:
-                print("Commpleted all barges assignment")
+                print("Commpleted all barges assignment", len(order_assigned_barges), len(copy_order_assigned_barges))
                 break
         
         if len(assigned_tugboats) != 0 and len(order_assigned_barges) != len(copy_order_assigned_barges):
@@ -3289,6 +3289,7 @@ class Solution:
             isTravelToCarrier = False
             isTravelToCustomer = False
             isRiverRiverLoadBarges = False
+            isRiverRiverEmptyBarges = False
             isRiverTugboat = False
             isRiverSeaEmptyBarges = False
             startPointStationId = None
@@ -3332,11 +3333,18 @@ class Solution:
                     startStationId = end_points[0]
                     endPointStationId = end_points[1]
                 isRiverSeaEmptyBarges = True
+            elif 'River-River Empty Barges' in group['type'].unique():
+                end_points = group[group['type'] == 'River-River Empty Barges']['name'].iloc[0].split(' to ')
+                startStationId = end_points[0]
+                endPointStationId = end_points[1]
+                isRiverRiverEmptyBarges = True
             
             else:
              
                 
                 if tugboat.get_type() == WaterBody.RIVER:
+                    #print(order.order_type)
+                    #print(group)
                     string_station = group[group['type'] == 'Barge Change Collection']['name'].iloc[0]
                     #import re
                     
@@ -3356,7 +3364,7 @@ class Solution:
             
             appointment = group[group['type'] == 'Appointment']['ID']
           
-            if isRiverRiverLoadBarges or isRiverSeaEmptyBarges or isTravelToCustomer:
+            if isRiverRiverLoadBarges or isRiverSeaEmptyBarges or isTravelToCustomer or isRiverRiverEmptyBarges:
                 pass
             elif len(appointment) > 0:
                 endPointStationId = appointment.iloc[0]
@@ -3518,10 +3526,11 @@ class Solution:
                         object_element = ids.iloc[0]
                         total_load_barge = object_element['total_load']
                     else:
+                        
                         #print(group)
                         data_log = group[group['type'] == 'Destination Barge']
                         data_log2 = group[(group['type'] == 'River-River Load Barges') | (group['type'] == 'River-Sea Empty Barges') | (group['type'] == 'River-Sea')]
-                        data_log3 = group[group['type'] == 'Sea-Sea Empty Barges']
+                        data_log3 = group[(group['type'] == 'Sea-Sea Empty Barges') | (group['type'] == 'River-River Empty Barges')]
                         data_log4 = group[(group['type'] == 'Barge Change Collection') | (group['type'] == 'Barge Collection')]
                         if len(data_log) > 0:
                             object_element = data_log.iloc[0]
@@ -3552,7 +3561,7 @@ class Solution:
                 
                 isRiverRiverLoadBarges = False
                 isSeaSeaEmptyBarges = False
-                
+                isRiverRiver = False
         
                 if startPointDatetime is pd.NaT:
                     if order.order_type == TransportType.IMPORT:
@@ -3591,7 +3600,7 @@ class Solution:
                     if order.order_type == TransportType.IMPORT:
                         startPointDatetime = group[group['type'] == 'Barge Step Collection']['enter_datetime'].min()
                     else:
-                        startPointDatetime = group[group['type'] == 'Start Collection Customer']['enter_datetime'].min()  
+                        startPointDatetime = group[group['type'] == 'Barge Step Collection']['enter_datetime'].min()  
                         
                 if startPointDatetime is pd.NaT:
                     if order.order_type == TransportType.IMPORT:
@@ -3602,22 +3611,29 @@ class Solution:
                     if order.order_type == TransportType.IMPORT:
                         startPointDatetime = group[(group['type'] == 'River-River Load Barges') | 
                                                    (group['type'] == 'River-Sea Empty Barges') | 
+                                                   (group['type'] == 'River-River Empty Barges') |
                                                    (group['type'] == 'River-Sea')]['enter_datetime'].min()
-                        isRiverRiverLoadBarges = True
+                        
                     else:
-                        startPointDatetime = group[group['type'] == 'Start Collection Customer']['enter_datetime'].min()  
-                    
+                        startPointDatetime = group[(group['type'] == 'River-Sea') |
+                                                   (group['type'] == 'River-River Load Barges') |
+                                                   (group['type'] == 'River-Sea Empty Barges') |
+                                                   (group['type'] == 'River-River Empty Barges')]['enter_datetime'].min()  
+                    isRiverRiver = True                    
                 
                 if startPointDatetime is pd.NaT:
                     if order.order_type == TransportType.IMPORT:
                         startPointDatetime = group[group['type'] == 'Sea-Sea Empty Barges']['enter_datetime'].min()
-                        isSeaSeaEmptyBarges = True
+                        
                     else:
                         startPointDatetime = group[group['type'] == 'Start Collection Customer']['enter_datetime'].min()  
+                    isSeaSeaEmptyBarges = True
                     
                 
                 if startPointDatetime is pd.NaT:
                     print(group)
+                    print(order.order_type)
+                    print(object_element)
                     raise Exception("Start Point Datetime is None")
                 
                 barge_ids = object_element['barge_ids'].split(',')
@@ -3659,10 +3675,11 @@ class Solution:
                                 finishDatetime = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Crane-Carrier')]['exit_datetime'].max()
                             isFinishDatetime = True
                         else:
-                            #print("--------------------------")
-                            #print(group.)
-                            #print(group[['barge_ids', 'type', 'name', 'station_id', 'order_id', "tugboat_id"]])
-                            #print("Barge Change Collection", barge_id, barge_ids, order_ids, group['barge_ids'].unique())
+                            print("--------------------------")
+                            print(order.order_type)
+                            print(group)
+                            print(group[['barge_ids', 'type', 'name', 'station_id', 'order_id', "tugboat_id"]])
+                            print("Barge Change Collection", barge_id, barge_ids, order_ids, group['barge_ids'].unique())
                             items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Change Collection')]
                             if len(items) == 0:
                                 items = group[(group['barge_ids'].str.contains(barge_id)) & (group['type'] == 'Barge Collection')]
@@ -3672,7 +3689,7 @@ class Solution:
                             if len(items) == 0:
                                 items = group[(group['barge_ids'].str.contains(barge_id)) & (group['type'] == 'Barge Step Release')]
                                 
-                            if isRiverRiverLoadBarges or isSeaSeaEmptyBarges and len(items) == 0:
+                            if isRiverRiver or isSeaSeaEmptyBarges or isRiverRiverLoadBarges and len(items) == 0:
                                 items = group
                             
                             startDatetime = items['enter_datetime'].iloc[0]
@@ -3706,7 +3723,7 @@ class Solution:
                         if len(items) == 0:
                             items = group[(group['barge_ids'].str.contains(barge_id)) & (group['type'] == 'Barge Collection')]
                             
-                        if (isRiverRiverLoadBarges or isSeaSeaEmptyBarges) and len(items) == 0:
+                        if (isRiverRiver or isSeaSeaEmptyBarges) and len(items) == 0:
                             items = group   
                             
                         startPointStationId = items['station_id'].iloc[0]
@@ -3933,10 +3950,11 @@ class Solution:
             #     # print(tugboat_result['tugboat_id'])
             #     df = pd.DataFrame(tugboat_result['data_points'])
             #     # print(df)
-            
+        #print("Bring up sea barges", order_trip, len(tugboat_results))
         return True, tugboat_results
     
     def _bring_barge_orders_travel_export(self, bring_up_sea_barges, order_trip):
+        #print("Bring up sea barges", order_trip)
         return self._bring_barges_orders_travel(bring_up_sea_barges, order_trip, is_import=False)
     
     def _bring_barge_orders_travel_import(self, assigned_barges, order_trip, is_import=True):
@@ -4763,7 +4781,10 @@ class Solution:
                 order_id = assigned_barge_order_ids[barge_id]
                 
                 if start_barge_station_id != end_barge_station_id:
-                    travel_steps = generate_travel_steps_for_barge_collection(order_id,  tugboat.tugboat_id, start_travel_barge, collection_info, order_trip, barge_ids)
+                    print("Travel steps", start_barge_station_id, end_barge_station_id, collection_info)
+                    travel_steps = generate_travel_steps_for_barge_collection(order_id,  tugboat.tugboat_id, 
+                                                                              start_travel_barge, collection_info, 
+                                                                              order_trip, barge_ids)
                     barge_steps.extend(travel_steps)
                     start_travel_barge = travel_steps[-1].exit_datetime
                 finish_barge_time = start_travel_barge + timedelta(minutes=collection_info['setup_time']*60)
@@ -4871,7 +4892,9 @@ class Solution:
                 tugboat_id = tugboat.tugboat_id
             )
             tugboat_order_results['data_points'].append(appointment_location) # add result data points
-            travel_steps = generate_travel_steps(str_order_ids, tugboat.tugboat_id, arrival_datetime, travel_info, order_trip, barge_ids, extra=" Load Barges")
+            travel_steps = generate_travel_steps(str_order_ids, tugboat.tugboat_id, 
+                                                 arrival_datetime, travel_info, order_trip, barge_ids,
+                                                 extra=" Load Barges")
             tugboat_order_results['data_points'].extend(travel_steps)
         
             time_release_barges = config_problem.BARGE_RELEASE_MINUTES*len(tugboat.assigned_barges)
@@ -5906,7 +5929,7 @@ class Solution:
         
         return all_assign_barges
     
-    def __display_update_barges(self, assigned_barges, message):
+    def _display_update_barges(self, assigned_barges, message):
         total_capacity = 0
         total_load = 0
         orders = self.data['orders']

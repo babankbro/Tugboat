@@ -1409,14 +1409,27 @@ if __name__ == "__main__":
     #test_algorithm(["ODR_001", "ODR_002", "ODR_003","ODR_022"], name='ORDER_1_2_3_22')
     
     
-    test_single_solution([
-        # "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
-        #                  "ODR_005", "ODR_006", "ODR_007", "ODR_008",
-        #                  "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
-        #                  "ODR_013",
-        #                  "ODR_014", 'ODR_015', 'ODR_016',
-                          'ODR_020', 'ODR_021', 'ODR_022'], name='ORDER_1_22')
+    # test_single_solution([
+    #                      "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    #                      "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+    #                      "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+    #                      "ODR_013",
+    #                       "ODR_014", 
+    #                       #'ODR_015', 'ODR_016', "ODR_017",
+    #                       'ODR_020', 'ODR_021', 
+    #                       #'ODR_022'
+    #                       ], name='ORDER_1_22')
     
+    test_single_solution([
+                        # "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+                        # "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+                         "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+                         "ODR_013",
+                         "ODR_014", 
+                        'ODR_015', 'ODR_016', "ODR_017",
+                        'ODR_020', 'ODR_021', 
+                        'ODR_022'
+                        ], name='ORDER_9_22')
     
     #test_single_solution([ "ODR_001", "ODR_002", "ODR_003"], name='ODR_001_2_3')
     #test_single_solution([ "ODR_001", "ODR_002"], name='ODR_001_2')

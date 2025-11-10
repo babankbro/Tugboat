@@ -528,7 +528,8 @@ def travel_appointment_export(solution, order, lookup_schedule_results, lookup_t
         tugboat_result['data_points'].append(appointment_location) # add result data points
         
         
-        trave_steps = generate_travel_steps(order.order_id, tugboat.tugboat_id, arrival_datetime, travel_info, order_trip, barge_ids, extra=" Load Barges")
+        trave_steps = generate_travel_steps(order.order_id, tugboat.tugboat_id,
+                                            arrival_datetime, travel_info, order_trip, barge_ids, extra=" Load Barges")
         #loop to find max exit_datetime
         max_exit_datetime = max(trave_steps, key=lambda x: x.exit_datetime).exit_datetime
         appointment_location.exit_datetime = max_exit_datetime

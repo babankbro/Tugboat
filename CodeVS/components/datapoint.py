@@ -47,6 +47,9 @@ class DataPoint:
         self.order_ids = order_ids
         self.tugboat_id = tugboat_id
         
+        if self.type == "River-Sea" and "River" in self.tugboat_id:
+            raise Exception("River-Sea", self.tugboat_id)
+        
     def to_dict(self):
         """Convert DataPoint back to dictionary format if needed for compatibility."""
         return {
