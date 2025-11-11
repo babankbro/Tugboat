@@ -145,8 +145,9 @@ class TravelStep:
             #predict_date_time_start = predict_date_time_end.replace(minute=0, second=0, microsecond=0)
             #next_predict_date_time_start = predict_date_time_start + timedelta(hours=1)
             next_predict_date_time_start = predict_date_time_end
-            next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
+            temp_next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
                                                               , target_station.station_id)
+            next_factor = temp_next_factor
             while next_factor != 0:
                 next_predict_date_time_start = next_predict_date_time_start + timedelta(hours=1)
                 next_factor = lookup.lookup_station(next_predict_date_time_start.strftime("%Y-%m-%d %H:%M:%S")
@@ -165,8 +166,10 @@ class TravelStep:
             predict_date_time_end = start_exit_time + timedelta(hours=predict_out_time)
             factors = self.refactor_water_factor(lookup, start_exit_time,
                                                  predict_date_time_end, from_station, target_station)
-            
-            factor2 = np.mean(factors)
+            if len(factors) == 1:
+                factor2 = factors[0]
+            else:
+                factor2 = np.mean(factors[1:])
             predict_speed2 = self.base_speed * factor2
             travel_time2 = self.distance / predict_speed2 if predict_speed2 > 0 else 0
             predict_date_time_end = start_exit_time + timedelta(hours=travel_time2)
@@ -188,6 +191,12 @@ class TravelStep:
                 self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
                 self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
                 self.start_time = enter_date_time
+            elif factors2[-1] == 0 and factors[-2] == 1:
+                raise Exception("V2 Water factor out should not be 0", from_station.station_id, 
+                                target_station.station_id, enter_date_time, str(self), '\n',
+                                factors,
+                                factors2, predict_date_time_end, factor2, temp_next_factor)
+                
             else:
                 
                 factor1 = lookup.lookup_station(enter_date_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -214,15 +223,15 @@ class TravelStep:
                                 factors2, predict_date_time_end)
             
             
-        else:
+        
             
-            self.travel_speed = self.base_speed * factor2
-            self.water_factor = factor2
-            self.travel_time = travel_time2
-            self.rest_time = 0
-            self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
-            self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
-            self.start_time = enter_date_time
+        self.travel_speed = self.base_speed * factor2
+        self.water_factor = factor2
+        self.travel_time = travel_time2
+        self.rest_time = 0
+        self.start_arrival_time = enter_date_time + timedelta(hours=self.rest_time)
+        self.exit_time = self.start_arrival_time + timedelta(hours=self.travel_time)
+        self.start_time = enter_date_time
           
     
     def update_travel_step_move_old(self, enter_date_time):

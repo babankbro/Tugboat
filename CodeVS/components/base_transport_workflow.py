@@ -130,16 +130,16 @@ class BaseTransportWorkflow(ABC):
         all_result_tugboats = []
         barge_dfs = []
         
-        print(f"\n{'='*60}")
-        print(f"Executing {self.workflow_type} Workflow")
-        print(f"{'='*60}")
+        #print(f"\n{'='*60}")
+        #print(f"Executing {self.workflow_type} Workflow")
+        #print(f"{'='*60}")
         
         # Step 1: Initial positioning
-        print(f"  Step 1: Initial barge positioning...")
+        #print(f"  Step 1: Initial barge positioning...")
         tugboat_results, arrived_barges = self.execute_step1(assigned_barges)
         
         # Step 2: Move to loading/unloading location
-        print(f"  Step 2: Moving barges to location...")
+        #print(f"  Step 2: Moving barges to location...")
         step2_tugboat_results, arrived_barges = self.execute_step2(
             assigned_barges, assigned_barge_order_ids
         )
@@ -148,14 +148,14 @@ class BaseTransportWorkflow(ABC):
         
         lookup_order_infos = lookup_order_crane_infos if self.workflow_type == "IMPORT" else lookup_order_loading_infos
         
-        print(f"  Step 3: Loading operations...")
+        #print(f"  Step 3: Loading operations...")
         step3_tugboat_results, arrived_barges, all_lookup_order_barges = self.execute_step3(
             assigned_barges, assigned_barge_order_ids, 
             lookup_order_barges, lookup_order_infos
         )
         
         # Step 4: Transport loaded barges
-        print(f"  Step 4: Transporting loaded barges...")
+        #print(f"  Step 4: Transporting loaded barges...")
         step4_tugboat_results, arrived_barges = self.execute_step4(
             assigned_barges, assigned_barge_order_ids,
             all_lookup_order_barges, lookup_order_crane_infos
@@ -164,7 +164,7 @@ class BaseTransportWorkflow(ABC):
         lookup_order_infos = lookup_order_loading_infos if self.workflow_type == "IMPORT" else lookup_order_crane_infos
         
         # Step 5: Unloading operations
-        print(f"  Step 5: Unloading operations...")
+        #print(f"  Step 5: Unloading operations...")
         loader_schedules, arrived_barges = self.execute_step5(
             lookup_order_barges, lookup_order_infos
         )
@@ -181,8 +181,8 @@ class BaseTransportWorkflow(ABC):
         df = pd.DataFrame(arrived_barges)
         barge_dfs.append(df)
         
-        print(f"  {self.workflow_type} Workflow completed successfully")
-        print(f"{'='*60}\n")
+        #print(f"  {self.workflow_type} Workflow completed successfully")
+        #print(f"{'='*60}\n")
         
         return all_result_tugboats, arrived_barges, barge_dfs
     

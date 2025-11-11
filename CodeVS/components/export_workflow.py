@@ -205,7 +205,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             tugboat_results, late_time = self.solution.arrival_step_transport_all_orders(
                 min_order_id, start_station, min_start_datetime,
                 max_due_datetime, assigned_tugboats, assigned_barge_order_ids,
-                order_trip=round_trip_order
+                order_trip=round_trip_order, is_export=True
             )
             
             # Track arrived barges
@@ -354,7 +354,7 @@ class ExportWorkflow(BaseTransportWorkflow):
         all_tugboat_results = []
         all_lookup_order_barges = {}
         
-        self.solution._display_update_barges(assigned_barges, "After deliver to customer" )
+        #self.solution._display_update_barges(assigned_barges, "After deliver to customer" )
         
         while len(all_assigned_barges) > 0:
             iteration += 1
@@ -471,13 +471,18 @@ class ExportWorkflow(BaseTransportWorkflow):
             # Transport loaded barges to carrier locations (sea)
             tugboat_results, late_time = self.solution.arrival_step_transport_orders_to_end_points(
                 assigned_tugboats, assigned_barge_order_ids,
-                all_lookup_order_barges, round_trip_order
+                all_lookup_order_barges, round_trip_order, is_export=True
             )
             
             for tugboat_result in tugboat_results:
                 tugboat_id = tugboat_result['tugboat_id']
                 tugboat = self.data['tugboats'][tugboat_id]
-                print(tugboat.tugboat_id)
+                # print(tugboat.tugboat_id)
+                # for data_point in tugboat_result['data_points']:
+                #     if data_point.type == 'Travel To Carrier':
+                #         #data_point.total_load = tugboat.get_load(True)
+                #         total_load = sum([barge_info.get_load(True) for barge_info in tugboat.assigned_barges])
+                #         print(total_load, data_point)
             
             
             all_assigned_barges = copy_all_assigned_barges
@@ -561,7 +566,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             
             crane_location = DataPoint(
                 ID=order.order_id,
-                type="Crane-Carrier-Export",
+                type="Crane-Carrier",
                 name=crane_id + " - " + barge_id,
                 enter_datetime=barge_schedule['start_datetime'],
                 distance=0,
