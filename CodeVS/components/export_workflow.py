@@ -60,7 +60,7 @@ class ExportWorkflow(BaseTransportWorkflow):
                 bring_up_sea_barges.append(bargeinfo)
         
         if len(bring_up_sea_barges) == 0:
-            print("    No barges need to be brought from sea to river")
+            #print("    No barges need to be brought from sea to river")
             return None, None
         
         print(f"    Bringing {len(bring_up_sea_barges)} barges from sea to river...")
@@ -85,7 +85,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             isCompleted, tugboat_results = self.solution._bring_barge_orders_travel_export(
                 copy_bring_up_barges, order_trip=round_trip_order
             )
-            print("Iteration", iteration, isCompleted, len(tugboat_results), len(all_bring_up_barges), len(copy_bring_up_barges))
+            #print("Iteration", iteration, isCompleted, len(tugboat_results), len(all_bring_up_barges), len(copy_bring_up_barges))
             if not isCompleted:
                 # If failed, try to continue with remaining barges
                 print(f"Export Step 1: Warning - Could not bring all {len(copy_bring_up_barges)} barges in trip {round_trip_order}")
@@ -138,7 +138,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             barge = self.barges[barge_id]
             barge.set_load(save_load[barge_id])
         
-        print(f"    Successfully positioned {len(bring_up_sea_barges)} barges")
+        #print(f"    Successfully positioned {len(bring_up_sea_barges)} barges")
         
         
         
@@ -172,7 +172,7 @@ class ExportWorkflow(BaseTransportWorkflow):
         min_order_id, min_start_datetime, start_station, max_due_datetime = \
             self._find_earliest_order(order_ids)
         
-        print(f"    Transporting {len(all_assigned_barges)} barges to customers using RIVER tugboats...")
+        #print(f"    Transporting {len(all_assigned_barges)} barges to customers using RIVER tugboats...")
         
         round_trip_order = 1
         iteration = 0
@@ -236,7 +236,7 @@ class ExportWorkflow(BaseTransportWorkflow):
                 lookup_tugboat_results, round_trip_order
             )
         
-        print(f"    Successfully delivered {len(arrived_barges)} barges to customers")
+        #print(f"    Successfully delivered {len(arrived_barges)} barges to customers")
         #self.solution._display_update_barges(arrived_barges, "After deliver to customer" )
         return all_tugboat_results, arrived_barges
     

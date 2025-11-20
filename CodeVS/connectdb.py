@@ -477,13 +477,19 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                             row['ParkingTime'] if row["ParkingTime"] else 0,
                             row['MoveTime'] if row["MoveTime"] else 0,
                             row['OrderTrip'] if row["OrderTrip"] else 1,
-                            row['AllTime'] if row["AllTime"] else None,
+                            row['AllTime'] if row["AllTime"] else 0,
                         ))
                 
                 #print(insert_cost_query.format(cost_records[0]))
                 
                 # Batch insert cost records
                 if cost_records:
+                    if cost_records:
+                        print(f"Number of columns in data tuple: {len(cost_records[0])}")
+                        print(cost_records[0])
+                        # print(f"First data record: {schedule_records[0]}") # Optional: see the actual data
+                    else:
+                        print("Cost records list is empty, nothing to insert.")
                     cursor.executemany(insert_cost_query, cost_records)
                     
                     
@@ -542,7 +548,7 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                             row['ParkingTime'] if row["ParkingTime"] else 0,
                             row['MoveTime'] if row["MoveTime"] else 0,
                             row['OrderTrip'] if row["OrderTrip"] else 1,
-                            row['AllTime'] if row["AllTime"] else None,
+                            row['AllTime'] if row["AllTime"] else 0,
                         )
                         if temp_row_data[0] is None:
                             print("Error---------------------------------------------------------------")

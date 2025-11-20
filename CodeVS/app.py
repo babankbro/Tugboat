@@ -383,9 +383,9 @@ def calculate_multiple_schedules():
     #np.random.seed(0)
 
         algorithm = AMIS(problem,
-            pop_size=5,
+            pop_size=3,
             CR=0.3,
-            max_iter = 2,
+            max_iter = 1,
             #dither="vector",
             #jitter=False
         )
@@ -395,13 +395,13 @@ def calculate_multiple_schedules():
         'water_type']
         
         solution = Solution(data)
-        is_success, tugboat_df, barge_df = solution.generate_schedule(order_ids, xs=algorithm.bestX)
+        is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=algorithm.bestX)
         if not is_success:
             print("Failed to generate schedule")
             exit()
         
 
-        cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
+        cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost_v2(tugboat_df, barge_df)
         tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
         barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
             

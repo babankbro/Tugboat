@@ -187,10 +187,11 @@ class Solution:
         return assigned_barges
             
     
-    def assign_barges_to_single_order(self, order, barges, limit_assign_capacity = 1000000, is_assign_capacity = False, used_barges_ids = set()):
+    def assign_barges_to_single_order(self, order, barges, limit_assign_capacity = 1000000, 
+                                      is_assign_capacity = False, used_barges_ids = set(), add_relax_days = 0):
         assigned_barges = []
  
-        assigned_barges = self.__iterate_assign_barges(order, barges, config_problem.RELAX_DAYS, limit_assign_capacity, is_assign_capacity, used_barges_ids)
+        assigned_barges = self.__iterate_assign_barges(order, barges, config_problem.RELAX_DAYS+add_relax_days, limit_assign_capacity, is_assign_capacity, used_barges_ids)
         
         total_capacity = sum(barge['barge'].capacity for barge in assigned_barges)
         
@@ -205,7 +206,7 @@ class Solution:
             iteration += 1
             
         if total_capacity < order.demand and total_capacity < limit_assign_capacity and total_capacity < 10000:
-            print(f"Not enough capacity for order {order.order_id} {total_capacity} < {order.demand} {limit_assign_capacity}")
+            print(f"Not enough capacity for order {order.order_id} {total_capacity} < {order.demand} {limit_assign_capacity} , ", len(assigned_barges))
         
         return assigned_barges
  
@@ -243,7 +244,7 @@ class Solution:
                 barge_ids = [barge.barge_id for barge in tugboat.assigned_barges]
                 #print("Assigned tugboat", tugboat_id, barge_ids)
             if len(tugboat.assigned_barges) == 0:
-                print("Commpleted all barges assignment", len(order_assigned_barges), len(copy_order_assigned_barges))
+                #print("Commpleted all barges assignment", len(order_assigned_barges), len(copy_order_assigned_barges))
                 break
         
         if len(assigned_tugboats) != 0 and len(order_assigned_barges) != len(copy_order_assigned_barges):
@@ -1026,7 +1027,10 @@ class Solution:
                     
                 self.update_collection_barge_time_none_order( start_datetime, collection_time_info)
             else:
-                self.update_collection_barge_time( order, collection_time_info)
+                try:
+                    self.update_collection_barge_time( order, collection_time_info)
+                except Exception as e:
+                    self.update_collection_barge_time_none_order( start_datetime, collection_time_info)
             
             #location = self.get_location_tugboat(tugboat)
             appointment_info = appointment_infos[tugboat.tugboat_id]
@@ -1534,7 +1538,7 @@ class Solution:
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
                     #raise Exception("Stop", data_point.total_load, data_point)
                     #print(("Step", barge_ids, data_point.total_load, data_point))
-                elif data_point.type == 'Travel To Customers':
+                elif data_point.type == 'Travel To Customer':
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
                 elif data_point.type == 'Travel To Carrier':
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
@@ -3074,6 +3078,85 @@ class Solution:
         
         return cost_results, tugboat_df_o, barge_df, tugboat_df_grouped
     
+    def calculate_cost_v2(self, tugboat_df_o, barge_df):
+        # filter only main_type = 'TUGBOAT'
+        tugboat_df = tugboat_df_o[(tugboat_df_o['type'] == 'Travel To Customer') | 
+                                  (tugboat_df_o['type'] == 'Appointment') 
+                                  | (tugboat_df_o['type'] == 'Travel To Carrier')
+                                  ]
+        
+        cost_results = {}
+        data = self.data
+        tugboats = data['tugboats']
+        orders = data['orders']
+        tugboat_df_grouped = tugboat_df.groupby(['tugboat_id', 'order_id'], as_index=False).agg({'time': 'sum', 'distance': 'sum'})
+        
+        tugboat_df_grouped['consumption_rate'] = np.zeros(len(tugboat_df_grouped))
+        tugboat_df_grouped['soft_fuel_con'] = np.zeros(len(tugboat_df_grouped))
+        tugboat_df_grouped['min_fuel_con'] = np.zeros(len(tugboat_df_grouped))
+        tugboat_df_grouped['cost'] = np.zeros(len(tugboat_df_grouped))
+        
+        #tugboat_df_grouped['load'] = np.zeros(len(tugboat_df_grouped))
+        
+        for tugboat_id, tugboat in tugboats.items():
+            for order_id, order in orders.items():
+                tugboat_df_grouped.loc[(tugboat_df_grouped['tugboat_id'] == tugboat_id) & (tugboat_df_grouped['order_id'] == order_id), 
+                                       'consumption_rate'] = tugboat.max_fuel_con
+                
+        tugboat_df_grouped['cost'] = tugboat_df_grouped['time'] * tugboat_df_grouped['consumption_rate']     
+        
+        tugboat_dfv2 = tugboat_df[(tugboat_df['type'] == 'Travel To Carrier') | (tugboat_df['type'] == 'Travel To Customer')| (tugboat_df['type'] == 'Appointment')]
+        tugboat_df_groupedv2 = tugboat_dfv2.groupby(['tugboat_id', 'order_id'], as_index=False)
+    
+        for name, group in tugboat_df_groupedv2:
+            tugboat_df_grouped.loc[(tugboat_df_grouped['tugboat_id'] == name[0]) & (tugboat_df_grouped['order_id'] == name[1]), 
+                                       'total_load'] = (group['total_load'].sum())
+        
+        
+        #group2
+        tugboat_dfg2 = tugboat_df_o[(tugboat_df_o['type'] == 'Barge Change') | (tugboat_df_o['type'] == 'Barge Change') | 
+                                  (tugboat_df_o['type'] == 'Barge Change')]
+        
+        cost_results = {}
+        data = self.data
+        tugboats = data['tugboats']
+        orders = data['orders']
+        tugboat_df_groupedg2 = tugboat_dfg2.groupby(['tugboat_id', 'order_id'], as_index=False).agg({'time': 'sum', 'distance': 'sum'})
+        
+        tugboat_df_groupedg2['consumption_rate'] = np.zeros(len(tugboat_df_groupedg2))
+        tugboat_df_groupedg2['soft_fuel_con'] = np.zeros(len(tugboat_df_groupedg2))
+        tugboat_df_groupedg2['min_fuel_con'] = np.zeros(len(tugboat_df_groupedg2))
+        tugboat_df_groupedg2['cost'] = np.zeros(len(tugboat_df_groupedg2))
+        
+        #tugboat_df_grouped['load'] = np.zeros(len(tugboat_df_grouped))
+        
+        for tugboat_id, tugboat in tugboats.items():
+            for order_id, order in orders.items():
+                tugboat_df_groupedg2.loc[(tugboat_df_groupedg2['tugboat_id'] == tugboat_id) & (tugboat_df_groupedg2['order_id'] == order_id), 
+                                       'consumption_rate'] = tugboat.min_fuel_con
+                
+        tugboat_df_groupedg2['cost'] = tugboat_df_groupedg2['time'] * tugboat_df_groupedg2['consumption_rate']     
+        
+        tugboat_dfg2v2 = tugboat_dfg2[(tugboat_dfg2['type'] == 'Barge Change') | 
+                                      (tugboat_dfg2['type'] == 'Barge Change') | 
+                                  (tugboat_dfg2['type'] == 'Barge Change')]
+        tugboat_dfg2v2 = tugboat_dfg2v2.groupby(['tugboat_id', 'order_id'], as_index=False)
+    
+        for name, group in tugboat_dfg2v2:
+            tugboat_df_groupedg2.loc[(tugboat_df_groupedg2['tugboat_id'] == name[0]) & (tugboat_df_groupedg2['order_id'] == name[1]), 
+                                       'total_load'] = (group['total_load'].sum())
+            
+        
+        
+       
+        #merge tugboat_df_grouped and tugboat_df_groupedg2
+        #tugboat_df_grouped = pd.concat([tugboat_df_grouped, tugboat_df_groupedg2], ignore_index=True)
+       
+        
+        return cost_results, tugboat_df_o, barge_df, tugboat_df_grouped
+    
+    
+    
     def calculate_full_cost_old(self, tugboat_df, barge_df=None):
         #group tugboat_df by tugboat_id and order_id and order_trip
         tugboat_df_grouped = tugboat_df.groupby(['order_id','tugboat_id',  'order_trip'], as_index=False)
@@ -3317,10 +3400,23 @@ class Solution:
             elif 'Travel To Customer' in group['type'].unique() or 'Travel To Customers' in group['type'].unique():
                 #print(group)
                 isTravelToCustomer = True
-                end_points = group[group['type'] == 'River-River Load Barges']['name'].iloc[0].split(' to ')
-                startStationId = end_points[0]
-                end_points = group[group['type'] == 'River-River Load Barges']['name'].iloc[-1].split(' to ')
-                endPointStationId = end_points[1]
+                items = group[group['type'] == 'River-River Load Barges']['name']
+                if len(items) == 0:
+                    #print(group)
+                    #print(group[group['type'] == 'River-River']['name'].iloc[0])
+                    #raise Exception("River-River Load Barges not found")
+                    end_points = group[group['type'] == 'River-River']['name'].iloc[0].split(' to ')
+                    startStationId = end_points[0]
+                    end_points = group[group['type'] == 'River-River']['name'].iloc[-1].split(' to ')
+                    endPointStationId = end_points[1]
+                    
+                else:
+                     startStationId = end_points[0]
+                     end_points = group[group['type'] == 'River-River Load Barges']['name'].iloc[-1].split(' to ')
+                     endPointStationId = end_points[1]
+                     
+                
+               
             elif 'River-River Load Barges' in group['type'].unique():
                 end_points = group[group['type'] == 'River-River Load Barges']['name'].iloc[0].split(' to ')
                 startStationId = end_points[0]
@@ -3440,11 +3536,30 @@ class Solution:
             #     print(group['type'].unique())
             #     print(group)
             total_load = 0
-            total_load += group[(group['type'] == 'Appointment')]['total_load'].sum()
-            total_load += group[(group['type'] == 'Travel To Customers')]['total_load'].sum()
-            total_load += group[(group['type'] == 'Travel To Carrier')]['total_load'].sum()
             
+            items = group[(group['type'] == 'Appointment')]['total_load']
+            total_load += items.sum()
+            
+            is_havy_move = len(items) != 0
+            
+            
+            if order.order_type == TransportType.IMPORT:
+                items = group[(group['type'] == 'Travel To Customer')]['total_load']
+                total_load += items.sum()
+                #if name[1] == 'RiverTB_06' and name[0] == "ODR_001":
+                     #print("#################xxxxxxxxxxxxxxxxxx", name[0], name[1], total_load)
+                     #print(items)
+                #     raise Exception("Total load is zero", "RiverTB_06")
+            elif order.order_type == TransportType.EXPORT:
+                items = group[(group['type'] == 'Travel To Carrier')]['total_load']
+                total_load += items.sum()
+            
+            is_havy_move = (len(items) != 0) or is_havy_move
             #print(name, len(group), total_load)
+            if is_havy_move and havy_time_move == 0:
+                havy_time_move = 0.01
+            
+
             
             
             #time_move = group['time'].sum()
@@ -3719,9 +3834,9 @@ class Solution:
                             if len(items) == 0:
                                 items = group[(group['name'].str.contains(barge_id)) & (group['type'] == 'Barge Step Collection')]
                                 if len(items) == 0:
-                                    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-                                    print(group)
-                                    print(barge_id)
+                                    #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                                    #print(group)
+                                    #print(barge_id)
                                     isRiverRiver = True
                                 
                                 
@@ -3784,11 +3899,12 @@ class Solution:
                         load_barge = element['total_load']
                         load_unload = (element['exit_datetime'] - element['enter_datetime']).total_seconds() / 3600 
                     
-                    items = group[(group['type'] == 'Loader-Customer') & (group['name'].str.contains(barge_id))]
+                    items = group[(group['name'].str.contains('Barge Releasing')) & (group['name'].str.contains(barge_id))]
                     if len(items) > 0:
                         element = items.iloc[0]
                         load_barge = element['total_load']
                         load_unload += (element['exit_datetime'] - element['enter_datetime']).total_seconds() / 3600 
+                        #print("load_barge ###########################", load_barge)
                     
                     # if load_barge == 0:
                     #     print("0000000000000000")
@@ -3797,9 +3913,6 @@ class Solution:
                     #     raise Exception("Load barge is 0")
                     
                     load_unload +=  group[(group['type'] == 'Barge Step Release') & (group['barge_ids'].str.contains(barge_id))]['time'].sum()
-                            
-                                
-                    
                     parkingTime = group[(group['name'].str.contains('stop at')) & (group['barge_ids'].str.contains(barge_id))]['rest_time'].sum()
                     #time_move = 0
                     
@@ -3812,6 +3925,9 @@ class Solution:
                     if not isFinishDatetime or finishDatetime is None or finishDatetime is pd.NaT or finishDatetime == '':
                         print("finishDatetime id is none ..........................................", finishDatetime)
                         #print(group)
+                        
+                    # if name[0] == 'ODR_001' and "River" in name[1] and name[0] == "ODR_001":
+                    #     print( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",name, name[1], load_barge)
     
                     output_df = output_df._append({
                         "BargeId": barge_id,
@@ -5941,6 +6057,17 @@ class Solution:
             
             #print("Total load", max_capacity, rate)
             assigned_barges = self.assign_barges_to_single_order(order, barges, max_capacity, is_assign_capacity, used_barges_ids)
+            if len(assigned_barges) == 0 and len(order_ids) == 1:
+                iterate_count =0
+                print("Enter regenerate barge")
+                #raise Exception("Assign barge to single order failed", len(order_ids) == 1)
+                while len(assigned_barges) == 0 and iterate_count < 10 and len(order_ids) == 1:
+                    max_capacity = max_capacity + 1000
+                    assigned_barges = self.assign_barges_to_single_order(order, barges, max_capacity, is_assign_capacity,
+                                                                         used_barges_ids, add_relax_days = iterate_count*2)
+                    iterate_count += 1
+                    print("Enter regenerate barge", iterate_count)
+                
             
             total_load = sum(b['barge'].capacity for b in assigned_barges)
             barge_ids = [b['barge'].barge_id for b in assigned_barges]
@@ -6055,7 +6182,7 @@ class Solution:
         step_count = 0
         
     
-        self.__display_table_order_info(order_ids) 
+        self.__display_table_order_info(order_ids) if DEBUG_SCHEDULE else None
         
         # rewirte as single line in dict 
         remaining_load_demand_order_ids = {order_id: orders[order_id].demand for order_id in order_ids}
@@ -6092,7 +6219,10 @@ class Solution:
             current_assign_barge_order_ids = [b['assigned_order'] for b in assigned_barges]
             after_total_remaining_orders = sum(remaining_load_demand_order_ids.values())
             before_total_remaining_orders = sum(befor_remaining_orders.values())
-            print("#### Before", set(current_assign_barge_order_ids), before_total_remaining_orders, "After", after_total_remaining_orders, "Current", current_assign_barge_load, "Diff", before_total_remaining_orders - after_total_remaining_orders)
+            if DEBUG_SCHEDULE:
+                print("#### Before", set(current_assign_barge_order_ids), before_total_remaining_orders,
+                      "After", after_total_remaining_orders, "Current", current_assign_barge_load, "Diff", 
+                      before_total_remaining_orders - after_total_remaining_orders)
             
             assigned_barge_order_ids = {}
             lookup_order_barges = {}
@@ -6161,7 +6291,7 @@ class Solution:
                 break;
             #break;
 
-        print(f"\nAssigned: {len(assigned_orders)}, Remaining: {len(remaining_orders)}")
+        print(f"------------------------------- Assigned: {len(assigned_orders)}, Remaining: {len(remaining_orders)}")
         print(f"Total load demand: {total_load_demand}")
         
 

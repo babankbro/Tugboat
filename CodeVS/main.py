@@ -732,9 +732,9 @@ def test_algorithm(order_input_ids = None, name='v3'):
     #np.random.seed(0)
 
     algorithm = AMIS(problem,
-        pop_size=5,
+        pop_size=3,
         CR=0.3,
-        max_iter = 1,
+        max_iter = 2,
         #dither="vector",
         #jitter=False
     )
@@ -791,24 +791,9 @@ def test_algorithm(order_input_ids = None, name='v3'):
     #sort by enter_datetime
     tb = tb.sort_values(by='enter_datetime')
     print(tb)
-    
-    
-    
-    
-def test_single_solution(order_input_ids = None, name='v3'):
-    data_df = get_data_from_db()
-    order_df = data_df['order']
-    print()
-    data = initialize_data(data_df)
- 
-    
-    order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids)
-    #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
-    # save as excel
-    tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
-    
+     
+def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped):
     to_check_tugboat_df = tugboat_df
-    
     print(tugboat_df)
     
     # tugboat_dfx = tugboat_df[
@@ -857,11 +842,11 @@ def test_single_solution(order_input_ids = None, name='v3'):
     
     # #group tugboat_df by order_id and sum total_load
     # tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
-    print(tugboat_df_grouped)
-    print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
+    print(tugboat_df_grouped[tugboat_df_grouped['OrderId'] == "ODR_001"])
+    #print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
     #filter tugboat_df_grouped by not cost is zero
     tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['Cost'] != 0]
-    print(tugboat_df_grouped)
+    #print(tugboat_df_grouped)
     tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("Sea")]
     print("Total Load Sea", np.sum(tugboat_df['TotalLoad']))
     tugboat_df = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River")]
@@ -877,11 +862,19 @@ def test_single_solution(order_input_ids = None, name='v3'):
             order_demand = data['orders'][order_id].demand
         
         
-        sea_total_order_load = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("Sea") & (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'].sum()
-        river_total_order_load = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River") & (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'].sum()
+        sea_total_order_load = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("Sea") & 
+                                                  (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'].sum()
+        river_total_order_load = tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("RiverTB") & 
+                                                    (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'].sum()
         
-        total_load_sea += sea_total_order_load
-        total_load_river += river_total_order_load
+        # print(tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River") & 
+        #                                             (tugboat_df_grouped['OrderId'] == order_id)]['TotalLoad'])
+        # print("River", order_id, river_total_order_load)
+        # print(tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("RiverTB") & 
+        #                                             (tugboat_df_grouped['OrderId'] == order_id)])
+        # break
+        # total_load_sea += sea_total_order_load
+        # total_load_river += river_total_order_load
         
         
         
@@ -953,12 +946,31 @@ def test_single_solution(order_input_ids = None, name='v3'):
     # print(tugboat_df_o['tugboat_id'].unique())
     # print(tugboat_df_o[(tugboat_df_o['tugboat_id'] == "RiverTB_11") |
     #                    (tugboat_df_o['order_id'] == "ODR_015")][COLUMN_OF_INTEREST].head(40))
+    
+    
+    
+
+def test_single_solution(order_input_ids = None, name='v3'):
+    data_df = get_data_from_db()
+    order_df = data_df['order']
+    print()
+    data = initialize_data(data_df)
+    
+    
+    order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids, name=name)
+    #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
+    # save as excel
+    
+    extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped)
+    
+    update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
+    
 
 COLUMN_OF_INTEREST = ['ID',"station_id" , 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
        'water_type']
 
-def _init_test(data, order_df, order_input_ids):
+def _init_test(data, order_df, order_input_ids, name='v3'):
     
     if TravelHelper._instance is None:
         TravelHelper()
@@ -1016,6 +1028,14 @@ def _init_test(data, order_df, order_input_ids):
     cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
     cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
     barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
+    
+    tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
+    barge_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/barge_schedule_{name}.xlsx', index=False)
+    cost_df_result.to_excel(f'{config_problem.OUTPUT_FOLDER}/cost_schedule_{name}.xlsx', index=False)
+    #barge_cost_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/barge_cost_schedule_{name}.xlsx', index=False)
+    
+    
+    
     return order_ids, cost_results, tugboat_df, tugboat_df_o, barge_df, cost_df_result, barge_cost_df 
 
 def test_step_travel():
@@ -1323,10 +1343,10 @@ def test_generate_all_cost():
     print("Original Total Cost: ", tugboat_df_grouped['cost'].sum())
     
     print("Custom Total Load: ", cost_df['TotalLoad'].sum())
-    print("Total Cost", np.sum(cost_df['Cost']))
+    #print("Total Cost", np.sum(cost_df['Cost']))
     #filter tugboat_df_grouped by not cost is zero
     cost_df = cost_df[cost_df['Cost'] != 0]
-    print(cost_df)
+    #print(cost_df)
     tugboat_df = cost_df[cost_df['TugboatId'].str.contains("Sea")]
     print("Total Load Sea", np.sum(tugboat_df['TotalLoad']))
     tugboat_df = cost_df[cost_df['TugboatId'].str.contains("River")]
@@ -1370,6 +1390,27 @@ def generate_test_result():
     
     test_algorithm(["ODR_020", 'ODR_021', 'ODR_022',
                         ], name='ORDER_20_21_22')
+
+
+def test_output_anaylze(order_ids, name):
+    data_df = get_data_from_db()
+    data = initialize_data(data_df)
+    # cost_df_result.to_excel(f'{config_problem.OUTPUT_FOLDER}/cost_schedule_{name}.xlsx', index=False)
+    # tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
+    
+    # read file tugboat_schedule_{name}.xlsx
+    tugboat_df = pd.read_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx')
+    cost_df_result = pd.read_excel(f'{config_problem.OUTPUT_FOLDER}/cost_schedule_{name}.xlsx')
+    barge_df = pd.read_excel(f'{config_problem.OUTPUT_FOLDER}/barge_schedule_{name}.xlsx')
+    
+    solution = Solution(data)
+    
+    cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
+    solution.calculate_full_barge_cost(tugboat_df)
+    
+    
+    extact_anaylze(data, order_ids, tugboat_df, cost_df_result)
+    
 
 
 if __name__ == "__main__":
@@ -1420,6 +1461,19 @@ if __name__ == "__main__":
     #                       #'ODR_022'
     #                       ], name='ORDER_1_22')
     
+    # test_output_anaylze([
+    #                     "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+    #                      "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+    #                      "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+    #                      "ODR_013",
+    #                      "ODR_014", 
+    #                     'ODR_015', 'ODR_016', "ODR_017",
+    #                     'ODR_020', 'ODR_021', 
+    #                     'ODR_022'
+    #                     ], name='ORDER_9_22')
+    
+    #test_single_solution
+    #test_output_anaylze
     test_single_solution([
                         "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
                          "ODR_005", "ODR_006", "ODR_007", "ODR_008",

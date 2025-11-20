@@ -22,9 +22,14 @@ class TugboatProblem(ElementwiseProblem):
         
         #f = self._function_cost(x)
         solution = Solution(self.data_lookup)
+        try:
+            is_success, tugboat_df, barge_df = solution.generate_schedule_v2(self.order_ids, xs=x)
+            cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost_v2(tugboat_df, barge_df)
+        except Exception as e:
+            is_success = False
+            tugboat_df = None
+            barge_df = None
         
-        is_success, tugboat_df, barge_df = solution.generate_schedule(self.order_ids, xs=x)
-        cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
         if not is_success:
             out["F"] = 1000000000000
         else:
