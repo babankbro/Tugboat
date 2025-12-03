@@ -47,6 +47,27 @@ class ImportWorkflow(BaseTransportWorkflow):
         """
         bring_down_river_barges = []
         save_load = {}
+        #import timedelta
+        from datetime import timedelta
+        for bargeinfo in assigned_barges:
+            order_id = bargeinfo['assigned_order']
+            barge_id = bargeinfo['barge'].barge_id
+            barge_ready_time = self.solution.get_ready_barge(bargeinfo['barge'])
+            order_start_time = self.orders[order_id].start_datetime
+            target_ready_time = order_start_time - timedelta(days=config_problem.NEXT_DAY_WORK)
+            if barge_ready_time < target_ready_time:
+                result = self.solution.barge_scheule[barge_id][-1]
+                self.solution.update_single_barge_order_scheule(order_id, barge_id,
+                                                       result['end_datetime'], 
+                                                       target_ready_time, 
+                                                       result['river_km'], 
+                                                       result['water_status'], 
+                                                       result['location'], 
+                                                       result['station_id'])
+            
+                
+        
+        
         
         for bargeinfo in assigned_barges:
             barge = bargeinfo['barge']
@@ -64,7 +85,7 @@ class ImportWorkflow(BaseTransportWorkflow):
         # Multiple trips: Bring barges down from river to appointment point
         all_tugboat_results = []
         all_bring_down_barges = bring_down_river_barges.copy()
-        round_trip_order = 1
+        round_trip_order = self.global_step 
         iteration = 0
         
         while len(all_bring_down_barges) > 0:
@@ -162,7 +183,7 @@ class ImportWorkflow(BaseTransportWorkflow):
         min_order_id, min_start_datetime, start_station, max_due_datetime = \
             self._find_earliest_order(order_ids)
         
-        round_trip_order = 1
+        round_trip_order = self.global_step 
         iteration = 0
         all_tugboat_results = []
         arrived_barges = []
@@ -323,7 +344,7 @@ class ImportWorkflow(BaseTransportWorkflow):
         
         all_assigned_barges = [barge_info['barge'] for barge_info in arrived_barges]
         iteration = 0
-        round_trip_order = 1
+        round_trip_order = self.global_step 
         all_tugboat_results = []
         all_lookup_order_barges = {}
         
@@ -418,7 +439,7 @@ class ImportWorkflow(BaseTransportWorkflow):
         
         all_assigned_barges = [barge_info['barge'] for barge_info in assigned_barges]
         iteration = 0
-        round_trip_order = 1
+        round_trip_order = self.global_step 
         all_tugboat_results = []
         
         while len(all_assigned_barges) > 0:

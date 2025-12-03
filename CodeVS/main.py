@@ -750,7 +750,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
 
     cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
     tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
-    barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
+    barge_cost_df = solution.calculate_full_barge_cost(tugboat_df, tugboat_df_grouped)
         
         
     #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
@@ -792,7 +792,7 @@ def test_algorithm(order_input_ids = None, name='v3'):
     tb = tb.sort_values(by='enter_datetime')
     print(tb)
      
-def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped):
+def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped, barge_cost_df):
     to_check_tugboat_df = tugboat_df
     print(tugboat_df)
     
@@ -842,7 +842,7 @@ def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped):
     
     # #group tugboat_df by order_id and sum total_load
     # tugboat_df_grouped = tugboat_df.groupby('order_id').sum()
-    print(tugboat_df_grouped[tugboat_df_grouped['OrderId'] == "ODR_001"])
+    print(tugboat_df_grouped[tugboat_df_grouped['TugboatId'].str.contains("River")])
     #print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
     #filter tugboat_df_grouped by not cost is zero
     tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['Cost'] != 0]
@@ -904,51 +904,125 @@ def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped):
             print("Tugboat is on time", len(to_check_tugboat_df), to_check_tugboat_df['delta_time'].sum())
         
     
+    total_barge_load = barge_cost_df["Load"].sum()
+    print("Total Barge Load", total_barge_load)
     
+    tugboat_dfv1 = barge_cost_df[barge_cost_df['TugboatId'].str.contains("Sea")]
+    print("Total Load Sea", np.sum(tugboat_dfv1['Load']))
+    tugboat_dfv1 = barge_cost_df[barge_cost_df['TugboatId'].str.contains("River")]
+    print("Total Load River", np.sum(tugboat_dfv1['Load']))
     
+def generate_timeline_graph(barge_cost_df, cost_df_result, order_ids, data, name='v3'):
+    """
+    Generate Program vs Order Timeline graph from barge_cost_df and cost_df_result
     
-    # for order_id in order_ids:
-    #     #print(order_id, data['orders'][order_id])
-    #     #filter tugboat_df by order_id
-    #     tugboat_dfxt = tugboat_df[(tugboat_df['order_id'] == order_id)
-    #                              & (tugboat_df['tugboat_id'].str.contains("RiverTB_02"))
-    #                              #& (tugboat_df['type'].str.contains("Barge Collection"))
-    #                              ]
-    #     order = data['orders'][order_id]
-    #     print("Order", order_id, order.start_datetime)
-    #     #print(tugboat_dfx)
-    #     for index, row in tugboat_dfxt.iterrows():
-    #         #check if row['enter_datetime'] is less than order.start_datetime
-    #         # row['enter_datetime'] string to datetime TypeError: strptime() argument 1 must be str, not Timestamp
-    #         #temp_enter = row['enter_datetime'].strftime('%Y-%m-%d %H:%M:%S')
-    #         #order_start_datetime= order.start_datetime.strftime('%Y-%m-%d %H:%M:%S')
-    #         # print(row['enter_datetime'], order.start_datetime)
-    #         # temp_enter = datetime.strptime(row['enter_datetime'], '%Y-%m-%d %H:%M:%S')
-    #         # order_start_datetime = datetime.strptime(order.start_datetime, '%Y-%m-%d %H:%M:%S')
-    #         #delta time
-    #         delta_time = row['enter_datetime'] - order.start_datetime
-    #         if delta_time.total_seconds()/3600 > 24*0:
-    #             print("Tugboat", row['tugboat_id'], "is late",row['enter_datetime'], order.start_datetime )
-    #     print("Tugboat++++++++++++++++++++++++++++")
-    #     for tugboat_id, tugboat in data['tugboats'].items():
-    #         #if tugboat._ready_time < order.start_datetime and "Sea" in tugboat.name:
-    #         print("Tugboat", tugboat_id, "is late", tugboat._ready_time, order.start_datetime)
+    Args:
+        barge_cost_df: DataFrame with columns including BargeId, OrderId, StartDatetime, FinishDatetime
+        cost_df_result: DataFrame from tugboat schedule (cost_schedule) with TugboatId, OrderId, StartDatetime, FinishDatetime
+        order_ids: List of order IDs
+        data: Data dictionary containing orders
+        name: Name suffix for the output file
+    """
+    import plotly.figure_factory as ff
+    import plotly.graph_objects as go
+    from config_problem import OUTPUT_FOLDER
     
+    # Prepare data for timeline
+    timeline_data = []
+    orders = data['orders']
     
+    for order_id in order_ids:
+        if order_id not in orders:
+            continue
+            
+        order = orders[order_id]
+        
+        # Get order window (from order definition)
+        order_start = order.start_datetime
+        order_end = order.due_datetime
+        
+        # Get program window from barge_cost_df (barge-based calculation)
+        # Handle cases where OrderId might contain multiple orders separated by comma
+        order_barges = barge_cost_df[barge_cost_df['OrderId'].str.contains(order_id, na=False)]
+        
+        if len(order_barges) > 0:
+            # Find min StartDatetime and max FinishDatetime for this order
+            program_start = pd.to_datetime(order_barges['StartDatetime']).min()
+            program_end = pd.to_datetime(order_barges['FinishDatetime']).max()
+            
+            # Add Barge Program timeline
+            timeline_data.append(dict(
+                Task=f"{order_id} (Program)",
+                Start=program_start,
+                Finish=program_end,
+                Resource='Program'
+            ))
+        
+        # Get tugboat program window from cost_df_result (tugboat-based calculation)
+        # Handle cases where OrderId might contain multiple orders separated by comma
+        order_tugboats = cost_df_result[cost_df_result['OrderId'].str.contains(order_id, na=False)]
+        
+        if len(order_tugboats) > 0:
+            # Find min StartDatetime and max FinishDatetime for this order from tugboat schedule
+            tugboat_start = pd.to_datetime(order_tugboats['StartDatetime']).min()
+            tugboat_end = pd.to_datetime(order_tugboats['FinishDatetime']).max()
+            
+            # Add Tugboat Program timeline
+            timeline_data.append(dict(
+                Task=f"{order_id} (Tugboat)",
+                Start=tugboat_start,
+                Finish=tugboat_end,
+                Resource='Tugboat'
+            ))
+        
+        # Add Order timeline
+        timeline_data.append(dict(
+            Task=f"{order_id} (Order)",
+            Start=order_start,
+            Finish=order_end,
+            Resource='Order'
+        ))
     
-    #print(cost_df_result)
-    
-    #save to csv
-    #update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
-    
-    #barge_df.to_csv('barge_df.csv', index=False)
-    # unique tugboat_id
-    # print(tugboat_df_o['tugboat_id'].unique())
-    # print(tugboat_df_o[(tugboat_df_o['tugboat_id'] == "RiverTB_11") |
-    #                    (tugboat_df_o['order_id'] == "ODR_015")][COLUMN_OF_INTEREST].head(40))
-    
-    
-    
+    # Create Gantt chart
+    if timeline_data:
+        colors = {
+            'Program': 'rgb(255, 140, 0)',      # Orange for barge program
+            'Tugboat': 'rgb(50, 205, 50)',      # Green for tugboat program
+            'Order': 'rgb(46, 137, 205)'        # Blue for order window
+        }
+        
+        fig = ff.create_gantt(
+            timeline_data,
+            colors=colors,
+            index_col='Resource',
+            show_colorbar=True,
+            group_tasks=True,
+            showgrid_x=True,
+            showgrid_y=True,
+            title='Program vs Order Timeline'
+        )
+        
+        # Update layout
+        fig.update_layout(
+            xaxis_title='Date',
+            yaxis_title='Order',
+            height=max(400, len(order_ids) * 50),  # Increased height for 3 bars per order
+            font=dict(size=10),
+            xaxis=dict(
+                tickformat='%d-%b',
+                tickangle=-45
+            )
+        )
+        
+        # Save as HTML
+        output_path = f'{OUTPUT_FOLDER}/timeline_graph_{name}.html'
+        fig.write_html(output_path)
+        print(f"Timeline graph saved to: {output_path}")
+        
+        return output_path
+    else:
+        print("No timeline data to generate graph")
+        return None
 
 def test_single_solution(order_input_ids = None, name='v3'):
     data_df = get_data_from_db()
@@ -960,10 +1034,11 @@ def test_single_solution(order_input_ids = None, name='v3'):
     order_ids, cost_df_result, tugboat_df, tugboat_df_o, barge_df, tugboat_df_grouped, barge_cost_df = _init_test(data, order_df, order_input_ids, name=name)
     #tugboat_df.to_csv(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_v2.csv', index=False)
     # save as excel
+    generate_timeline_graph(barge_cost_df, tugboat_df_grouped, order_ids, data, name=name)
     
-    extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped)
+    extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped, barge_cost_df)
     
-    update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
+    #update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
     
 
 COLUMN_OF_INTEREST = ['ID',"station_id" , 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
@@ -1027,12 +1102,12 @@ def _init_test(data, order_df, order_input_ids, name='v3'):
         exit()
     cost_results, tugboat_df_o, barge_df, cost_df = solution.calculate_cost(tugboat_df, barge_df)
     cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
-    barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
+    barge_cost_df = solution.calculate_full_barge_cost(tugboat_df, cost_df_result)
     
     tugboat_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/tugboat_schedule_{name}.xlsx', index=False)
     barge_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/barge_schedule_{name}.xlsx', index=False)
     cost_df_result.to_excel(f'{config_problem.OUTPUT_FOLDER}/cost_schedule_{name}.xlsx', index=False)
-    #barge_cost_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/barge_cost_schedule_{name}.xlsx', index=False)
+    barge_cost_df.to_excel(f'{config_problem.OUTPUT_FOLDER}/barge_cost_schedule_{name}.xlsx', index=False)
     
     
     
@@ -1406,7 +1481,7 @@ def test_output_anaylze(order_ids, name):
     solution = Solution(data)
     
     cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
-    solution.calculate_full_barge_cost(tugboat_df)
+    solution.calculate_full_barge_cost(tugboat_df, cost_df_result)
     
     
     extact_anaylze(data, order_ids, tugboat_df, cost_df_result)
@@ -1475,15 +1550,22 @@ if __name__ == "__main__":
     #test_single_solution
     #test_output_anaylze
     test_single_solution([
-                        "ODR_001", "ODR_002", "ODR_003", "ODR_004", 
+                        "ODR_001", 
+                        "ODR_002", "ODR_003", 
+                        "ODR_004", 
                          "ODR_005", "ODR_006", "ODR_007", "ODR_008",
                          "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
                          "ODR_013",
                          "ODR_014", 
                         'ODR_015', 'ODR_016', "ODR_017",
-                        'ODR_020', 'ODR_021', 
+                        'ODR_020', 
+                        'ODR_021', 
                         'ODR_022'
-                        ], name='ORDER_9_22')
+                        ], 
+                         name='ORDER_9_22'
+                        # name='ODR_001_2_3'
+                         #name="ODR_001"
+                         )
     
     #test_single_solution([ "ODR_001", "ODR_002", "ODR_003"], name='ODR_001_2_3')
     #test_single_solution([ "ODR_001", "ODR_002"], name='ODR_001_2')

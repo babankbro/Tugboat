@@ -35,6 +35,7 @@ class BaseTransportWorkflow(ABC):
         self.sea_tugboats = self.data['sea_tugboats']
         self.river_tugboats = self.data['river_tugboats']
         self.workflow_type = "BASE"
+        self.global_step = 1
     
     @abstractmethod
     def execute_step1(self, assigned_barges):
@@ -183,7 +184,7 @@ class BaseTransportWorkflow(ABC):
         
         #print(f"  {self.workflow_type} Workflow completed successfully")
         #print(f"{'='*60}\n")
-        
+        self.global_step += 100
         return all_result_tugboats, arrived_barges, barge_dfs
     
     # Shared utility methods
@@ -191,7 +192,7 @@ class BaseTransportWorkflow(ABC):
         """Reset all tugboats in the given dictionary"""
         for tugboat_id in tugboat_dict:
             tugboat_dict[tugboat_id].reset()
-    
+
     def _update_schedules(self, tugboat_results, lookup_order_barges, 
                          lookup_tugboat_results, round_trip_order):
         """Update solution schedules with tugboat results"""

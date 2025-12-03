@@ -379,31 +379,36 @@ def calculate_multiple_schedules():
         #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost(tugboat_df, barge_df)
         
         
-        problem = TugboatProblem(order_ids, data, solution, Number_Code_Tugboat)
-    #np.random.seed(0)
+    #     problem = TugboatProblem(order_ids, data, solution, Number_Code_Tugboat)
+    # #np.random.seed(0)
 
-        algorithm = AMIS(problem,
-            pop_size=3,
-            CR=0.3,
-            max_iter = 1,
-            #dither="vector",
-            #jitter=False
-        )
-        algorithm.iterate()
+    #     algorithm = AMIS(problem,
+    #         pop_size=3,
+    #         CR=0.3,
+    #         max_iter = 0,
+    #         #dither="vector",
+    #         #jitter=False
+    #     )
+    #     algorithm.iterate()
         columns_of_interest = ['ID', 'type', 'name', 'enter_datetime', 'exit_datetime', 'distance',
         'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id',
         'water_type']
         
         solution = Solution(data)
-        is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=algorithm.bestX)
+        #is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=algorithm.bestX)
+        is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=xs)
         if not is_success:
             print("Failed to generate schedule")
             exit()
         
 
+        # cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost_v2(tugboat_df, barge_df)
+        # tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
+        # barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
+        
         cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_cost_v2(tugboat_df, barge_df)
-        tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
-        barge_cost_df = solution.calculate_full_barge_cost(tugboat_df)
+        cost_df_result = solution.calculate_full_cost(tugboat_df, barge_df)
+        barge_cost_df = solution.calculate_full_barge_cost(tugboat_df, cost_df_result)
             
             
         #cost_results, tugboat_df_o, barge_df, tugboat_df_grouped = solution.calculate_full_cost(tugboat_df, barge_df)
@@ -427,7 +432,7 @@ def calculate_multiple_schedules():
         print(cost_results)
         
         
-        
+        tugboat_df_grouped = cost_df_result
         print("Total Cost", np.sum(tugboat_df_grouped['Cost']))
         #filter tugboat_df_grouped by not cost is zero
         tugboat_df_grouped = tugboat_df_grouped[tugboat_df_grouped['Cost'] != 0]

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 import numpy as np
 from flask import jsonify
+import pandas as pd
 
 load_dotenv()
 
@@ -353,6 +354,8 @@ def insert_data_into_schedule(json_data_string):
 def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
     
     print("Updating database", tugboat_df.columns)
+    print("Updating database", cost_df.columns)
+    print(cost_df)
     try:
         # Connect to MySQL database
         conn = mysql.connector.connect(
@@ -397,7 +400,8 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                 # Filter and prepare all schedule records
                 schedule_records = []
                 for order_id in valid_order_ids:
-                    temp_tugboat_df = tugboat_df[tugboat_df["order_id"]==order_id]
+                    #temp_tugboat_df = tugboat_df[tugboat_df["order_id"]==order_id]
+                    temp_tugboat_df = tugboat_df[tugboat_df["order_id"].str.split(',').str[0]==order_id]
                     temp_tugboat_df = temp_tugboat_df.replace([np.nan], [None])
                     # Before your batch insert, check for null time values
                     
@@ -455,11 +459,16 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                 # Filter and prepare all cost records
                 cost_records = []
                 for order_id in valid_order_ids:
-                    temp_cost_df = cost_df[cost_df["OrderId"]==order_id]
+                    #temp_cost_df = cost_df[cost_df["OrderId"]==order_id]
+                    #if need to filter that "OrderId" has value like "o1, o2" and need the first element is 'o1'
+                    temp_cost_df = cost_df[cost_df["OrderId"].str.split(',').str[0]==order_id]
+                    
+                    #merge temp_cost_df and temp_cost_df2
+                    #temp_cost_df = pd.concat([temp_cost_df, temp_cost_df2])
                     temp_cost_df = temp_cost_df.replace([np.nan], [None])
                     
                     for _, row in temp_cost_df.iterrows():
-                        cost_records.append((
+                        new_row = (
                             row['TugboatId'] if row["TugboatId"] else None,
                             row['OrderId'] if row["OrderId"] else None,
                             row['Time'] if row["Time"] is not None else 0.0,
@@ -478,7 +487,11 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
                             row['MoveTime'] if row["MoveTime"] else 0,
                             row['OrderTrip'] if row["OrderTrip"] else 1,
                             row['AllTime'] if row["AllTime"] else 0,
-                        ))
+                        )
+                        # if ',' in row['OrderId']:
+                        #     print(new_row)
+                            
+                        cost_records.append(new_row)
                 
                 #print(insert_cost_query.format(cost_records[0]))
                 
@@ -526,7 +539,8 @@ def update_database(order_ids, tugboat_df, cost_df, barge_cost_df):
 
                 barge_cost_records = []
                 for order_id in valid_order_ids:
-                    temp_barge_df = barge_cost_df[barge_cost_df["OrderId"]==order_id]
+                    temp_barge_df = barge_cost_df[barge_cost_df["OrderId"].str.split(',').str[0]==order_id]
+                    #temp_barge_df = barge_cost_df[barge_cost_df["OrderId"]==order_id]
                     temp_barge_df = temp_barge_df.replace([np.nan], [None])
                     
                     for _, row in temp_barge_df.iterrows():
