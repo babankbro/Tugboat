@@ -47,6 +47,8 @@ class ImportWorkflow(BaseTransportWorkflow):
         """
         bring_down_river_barges = []
         save_load = {}
+        min_order_start_time = None
+        order_min_id = None
         #import timedelta
         from datetime import timedelta
         for bargeinfo in assigned_barges:
@@ -64,8 +66,26 @@ class ImportWorkflow(BaseTransportWorkflow):
                                                        result['water_status'], 
                                                        result['location'], 
                                                        result['station_id'])
+            if min_order_start_time is None:
+                min_order_start_time = order_start_time
+                order_min_id = order_id
+            elif order_start_time < min_order_start_time:
+                min_order_start_time = order_start_time
+                order_min_id = order_id
             
+        tugboats = self.solution.data['tugboats']
+        for tugboat_id, tugboat in tugboats.items():
+            tugboat_ready_time = self.solution.get_ready_time_tugboat(tugboat)
+            target_ready_time = min_order_start_time - timedelta(days=config_problem.NEXT_DAY_WORK)
+            if tugboat_ready_time < target_ready_time:
                 
+                info = self.solution.tugboat_scheule[tugboat_id][-1].copy()
+                info['end_datetime'] = target_ready_time
+                info['start_datetime'] = target_ready_time
+                
+                
+                # print("You're Doing Great!")
+                self.solution.tugboat_scheule[tugboat_id].append(info)     
         
         
         
@@ -188,6 +208,13 @@ class ImportWorkflow(BaseTransportWorkflow):
         all_tugboat_results = []
         arrived_barges = []
         
+        
+        save_load = {}
+        for barge in all_assigned_barges:
+            save_load[barge.barge_id] = barge.get_load(is_only_load=True)
+            barge.set_load(barge.weight_barge)  # Temporary load for calculation
+        
+        
         while len(all_assigned_barges) > 0:
             iteration += 1
             
@@ -244,6 +271,11 @@ class ImportWorkflow(BaseTransportWorkflow):
                 tugboat_results, lookup_order_barges, 
                 lookup_tugboat_results, round_trip_order
             )
+        
+        for barge_id in save_load:
+            barge = self.barges[barge_id]
+            barge.set_load(save_load[barge_id])
+        
         
         return all_tugboat_results, arrived_barges
     
@@ -337,6 +369,8 @@ class ImportWorkflow(BaseTransportWorkflow):
             if end_date_last < crane_location.exit_datetime:
                 end_date_last = crane_location.exit_datetime
         
+        
+        
         # Transport loaded barges to appointment point
         order_ids = [barge_info['assigned_order'] for barge_info in assigned_barges]
         min_order_id, min_start_datetime, start_station, max_due_datetime = \
@@ -347,6 +381,7 @@ class ImportWorkflow(BaseTransportWorkflow):
         round_trip_order = self.global_step 
         all_tugboat_results = []
         all_lookup_order_barges = {}
+        all_tugboat_results.append({'data_points': schedule_results})
         
         while len(all_assigned_barges) > 0:
             iteration += 1
@@ -413,7 +448,7 @@ class ImportWorkflow(BaseTransportWorkflow):
             self.solution._extend_update_tugboat_results(tugboat_results, round_trip_order)
             self.solution._reset_all_tugboats()
         
-        all_tugboat_results.append({'data_points': schedule_results})
+        
         return all_tugboat_results, arrived_barges, all_lookup_order_barges
     
     def execute_step4(self, assigned_barges, assigned_barge_order_ids,

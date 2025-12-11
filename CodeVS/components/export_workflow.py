@@ -97,10 +97,7 @@ class ExportWorkflow(BaseTransportWorkflow):
                 # if order_min_id == "ODR_017":
                 #     raise Exception("Order min id is ODR_017", order_min_id, min_order_start_time)
                     
-            
-           
-            
-        
+
         for bargeinfo in assigned_barges:
             barge = bargeinfo['barge']
             station_barge = self.data["stations"][
@@ -216,11 +213,7 @@ class ExportWorkflow(BaseTransportWorkflow):
         tugboats = self.river_tugboats
         self._reset_tugboats(tugboats)
         
-        
-        
-        
-        
-        
+  
         all_assigned_barges = [barge_info['barge'] for barge_info in assigned_barges]
         lookup_assigned_barges = {
             barge_info['barge'].barge_id: barge_info 
@@ -239,6 +232,16 @@ class ExportWorkflow(BaseTransportWorkflow):
         iteration = 0
         all_tugboat_results = []
         arrived_barges = []
+        
+        
+        
+        save_load = {}
+        for barge in all_assigned_barges:
+            save_load[barge.barge_id] = barge.get_load(is_only_load=True)
+            barge.set_load(barge.weight_barge)  # Temporary load for calculation
+        
+        
+        
         
         while len(all_assigned_barges) > 0:
             iteration += 1
@@ -306,6 +309,10 @@ class ExportWorkflow(BaseTransportWorkflow):
         #     print(tugboat_results[0])
         #     raise Exception("Ready barge")
         
+        for barge_id in save_load:
+            barge = self.barges[barge_id]
+            barge.set_load(save_load[barge_id])
+        
         return all_tugboat_results, arrived_barges
     
     def execute_step3(self, assigned_barges, assigned_barge_order_ids,
@@ -349,15 +356,15 @@ class ExportWorkflow(BaseTransportWorkflow):
                 self.solution, order, barge_infos, active_loader_info
             )
             
-            order = self.orders[order_id]
-            active_loader_infos = lookup_order_loading_infos[order_id]
-            active_loader_info = active_loader_infos[-1]
-            for barge_id in barge_ids:
-                order_barge_lookup[barge_id] = order_id, active_loader_info
+            # order = self.orders[order_id]
+            # active_loader_infos = lookup_order_loading_infos[order_id]
+            # active_loader_info = active_loader_infos[-1]
+            # for barge_id in barge_ids:
+            #     order_barge_lookup[barge_id] = order_id, active_loader_info
             
-            shedule_result = schedule_customer_order_barges(
-                self.solution, order, barge_infos, active_loader_info
-            )
+            # shedule_result = schedule_customer_order_barges(
+            #     self.solution, order, barge_infos, active_loader_info
+            # )
             
             
             
@@ -423,7 +430,7 @@ class ExportWorkflow(BaseTransportWorkflow):
         round_trip_order = self.global_step 
         all_tugboat_results = []
         all_lookup_order_barges = {}
-        
+        all_tugboat_results.append({'data_points': schedule_results})
         #self.solution._display_update_barges(assigned_barges, "After deliver to customer" )
         
         while len(all_assigned_barges) > 0:
@@ -492,7 +499,7 @@ class ExportWorkflow(BaseTransportWorkflow):
             self.solution._extend_update_tugboat_results(tugboat_results, round_trip_order)
             self.solution._reset_all_tugboats()
         
-        all_tugboat_results.append({'data_points': schedule_results})
+        
         return all_tugboat_results, arrived_barges, all_lookup_order_barges
     
     def execute_step4(self, assigned_barges, assigned_barge_order_ids,

@@ -192,7 +192,8 @@ class Solution:
                                       is_assign_capacity = False, used_barges_ids = set(), add_relax_days = 0):
         assigned_barges = []
  
-        assigned_barges = self.__iterate_assign_barges(order, barges, config_problem.RELAX_DAYS+add_relax_days, limit_assign_capacity, is_assign_capacity, used_barges_ids)
+        assigned_barges = self.__iterate_assign_barges(order, barges, config_problem.RELAX_DAYS+add_relax_days,
+                                                       limit_assign_capacity, is_assign_capacity, used_barges_ids)
         
         total_capacity = sum(barge['barge'].capacity for barge in assigned_barges)
         
@@ -1519,6 +1520,13 @@ class Solution:
                 tugboat_id = tugboat_result['tugboat_id']
                 data_point.order_trip = order_trip
                 
+                if "," in data_point.order_ids:
+                    order = self.data["orders"][data_point.order_ids.split(",")[0]]
+                else:
+                    order = self.data["orders"][data_point.order_ids]
+                    
+                
+                
                 # data_point.barge_ids is string formatted as list has ["B_01", "B_02"] 
                 # if data_point.barge_ids type list
                 if type(data_point.barge_ids) == list:
@@ -1539,11 +1547,15 @@ class Solution:
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
 
                 elif data_point.type == 'Barge Release':
+                    isImport = order.order_type == TransportType.IMPORT
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
                     #raise Exception("Stop", data_point.total_load, data_point)
                     #print(("Step", barge_ids, data_point.total_load, data_point))
                 elif data_point.type == 'Travel To Customer':
+                    isImport = order.order_type == TransportType.IMPORT
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
+                    # if order.order_id == "Order_52":
+                    #     raise Exception("Stop",isImport, order.order_type , data_point.total_load, data_point)
                 elif data_point.type == 'Travel To Carrier':
                     data_point.total_load = sum([barge.get_load(True) for barge in barges])
                 elif data_point.type == 'Barge Step Release':
@@ -5137,7 +5149,10 @@ class Solution:
                 barge = TravelHelper._instance.data['barges'][barge_id]
                 barge_ready_time = self.get_ready_barge(barge)
                 if barge_ready_time > start_travel_barge:
-                    start_travel_barge = barge_ready_time
+                    if "Order_52" in str_order_ids:
+                        print("------------------------------------------------------", barge_id, start_travel_barge, barge_ready_time)
+                        start_travel_barge = barge_ready_time
+                    
                 
                 
                 finish_barge_time = start_travel_barge + timedelta(minutes=(collection_info['travel_time'] + collection_info['setup_time'])*60)
@@ -6199,7 +6214,8 @@ class Solution:
                 scale_factor = 0.05
             #scale_factor = 1
             #return time_factor * scale_factor / math.pow(demand_factor, 0.5)
-            return ((orders[x].due_datetime - all_order_min_start_datetime).total_seconds()*0.7 + 0.3*(orders[x].start_datetime - all_order_min_start_datetime).total_seconds()) *scale_factor
+            return ((orders[x].due_datetime - all_order_min_start_datetime).total_seconds()*0.5 + 
+                    0.5*(orders[x].start_datetime - all_order_min_start_datetime).total_seconds()) *scale_factor
             #return (orders[x].start_datetime - all_order_min_start_datetime).total_seconds() *scale_factor
         
         
@@ -6290,6 +6306,9 @@ class Solution:
             
             total_load = sum(b['barge'].capacity for b in assigned_barges)
             barge_ids = [b['barge'].barge_id for b in assigned_barges]
+            # if order_id == "ODR_003":
+                
+            #     print("------------------------------Total load", total_load, before_remain, max_capacity, is_assign_capacity)
             #print("Total load", total_load)
             used_barges_ids.update(barge_ids)
     
@@ -6439,9 +6458,10 @@ class Solution:
             after_total_remaining_orders = sum(remaining_load_demand_order_ids.values())
             before_total_remaining_orders = sum(befor_remaining_orders.values())
             #if DEBUG_SCHEDULE:
-            print("#### Before", start_travel_datetime, set(current_assign_barge_order_ids), before_total_remaining_orders,
-                    "After", after_total_remaining_orders, "Current", current_assign_barge_load, "Diff", 
-                    before_total_remaining_orders - after_total_remaining_orders)
+            #print("#### Remaining Load Demand Order IDs", remaining_load_demand_order_ids)
+            # print("#### Before", start_travel_datetime, set(current_assign_barge_order_ids), before_total_remaining_orders,
+            #         "After", after_total_remaining_orders, "Current", current_assign_barge_load, "Diff", 
+            #         before_total_remaining_orders - after_total_remaining_orders)
             
             assigned_barge_order_ids = {}
             lookup_order_barges = {}
@@ -6457,6 +6477,24 @@ class Solution:
                 else:
                     barges = lookup_order_barges[order_id]
                 barges.append(assigned_barge)
+            load_lookup_order_barges = {}
+            for order_id in lookup_order_barges:
+                barges = lookup_order_barges[order_id]
+                #total load barges
+                total_load_barges = sum(b['load'] for b in barges)
+                if total_load_barges > befor_remaining_orders[order_id]:
+                    delta = total_load_barges - befor_remaining_orders[order_id]
+                    if delta < barges[-1]['barge'].get_load(True):
+                        new_load = barges[-1]['barge'].get_load(True) - delta
+                        barges[-1]['barge'].set_load(new_load)
+                        barges[-1]['load'] = new_load
+                    else:   
+                        raise Exception("Total load barges is greater than remaining orders")
+                    total_load_barges = sum(b['load'] for b in barges)
+                load_lookup_order_barges[order_id] = total_load_barges
+            ##print("#### Load Lookup Order Bargess", load_lookup_order_barges)
+                
+                    
             
             is_completed_route = False
             
