@@ -832,8 +832,10 @@ def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped, barge_cost_d
     #print(cost_results)
     
  
-    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'].str.contains("Sea")) & (tugboat_df['order_id'] == 'ODR_008')]
-    print(tugboat_dfx[COLUMN_OF_INTEREST].head(20))
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'].str.contains("RiverTB_10")) & 
+                             (tugboat_df['order_id'] == 'Order_51')]
+    print("#################################################################")
+    print(tugboat_dfx[COLUMN_OF_INTEREST].head(100))
     
     
     
@@ -1041,7 +1043,7 @@ def test_single_solution(order_input_ids = None, name='v3'):
     #update_database(order_ids, tugboat_df_o, tugboat_df_grouped, barge_cost_df)
     
 
-COLUMN_OF_INTEREST = ['ID',"station_id" , 'type', 'name', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
+COLUMN_OF_INTEREST = ['ID',"station_id" , 'type', 'name', 'barge_ids', 'enter_datetime', 'exit_datetime', 'start_arrival_datetime', 'rest_time', 'distance',
        'time', 'speed', 'type_point', 'barge_speed', 'tugboat_id', 'order_id', 
        'water_type']
 
@@ -1093,8 +1095,8 @@ def _init_test(data, order_df, order_input_ids, name='v3'):
     
     
     
-    print("sum xs", np.sum(xs))
-    print(xs)
+    #print("sum xs", np.sum(xs))
+    #print(xs)
     solution = Solution(data)
     is_success, tugboat_df, barge_df = solution.generate_schedule_v2(order_ids, xs=xs)
     if not is_success:
@@ -1571,7 +1573,9 @@ if __name__ == "__main__":
         ["Order_50", "Order_51", "Order_52"], name="Export_test"
     )
     
-    
+    # test_single_solution(
+    #     ["Order_51",], name="Order_51"
+    # )  
     
     #test_single_solution([ "ODR_001", "ODR_002", "ODR_003"], name='ODR_001_2_3')
     #test_single_solution([ "ODR_001", "ODR_002"], name='ODR_001_2')

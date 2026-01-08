@@ -1,5 +1,5 @@
 from sys import path
-from turtle import distance
+#from turtle import distance
 
 from jinja2 import DebugUndefined
 from CodeVS.components import barge
@@ -3346,7 +3346,7 @@ class Solution:
         tugboats = data['tugboats']
         orders = data['orders']
         
-        print("Grouped tugboat_df")
+        #print("Grouped tugboat_df")
         # view tugboat_df_grouped if is df output from groupby
         
         #tugboat_df_grouped = tugboat_df_grouped.apply(lambda x: x.to_dict(), axis=1)
@@ -5749,6 +5749,8 @@ class Solution:
                     temp_barge_ids.append(collection_info['barge_id'])
                 if assigned_barge_order_ids[collection_info['barge_id']] not in temp_order_ids:
                     temp_order_ids.append(assigned_barge_order_ids[collection_info['barge_id']])
+                    
+            last_barge_station_id = None
             for collection_info in collection_time_info['barge_collect_infos'][:]:
                 #barge_info = lookup_barge_infos[collection_info['barge_id']]
                 barge_id = collection_info['barge_id']
@@ -5791,6 +5793,7 @@ class Solution:
                 start_travel_barge = finish_barge_time
                 #print(barge_step)
                 barge_steps.append(barge_step)
+                last_barge_station_id = end_barge_station_id
             barge_location.exit_datetime = finish_barge_time
             barge_location.barge_ids = temp_barge_ids
             tugboat_result["data_points"].extend(barge_steps)
@@ -5838,7 +5841,7 @@ class Solution:
                 rest_time=rest_time,
                 barge_ids= barge_ids,
                 order_trip = round_order_trip,
-                station_id = self.data['orders'][str_orders[0]].des_object.station.station_id,
+                station_id = last_barge_station_id,
                 order_ids = str_order_ids,
                 tugboat_id = tugboat.tugboat_id
             )
