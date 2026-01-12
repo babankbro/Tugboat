@@ -1007,7 +1007,8 @@ class Solution:
         
         return tugboat_results, time_boat_lates
                 
-    def arrival_step_travel_empty_barges(self, order, tugboats, appointment_infos, order_trip, is_startdate_order=False):
+    def arrival_step_travel_empty_barges(self, order, tugboats, appointment_infos, 
+                                         order_trip, is_startdate_order=False):
         
         time_boat_lates = []
         tugboat_results = []
@@ -1288,10 +1289,16 @@ class Solution:
             )
             release_barges_location.exit_datetime = release_barges_location.enter_datetime + timedelta(minutes=time_release_barges)
             tugboat_order_results['data_points'].append(release_barges_location)
-            release_steps = generate_release_steps(order.order_id, tugboat.tugboat_id, release_barges_location.enter_datetime, order_trip, barge_ids,
-                                                   appoinment_location.station_id)
+            release_steps = generate_release_steps(order.order_id, tugboat.tugboat_id, 
+                                                   release_barges_location.enter_datetime, 
+                                                   order_trip, barge_ids,
+                                                   appointment_info['appointment_station'])
             release_barges_location.exit_datetime = release_steps[-1].exit_datetime
             tugboat_order_results['data_points'].extend(release_steps)
+            
+            # if order.order_id == 'ODR_004' and tugboat.tugboat_id == 'RiverTB_01':
+            #     print("Release Steps:", tugboat.tugboat_id, appointment_info['appointment_station'])
+            #     raise Exception("Release Steps")
             
             
             appointment_station = self.data['stations'][appointment_info['appointment_station']]
@@ -4454,8 +4461,6 @@ class Solution:
             
             
             
-            
-            
             str_orders = []
             min_start_order = None
             orders = self.data['orders']
@@ -5662,7 +5667,7 @@ class Solution:
                 rest_time= 0,
                 order_trip = round_order_trip,
                 barge_ids = None,
-                station_id = appointment_station.station_id,
+                station_id  = start_station,
                 order_ids = str_order_ids,
                 tugboat_id = tugboat.tugboat_id
             )
@@ -5670,10 +5675,7 @@ class Solution:
 
             
             # Create result structure
-            tugboat_result = {
-                'tugboat_id': tugboat.tugboat_id,
-                'data_points': [start_location, barge_location]
-            }
+            
             
         
             max_ready_datetime = self.get_max_datetime(tugboat, lookup_barge_infos)    
@@ -5690,7 +5692,7 @@ class Solution:
         # #     time_lated = max(0, (arrival_time - appointment_location.expected_arrival).total_seconds() / 3600)
             
         # #     # Store results
-            tugboat_results.append(tugboat_result)
+            
             
             travel_total_time = first_barge_location['travel_time']
             
@@ -5751,6 +5753,46 @@ class Solution:
                     temp_order_ids.append(assigned_barge_order_ids[collection_info['barge_id']])
                     
             last_barge_station_id = None
+            
+            arrival_datetime = start_location.enter_datetime
+            
+            #start_station
+            
+            # if "ODR_003" in str_order_ids and tugboat.tugboat_id == 'RiverTB_01':
+            #     print("Travel Inof", travel_info)
+            #     raise Exception("Debug")
+            
+            travel_steps = generate_travel_steps(str_order_ids, tugboat.tugboat_id, 
+                                                 arrival_datetime, travel_info,  round_order_trip, [],
+                                             extra=" Empty Barges")
+            #barge_location.enter_datetime is last step travel
+            travel_steps = None
+            # start_barge_station_id = collection_info['travel_steps'][0].start_id
+            # end_barge_station_id = collection_info['travel_steps'][-1].end_id
+                
+            # if start_barge_station_id != end_barge_station_id:
+            #     #print("Travel steps", start_barge_station_id, end_barge_station_id, collection_info)
+            #     travel_steps = generate_travel_steps_for_barge_collection(order_id,  tugboat.tugboat_id, 
+            #                                                                 start_travel_barge, 
+            #                                                                 collection_info, 
+            #                                                                 str_order_ids, [])
+            #     print("Travel steps", tugboat.tugboat_id, order_id, start_barge_station_id, end_barge_station_id)
+                
+            #     raise Exception("Debug")
+
+            tugboat_result = {
+                'tugboat_id': tugboat.tugboat_id,
+                'data_points': [start_location]
+            }
+            tugboat_results.append(tugboat_result)
+            # if travel_steps != None: 
+            #     tugboat_result['data_points'].extend(travel_steps)
+            #     barge_location.enter_datetime = travel_steps[-1].exit_datetime
+            #     start_travel_barge = barge_location.enter_datetime
+            tugboat_result['data_points'].append(barge_location)
+            
+            
+            #last step             
             for collection_info in collection_time_info['barge_collect_infos'][:]:
                 #barge_info = lookup_barge_infos[collection_info['barge_id']]
                 barge_id = collection_info['barge_id']
@@ -5763,6 +5805,26 @@ class Solution:
                 
                 start_barge_station_id = collection_info['travel_steps'][0].start_id
                 end_barge_station_id = collection_info['travel_steps'][-1].end_id
+                
+ 
+                order_id = assigned_barge_order_ids[barge_id]
+                
+                if start_barge_station_id != end_barge_station_id:
+                    #print("Travel steps", start_barge_station_id, end_barge_station_id, collection_info)
+                    travel_steps = generate_travel_steps_for_barge_collection(order_id,  
+                                                                              tugboat.tugboat_id, 
+                                                                              start_travel_barge, 
+                                                                              collection_info, 
+                                                                              round_order_trip, barge_ids)
+                    barge_steps.extend(travel_steps)
+                    start_travel_barge = travel_steps[-1].exit_datetime
+                
+                finish_barge_time = start_travel_barge + timedelta(minutes=collection_info['setup_time']*60)
+                barge_ids.append(barge_id)
+                
+                
+                
+                
                 
                 name = "Change Barge - " + collection_info['barge_id'] + " - " 
                 name += f"({start_barge_station_id} to {str(end_barge_station_id)})"

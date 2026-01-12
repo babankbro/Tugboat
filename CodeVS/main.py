@@ -832,8 +832,8 @@ def extact_anaylze(data, order_ids, tugboat_df, tugboat_df_grouped, barge_cost_d
     #print(cost_results)
     
  
-    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'].str.contains("RiverTB_10")) & 
-                             (tugboat_df['order_id'] == 'Order_51')]
+    tugboat_dfx = tugboat_df[(tugboat_df['tugboat_id'].str.contains("RiverTB_01")) & 
+                             (tugboat_df['order_id'] == 'ODR_003')]
     print("#################################################################")
     print(tugboat_dfx[COLUMN_OF_INTEREST].head(100))
     
@@ -1551,27 +1551,27 @@ if __name__ == "__main__":
     
     #test_single_solution
     #test_output_anaylze
-    # test_single_solution([
-    #                     "ODR_001", 
-    #                     "ODR_002", "ODR_003", 
-    #                     "ODR_004", 
-    #                      "ODR_005", "ODR_006", "ODR_007", "ODR_008",
-    #                      "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
-    #                      "ODR_013",
-    #                      "ODR_014", 
-    #                     'ODR_015', 'ODR_016', "ODR_017",
-    #                     'ODR_020', 
-    #                     'ODR_021', 
-    #                     'ODR_022'
-    #                     ], 
-    #                      name='ORDER_9_22'
-    #                     # name='ODR_001_2_3'
-    #                      #name="ODR_001"
-    #                      )
+    test_single_solution([
+                        "ODR_001", 
+                        "ODR_002", "ODR_003", 
+                        "ODR_004", 
+                         "ODR_005", "ODR_006", "ODR_007", "ODR_008",
+                         "ODR_009", "ODR_010", "ODR_011", "ODR_012", 
+                         "ODR_013",
+                         "ODR_014", 
+                        'ODR_015', 'ODR_016', "ODR_017",
+                        'ODR_020', 
+                        'ODR_021', 
+                        'ODR_022'
+                        ], 
+                         name='ORDER_1_22'
+                        # name='ODR_001_2_3'
+                         #name="ODR_001"
+                         )
     
-    test_single_solution(
-        ["Order_50", "Order_51", "Order_52"], name="Export_test"
-    )
+    # test_single_solution(
+    #     ["Order_50", "Order_51", "Order_52"], name="Export_test"
+    # )
     
     # test_single_solution(
     #     ["Order_51",], name="Order_51"
